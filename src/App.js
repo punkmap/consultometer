@@ -1,56 +1,105 @@
-import React, {Component} from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import MeetingsList from './components/molecules/MeetingsList'
+import MeetingAdd from './components/molecules/MeetingAdd';
+import MeetingsAnalyze from './components/molecules/MeetingsAnalyze';
+import WorkflowAdd from "./components/organisms/WorkflowAdd";
+import WorkflowsAnalyze from "./components/organisms/WorkflowsAnalyze";
 
-import Button from '@material-ui/core/Button';
+// This site has 3 pages, all of which are rendered
+// dynamically in the browser (not server rendered).
+//
+// Although the page does not ever refresh, notice how
+// React Router keeps the URL up to date as you navigate
+// through the site. This preserves the browser history,
+// making sure things like the back button and bookmarks
+// work properly.
 
-import { increment, defaultFunction } from './actions';
+export default function App() {
+  return (
+    <Router>
+      <div>
+        <ul>
+          {/* <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/add">Add</Link>
+          </li>
+          <li>
+            <Link to="/analyze">Analyze</Link>
+          </li> */}
+        </ul>
 
-import Label from './components/atoms/Label';
-// function incrementCount() {
-//   console.log("increment");
-//   this.props.increment(this.count)
-// }
-class App extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      clickCount: 0
-    }
-  }
-  componentDidMount() {
-    // call default function to display redux operation
-    this.props.defaultFunction();
-    // this.props.setConfig(config);// .setConfig(config);
-  }
-  incrementCount() {
-    this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
-      this.props.increment(this.state.clickCount);
-    } )
-  }
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <Button variant="contained" color="primary" onClick={this.incrementCount.bind(this)}>
-            Click me
-          </Button>
-          <Label></Label>
-        </header>
+        <hr />
+
+        {/*
+          A <Switch> looks through all its children <Route>
+          elements and renders the first one whose path
+          matches the current URL. Use a <Switch> any time
+          you have multiple routes, but you want only one
+          of them to render at a time
+        */}
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/add">
+            <Add />
+          </Route>
+          <Route path="/analyze">
+            <Analyze />
+          </Route>
+        </Switch>
       </div>
-    );
-  }
+    </Router>
+  );
 }
 
-App.propTypes = {
-  increment: PropTypes.func.isRequired
-};
+// You can think of these components as "pages"
+// in your app.
 
-export default connect(null, { increment, defaultFunction })(App);
+function Home() {
+  return (
+      <Grid container
+          direction="column"
+          justify="center"
+          alignItems="center"
+          style={{ minHeight: '100vh' }}>
+        <Grid item xs={12}>
+          {/* <Typography variant="h4" gutterBottom>
+            Meetings
+          </Typography> */}
+          <MeetingsList></MeetingsList>
+        </Grid>
+        <Grid item xs={12}>
+          <MeetingsAnalyze></MeetingsAnalyze>
+          <MeetingAdd></MeetingAdd>
+        </Grid>
+      </Grid>
+  );
+}
+
+function Add() {
+  return (
+    <div>
+      <WorkflowAdd></WorkflowAdd>
+    </div>
+  );
+}
+
+function Analyze() {
+  return (
+    <div>
+      <WorkflowsAnalyze></WorkflowsAnalyze>
+    </div>
+  );
+}

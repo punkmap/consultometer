@@ -1,4 +1,4 @@
-import { INCREMENT, FETCH_DATA } from '../actions/types';
+import { INCREMENT, APP_WORKFLOW } from '../actions/types';
 
 
 export const increment = (count) => {
@@ -9,13 +9,12 @@ export const increment = (count) => {
         });
     };
 };
-// default function to display redux action format
-export function defaultFunction() {
-    let testVar = 'Hello';
-
-    // action object format being return to a reducer
-    return {
-        type: FETCH_DATA,
-        payload: testVar
-    }
-}
+export const setWorkflow = (workflow) => {
+    console.log('setWorkflow: ', workflow);
+    return dispatch => {
+        dispatch({
+            type: APP_WORKFLOW,
+            payload: workflow,
+        });
+    };
+};
