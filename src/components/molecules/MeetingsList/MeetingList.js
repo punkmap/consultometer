@@ -127,4 +127,4 @@ class MeetingList extends Component {
 
 
 
-export default withRouter(connect(null, { setWorkflow })(MeetingList));
+export default connect(null, { setWorkflow })(MeetingList);

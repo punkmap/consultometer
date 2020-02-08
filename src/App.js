@@ -1,105 +1,89 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import React, {Component} from 'react';
+import logo from './logo.svg';
+import './App.css';
 
-import MeetingsList from './components/molecules/MeetingsList'
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import store from './store'
+import watch from 'redux-watch';
+
+import { increment, setWorkflow } from './actions';
+
+import Label from './components/atoms/Label';
 import MeetingAdd from './components/molecules/MeetingAdd';
 import MeetingsAnalyze from './components/molecules/MeetingsAnalyze';
-import WorkflowAdd from "./components/organisms/WorkflowAdd";
-import WorkflowsAnalyze from "./components/organisms/WorkflowsAnalyze";
+import WorkflowAdd from './components/organisms/WorkflowAdd'
+// function incrementCount() {
+//   console.log("increment");
+//   this.props.increment(this.count)
+// }
+class App extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      clickCount: 0,
+      appWorkflow: 'main'
+    }
+    const addMeetingWatch = watch(store.getState, 'addMeeting.workflow')
+    store.subscribe(addMeetingWatch((newVal, oldVal, objectPath) => {
+        console.log('addMeeting newVal: ', newVal);
+        this.setState((state, props) => ({appWorkflow: newVal}))
+    }))
+  }
 
-// This site has 3 pages, all of which are rendered
-// dynamically in the browser (not server rendered).
-//
-// Although the page does not ever refresh, notice how
-// React Router keeps the URL up to date as you navigate
-// through the site. This preserves the browser history,
-// making sure things like the back button and bookmarks
-// work properly.
+  componentDidMount() {
+    // call default function to display redux operation
+    
+    // this.props.setConfig(config);// .setConfig(config);
+  }
+  incrementCount() {
+    this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
+      this.props.increment(this.state.clickCount);
+    } )
+  }
 
-export default function App() {
-  return (
-    <Router>
-      <div>
-        <ul>
-          {/* <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/add">Add</Link>
-          </li>
-          <li>
-            <Link to="/analyze">Analyze</Link>
-          </li> */}
-        </ul>
-
-        <hr />
-
-        {/*
-          A <Switch> looks through all its children <Route>
-          elements and renders the first one whose path
-          matches the current URL. Use a <Switch> any time
-          you have multiple routes, but you want only one
-          of them to render at a time
-        */}
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/add">
-            <Add />
-          </Route>
-          <Route path="/analyze">
-            <Analyze />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
-  );
-}
-
-// You can think of these components as "pages"
-// in your app.
-
-function Home() {
-  return (
-      <Grid container
-          direction="column"
-          justify="center"
-          alignItems="center"
-          style={{ minHeight: '100vh' }}>
-        <Grid item xs={12}>
-          {/* <Typography variant="h4" gutterBottom>
-            Meetings
-          </Typography> */}
-          <MeetingsList></MeetingsList>
-        </Grid>
-        <Grid item xs={12}>
+  render() {
+    const appWorkflow = this.state.appWorkflow;
+    let workflowControls;
+    switch (appWorkflow) {
+      case 'main':
+        workflowControls = 
+        <div>
           <MeetingsAnalyze></MeetingsAnalyze>
           <MeetingAdd></MeetingAdd>
-        </Grid>
-      </Grid>
-  );
+        </div>
+        break;
+      case 'addMeeting':
+        workflowControls = 
+        <div>
+          <WorkflowAdd></WorkflowAdd>
+        </div>
+        break;
+      case 'analyzeMeetings':
+        workflowControls = <p>analyze</p>
+        break;
+      default:
+        break;
+    }
+    return (
+      <div className="App">
+        <header className="App-header">
+          {workflowControls}
+        </header>
+      </div>
+    );
+  }
+}
+// function to convert the global state obtained from redux to local props
+function mapStateToProps(state) {
+  return {
+    default: state.default
+  };
 }
 
-function Add() {
-  return (
-    <div>
-      <WorkflowAdd></WorkflowAdd>
-    </div>
-  );
-}
+App.propTypes = {
+  increment: PropTypes.func.isRequired
+};
 
-function Analyze() {
-  return (
-    <div>
-      <WorkflowsAnalyze></WorkflowsAnalyze>
-    </div>
-  );
-}
+export default connect(mapStateToProps, { increment, setWorkflow })(App);
