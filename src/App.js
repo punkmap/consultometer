@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect }from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,7 +12,9 @@ import MeetingsList from './components/molecules/MeetingsList'
 import MeetingAdd from './components/molecules/MeetingAdd';
 import MeetingsAnalyze from './components/molecules/MeetingsAnalyze';
 import WorkflowAdd from "./components/organisms/WorkflowAdd";
+import WorkflowEdit from "./components/organisms/WorkflowEdit";
 import WorkflowsAnalyze from "./components/organisms/WorkflowsAnalyze";
+import axios from 'axios';
 
 // This site has 3 pages, all of which are rendered
 // dynamically in the browser (not server rendered).
@@ -24,6 +26,16 @@ import WorkflowsAnalyze from "./components/organisms/WorkflowsAnalyze";
 // work properly.
 
 export default function App() {
+  useEffect(() => {
+    // Update the document title using the browser API
+    //document.title = `You clicked ${count} times`;
+    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+    axios.get(url)
+    .then((response) => {
+      console.log('response: ', response);
+
+    })
+  });
   return (
     <Router>
       <div>
@@ -53,6 +65,9 @@ export default function App() {
             <Home />
           </Route>
           <Route path="/add">
+            <Add />
+          </Route>
+          <Route path="/edit">
             <Add />
           </Route>
           <Route path="/analyze">
@@ -95,7 +110,13 @@ function Add() {
     </div>
   );
 }
-
+function Edit() {
+  return (
+    <div>
+      <WorkflowEdit></WorkflowEdit>
+    </div>
+  );
+}
 function Analyze() {
   return (
     <div>
@@ -103,3 +124,4 @@ function Analyze() {
     </div>
   );
 }
+

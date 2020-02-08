@@ -40,15 +40,15 @@ class MeetingList extends Component {
   //   }))
   }
   componentDidMount() {
-    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    // axios.get(url)
-    // .then((response) => {
-    //   this.setState({meetings: response.data.rows}, () => {
-    //     this.state.meetings.forEach((meeting) => {
-    //     })
-    //   });
+    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+    axios.get(url)
+    .then((response) => {
+      this.setState({meetings: response.data.rows}, () => {
+        this.state.meetings.forEach((meeting) => {
+        })
+      });
 
-    // })
+    })
   }
   componentDidUpdate() {
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
@@ -60,6 +60,16 @@ class MeetingList extends Component {
     //   });
 
     // })
+  }
+  nextPath(path) {
+    this.props.history.push(path);
+  }
+  editMeeting() {
+    this.props.setWorkflow('editMeetings');
+    this.nextPath('/edit');
+    // this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
+    //   this.props.increment(this.state.clickCount);
+    // } )
   }
   // generate(element) {
   //   return this.state.meetings.map((value, index) => {});
@@ -91,7 +101,7 @@ class MeetingList extends Component {
                   secondary={moment(value.value.dateTime).format("DD-MM-YY HH:mm")}
                 />
                 <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="delete">
+                  <IconButton edge="end" aria-label="delete" onClick={this.editMeeting.bind(this)}>
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
