@@ -40,30 +40,30 @@ class MeetingList extends Component {
   //   }))
   }
   componentDidMount() {
-    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    axios.get(url)
-    .then((response) => {
-      this.setState({meetings: response.data.rows}, () => {
-        this.state.meetings.forEach((meeting) => {
-        })
-      });
+    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+    // axios.get(url)
+    // .then((response) => {
+    //   this.setState({meetings: response.data.rows}, () => {
+    //     this.state.meetings.forEach((meeting) => {
+    //     })
+    //   });
 
-    })
+    // })
   }
   componentDidUpdate() {
-    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    axios.get(url)
-    .then((response) => {
-      this.setState({meetings: response.data.rows}, () => {
-        this.state.meetings.forEach((meeting) => {
-        })
-      });
+    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+    // axios.get(url)
+    // .then((response) => {
+    //   this.setState({meetings: response.data.rows}, () => {
+    //     this.state.meetings.forEach((meeting) => {
+    //     })
+    //   });
 
-    })
+    // })
   }
-  generate(element) {
-    return this.state.meetings.map((value, index) => {});
-  }
+  // generate(element) {
+  //   return this.state.meetings.map((value, index) => {});
+  // }
   render() {
     const { classes } = this.props;
     return (
@@ -80,7 +80,7 @@ class MeetingList extends Component {
             <div>
               <List dense={true}>
               {this.state.meetings.map((value, index) => {
-                return <ListItem>
+                return <ListItem key={index}>
                 <ListItemAvatar>
                   <Avatar>
                     <FolderIcon />
