@@ -1,4 +1,4 @@
-import { INCREMENT, APP_WORKFLOW } from '../actions/types';
+import { INCREMENT, APP_WORKFLOW, EDIT_MEETING } from '../actions/types';
 
 
 export const increment = (count) => {
@@ -15,6 +15,15 @@ export const setWorkflow = (workflow) => {
         dispatch({
             type: APP_WORKFLOW,
             payload: workflow,
+        });
+    };
+};
+export const editMeeting = (meeting) => {
+    console.log('editMeeting: ', meeting);
+    return dispatch => {
+        dispatch({
+            type: EDIT_MEETING,
+            payload: meeting,
         });
     };
 };

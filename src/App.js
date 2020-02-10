@@ -15,6 +15,13 @@ import WorkflowAdd from "./components/organisms/WorkflowAdd";
 import WorkflowEdit from "./components/organisms/WorkflowEdit";
 import WorkflowsAnalyze from "./components/organisms/WorkflowsAnalyze";
 import axios from 'axios';
+import { connect } from 'react-redux';
+
+import store from './store'
+import watch from 'redux-watch';
+
+
+import { editMeeting } from './actions';
 
 // This site has 3 pages, all of which are rendered
 // dynamically in the browser (not server rendered).
@@ -25,64 +32,152 @@ import axios from 'axios';
 // making sure things like the back button and bookmarks
 // work properly.
 
-export default function App() {
-  useEffect(() => {
-    // Update the document title using the browser API
-    //document.title = `You clicked ${count} times`;
+class App extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      meetings: [],
+      editMeeting: null
+    }
+
+    const editMeetingWatch = watch(store.getState, 'editMeeting.meeting.value')
+    store.subscribe(editMeetingWatch((newVal, oldVal, objectPath) => {
+        // const clickCount = store.getState().click.clickCount;
+        const editMeeting = newVal;
+        this.setState({
+            editMeeting,
+        })
+        console.log('editMeetingWatch newVal: ', newVal);
+    }))
+  }
+  componentWillMount() {
+    console.log('willMount');
+
     const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     axios.get(url)
     .then((response) => {
-      console.log('response: ', response);
+      this.setState({meetings: response.data.rows}, () => {
+        console.log('willMount this.state.meetings: ', this.state.meetings);
+      });
 
     })
-  });
-  return (
-    <Router>
-      <div>
-        <ul>
-          {/* <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/add">Add</Link>
-          </li>
-          <li>
-            <Link to="/analyze">Analyze</Link>
-          </li> */}
-        </ul>
+  }
+  componentDidMount() {
+    console.log('didMount');
 
-        <hr />
+    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+    // axios.get(url)
+    // .then((response) => {
+    //   this.setState({meetings: response.data.rows}, () => {
+    //     console.log('this.state.meetings: ', this.state.meetings);
+    //   });
 
-        {/*
-          A <Switch> looks through all its children <Route>
-          elements and renders the first one whose path
-          matches the current URL. Use a <Switch> any time
-          you have multiple routes, but you want only one
-          of them to render at a time
-        */}
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/add">
-            <Add />
-          </Route>
-          <Route path="/edit">
-            <Add />
-          </Route>
-          <Route path="/analyze">
-            <Analyze />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
-  );
+    // })
+  }
+  componentDidUpdate() {
+    console.log('didUpdate');
+    
+    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+    // axios.get(url)
+    // .then((response) => {
+    //   this.setState({meetings: response.data.rows}, () => {
+    //     console.log('this.state.meetings: ', this.state.meetings);
+    //   });
+
+    // })
+  }
+  render() {
+    return (
+      <Router>
+        <div>
+          
+  
+          {/*
+            A <Switch> looks through all its children <Route>
+            elements and renders the first one whose path
+            matches the current URL. Use a <Switch> any time
+            you have multiple routes, but you want only one
+            of them to render at a time
+          */}
+          <Switch>
+            <Route exact path="/">
+              <Home meetings={this.state.meetings}/>
+            </Route>
+            <Route path="/add">
+              <Add />
+            </Route>
+            <Route path="/edit">
+              <Edit editMeeting={this.state.editMeeting}/>
+            </Route>
+            <Route path="/analyze">
+              <Analyze />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    );
+  }
 }
+
+export default connect(null, { editMeeting })(App);
+// export default function App() {
+//   useEffect(() => {
+//     // Update the document title using the browser API
+//     //document.title = `You clicked ${count} times`;
+//     const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+//     axios.get(url)
+//     .then((response) => {
+//       console.log('response: ', response);
+
+//     })
+//   });
+//   return (
+//     <Router>
+//       <div>
+//         <ul>
+//           {/* <li>
+//             <Link to="/">Home</Link>
+//           </li>
+//           <li>
+//             <Link to="/add">Add</Link>
+//           </li>
+//           <li>
+//             <Link to="/analyze">Analyze</Link>
+//           </li> */}
+//         </ul>
+
+//         <hr />
+
+//         {/*
+//           A <Switch> looks through all its children <Route>
+//           elements and renders the first one whose path
+//           matches the current URL. Use a <Switch> any time
+//           you have multiple routes, but you want only one
+//           of them to render at a time
+//         */}
+//         <Switch>
+//           <Route exact path="/">
+//             <Home />
+//           </Route>
+//           <Route path="/add">
+//             <Add />
+//           </Route>
+//           <Route path="/edit">
+//             <Add />
+//           </Route>
+//           <Route path="/analyze">
+//             <Analyze />
+//           </Route>
+//         </Switch>
+//       </div>
+//     </Router>
+//   );
+// }
 
 // You can think of these components as "pages"
 // in your app.
 
-function Home() {
+function Home(props) {
   return (
       <Grid container
           direction="column"
@@ -93,7 +188,7 @@ function Home() {
           {/* <Typography variant="h4" gutterBottom>
             Meetings
           </Typography> */}
-          <MeetingsList></MeetingsList>
+          <MeetingsList meetings={props.meetings}></MeetingsList>
         </Grid>
         <Grid item xs={12}>
           <MeetingsAnalyze></MeetingsAnalyze>
@@ -110,10 +205,12 @@ function Add() {
     </div>
   );
 }
-function Edit() {
+function Edit(props) {
+  console.log('props.meetings: ', props.meeting);
+  console.log('props: ', props);
   return (
     <div>
-      <WorkflowEdit></WorkflowEdit>
+      <WorkflowEdit editMeeting={props.editMeeting}></WorkflowEdit>
     </div>
   );
 }

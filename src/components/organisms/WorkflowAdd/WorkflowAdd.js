@@ -120,12 +120,12 @@ class WorkflowAdd extends Component {
       justify="center"
       alignItems="center"
       style={{ minHeight: '100vh' }}>
-      <MeetingTitle updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
+      <MeetingTitle title={this.state.title} updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
       <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
-        <MeetingDateTime updateDate={this.updateDate.bind(this)}></MeetingDateTime>
+        <MeetingDateTime dateTime={new Date()} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
       </MuiPickersUtilsProvider>
-      <ProjectSelect updateProject={this.updateProject.bind(this)}></ProjectSelect>
-      <AttendeesSelect updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
+      <ProjectSelect project={this.state.project} updateProject={this.updateProject.bind(this)}></ProjectSelect>
+      <AttendeesSelect attendees={this.state.attendees} updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
       <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
         save
       </Button>

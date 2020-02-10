@@ -13,8 +13,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function BasicTextFields(props) {
   const classes = useStyles();
+  console.log('props.title: ', props.title);
   return (
-      <TextField id="standard-basic" label="Meeting Title" onChange={(event) => {
+      <TextField id="standard-basic" label="Meeting Title" value={props.title} onChange={(event) => {
         props.updateTitle(event.target.value);
       }}/>
   );

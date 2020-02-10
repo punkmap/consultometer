@@ -1,31 +1,48 @@
 /* eslint-disable no-use-before-define */
-import React from 'react';
+import React, { Component }from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-export default function ProjectSelect(props) {
-  const defaultProps = {
-    options: projects.sort(),
-    getOptionLabel: option => option.name,
-  };
-
-  const [value, setValue] = React.useState(null);
-  return (
-    <Autocomplete
-        {...defaultProps}
-        id="auto-select"
-        autoSelect
-        onChange={(event, values) => {
-          props.updateProject(values);
-        }}
-        renderInput={params => (
-          <TextField {...params} label="Project" margin="normal" fullWidth />
-        )}
-      />
-  );
+class ProjectSelect extends Component {
+  
+  constructor(props){
+    super(props)
+    this.state = {
+      project: this.props.project,
+    }
+    
+  }
+  render(){
+    const defaultProps = {
+      options: projects.sort(),
+      getOptionLabel: option => option.name,
+    };
+    
+    return (
+      <div>
+        <Autocomplete
+          {...defaultProps}
+          id="auto-select"
+          //value={{name: this.state.project}}
+          value={this.state.project}
+          autoSelect
+          onChange={(event, project) => {
+            console.log('project: ', project);
+            this.props.updateProject(project);
+            this.setState({project});
+          }}
+          renderInput={params => (
+            <TextField {...params} label="Project" margin="normal" fullWidth />
+          )}
+        />
+      </div>
+    );
+  }
 }
+export default ProjectSelect;
 
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
+//const projects = ['ATA','EAS','NC DOT','T-Mobile','Town of Cary','Trumbull'];
+
 const projects = [
   { name: 'ATA' },
   { name: 'EAS' },

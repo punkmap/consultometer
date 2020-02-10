@@ -40,10 +40,10 @@ class WorkflowAdd extends Component {
   constructor(props){
     super(props)
     this.state = {
-      title: '',
-      dateTime: '',
-      project: '',
-      attendees: ''
+      title: this.props.editMeeting.title,
+      dateTime: new Date(this.props.editMeeting.dateTime),
+      project: this.props.editMeeting.project,
+      attendees: this.props.editMeeting.attendees,
     }
     
   }
@@ -57,6 +57,7 @@ class WorkflowAdd extends Component {
     this.setState({title});
   }
   updateDate(dateTime){
+    console.log('dateTime: ', dateTime);
     this.setState({dateTime});
   }
   updateProject(project){
@@ -110,22 +111,36 @@ class WorkflowAdd extends Component {
     this.props.setWorkflow('mainPage');
     this.nextPath('/');
   }
+  componentDidMount() {
+    console.log('WorkflowEdit attendees: ', this.state.attendees);
+    // console.log('WorkflowEdit didMount: ', this.props.editMeeting);
+    // this.setState({
+    //   title: this.props.editMeeting.title,
+    //   dateTime: new Date(this.props.editMeeting.dateTime),
+    //   project: this.props.editMeeting.project,
+    //   attendees: this.props.editMeeting.attendees,
+    // }, () => {
+    //   console.log("this.state: ", this.state);
+    // })
+  }
   render() {
     const { classes } = this.props;
 
-
+    console.log('Workflow Edits: ', this.state.attendees);
     return (
     <Grid container
       direction="column"
       justify="center"
       alignItems="center"
       style={{ minHeight: '100vh' }}>
-      <MeetingTitle updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
+        <p>edit</p>  
+      <MeetingTitle title={this.state.title} updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
       <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
-        <MeetingDateTime updateDate={this.updateDate.bind(this)}></MeetingDateTime>
+        <MeetingDateTime dateTime={this.state.dateTime} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
       </MuiPickersUtilsProvider>
-      <ProjectSelect updateProject={this.updateProject.bind(this)}></ProjectSelect>
-      <AttendeesSelect updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
+      <ProjectSelect project={{name: this.state.project}} updateProject={this.updateProject.bind(this)}></ProjectSelect>
+      <p>{this.state.addendees}</p>
+      <AttendeesSelect attendees={this.state.attendees} updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
       <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
         save
       </Button>

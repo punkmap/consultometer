@@ -1,9 +1,10 @@
 /* eslint-disable no-use-before-define */
-import React from 'react';
+import React, { Component } from 'react';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import { render } from '@testing-library/react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -13,32 +14,43 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function AttendeesSelect(props) {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.root}>
-      <Autocomplete
-        multiple
-        id="tags-standard"
-        options={possibleAttendees}
-        getOptionLabel={option => option.name}
-        onChange={(event, values) => {
-          props.updateAttendees(values);
-        }}
-        renderInput={params => (
-          <TextField
-            {...params}
-            variant="standard"
-            label="Attendees"
-            placeholder="Favorites"
-            fullWidth
-          />
-        )}
-      />
-    </div>
-  );
+class AttendeesSelect extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      attendees: this.props.attendees,
+    }
+  } 
+  render(){
+    //const classes = useStyles();
+    return (
+      // <div className={classes.root}>
+      <div>
+        <Autocomplete
+          multiple
+          id="tags-standard"
+          options={possibleAttendees.sort()}
+          getOptionLabel={option => option.name}
+          value={this.state.attendees}
+          onChange={(event, attendees) => {
+            this.props.updateAttendees(attendees);
+            this.setState({attendees});
+          }}
+          renderInput={params => (
+            <TextField
+              {...params}
+              variant="standard"
+              label="Attendees"
+              placeholder="Favorites"
+              fullWidth
+            />
+          )}
+        />
+      </div>
+    );
+  }  
 }
+export default AttendeesSelect;
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const possibleAttendees = [

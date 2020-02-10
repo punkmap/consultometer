@@ -16,7 +16,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import store from '../../../store'
-import { setWorkflow } from '../../../actions';
+import { setWorkflow, editMeeting } from '../../../actions';
 // function generate(element) {
 //   return [0, 1, 2].map(value =>
 //     React.cloneElement(element, {
@@ -39,18 +39,29 @@ class MeetingList extends Component {
   //       })
   //   }))
   }
+  componentWillMount() {
+    console.log('ML willMount');
+    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+    // axios.get(url)
+    // .then((response) => {
+    //   this.setState({meetings: response.data.rows}, () => {
+    //     console.log('Meetings List: ', this.state.meetings);
+    //   });
+    // })
+  }
   componentDidMount() {
-    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    axios.get(url)
-    .then((response) => {
-      this.setState({meetings: response.data.rows}, () => {
-        this.state.meetings.forEach((meeting) => {
-        })
-      });
+    console.log('ML didMount');
+    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+    // axios.get(url)
+    // .then((response) => {
+    //   this.setState({meetings: response.data.rows}, () => {
+    //     console.log('Meetings List: ', this.state.meetings);
+    //   });
 
-    })
+    // })
   }
   componentDidUpdate() {
+    console.log('ML didUpdate');
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     // axios.get(url)
     // .then((response) => {
@@ -64,8 +75,11 @@ class MeetingList extends Component {
   nextPath(path) {
     this.props.history.push(path);
   }
-  editMeeting() {
+  editMeeting(meeting) {
+    console.log('value: ', meeting);
     this.props.setWorkflow('editMeetings');
+
+    this.props.editMeeting(meeting);
     this.nextPath('/edit');
     // this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
     //   this.props.increment(this.state.clickCount);
@@ -76,6 +90,7 @@ class MeetingList extends Component {
   // }
   render() {
     const { classes } = this.props;
+    console.log('this.props: ', this.props);
     return (
         // <div className={classes.root}>
         <div>
@@ -89,7 +104,7 @@ class MeetingList extends Component {
             {/* <div className={classes.demo}> */}
             <div>
               <List dense={true}>
-              {this.state.meetings.map((value, index) => {
+              {this.props.meetings.map((value, index) => {
                 return <ListItem key={index}>
                 <ListItemAvatar>
                   <Avatar>
@@ -101,7 +116,7 @@ class MeetingList extends Component {
                   secondary={moment(value.value.dateTime).format("DD-MM-YY HH:mm")}
                 />
                 <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="delete" onClick={this.editMeeting.bind(this)}>
+                  <IconButton edge="end" aria-label="delete" onClick={() => this.editMeeting(value)}>
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
@@ -137,4 +152,4 @@ class MeetingList extends Component {
 
 
 
-export default withRouter(connect(null, { setWorkflow })(MeetingList));
+export default withRouter(connect(null, { setWorkflow, editMeeting })(MeetingList));
