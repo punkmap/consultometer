@@ -58,9 +58,9 @@ class WorkflowAdd extends Component {
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
-  nextPath(path) {
-    this.props.history.push(path);
-  }
+  // nextPath(path) {
+  //   this.props.history.push(path);
+  // }
   updateTitle(title){
     this.setState({title});
   }
@@ -138,7 +138,7 @@ class WorkflowAdd extends Component {
     //   console.log('CouchDB response: ', response);
     // })
     this.props.setWorkflow('mainPage');
-    this.nextPath('/');
+    //this.nextPath('/');
   }
   render() {
     const { classes } = this.props;

@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 
 import store from './store'
 import watch from 'redux-watch';
+import axios from 'axios';
 
 import { increment, setWorkflow } from './actions';
 
@@ -31,16 +32,21 @@ class App extends Component {
         this.setState((state, props) => ({appWorkflow: newVal}))
     }))
   }
-
-  componentDidMount() {
-    // call default function to display redux operation
-    
-    // this.props.setConfig(config);// .setConfig(config);
+  fetchMeetings(){
+    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+      axios.get(url)
+      .then((response) => {
+        this.setState({meetings: response.data.rows}, () => {
+          console.log('meetings: ', this.state.meetings);
+        });
+  
+      })
   }
-  incrementCount() {
-    this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
-      this.props.increment(this.state.clickCount);
-    } )
+  componentDidMount() {
+    this.fetchMeetings();
+  }
+  componentDidUpdate() {
+    //this.fetchMeetings();
   }
 
   render() {
@@ -75,6 +81,7 @@ class App extends Component {
     );
   }
 }
+
 // function to convert the global state obtained from redux to local props
 function mapStateToProps(state) {
   return {
