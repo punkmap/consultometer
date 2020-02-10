@@ -23,7 +23,6 @@ class ProjectSelect extends Component {
         <Autocomplete
           {...defaultProps}
           id="auto-select"
-          //value={{name: this.state.project}}
           value={this.state.project}
           autoSelect
           onChange={(event, project) => {

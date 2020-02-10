@@ -21,7 +21,7 @@ import store from './store'
 import watch from 'redux-watch';
 
 
-import { editMeeting } from './actions';
+import { editMeeting, allMeetings } from './actions';
 
 // This site has 3 pages, all of which are rendered
 // dynamically in the browser (not server rendered).
@@ -49,6 +49,12 @@ class App extends React.Component {
         })
         console.log('editMeetingWatch newVal: ', newVal);
     }))
+    const meetingsWatch = watch(store.getState, 'meetings.meetings')
+    store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
+        this.setState({meetings: newVal}, () => {
+          console.log('willMount this.state.meetings: ', this.state.meetings);
+        });
+    }))
   }
   componentWillMount() {
     console.log('willMount');
@@ -56,9 +62,9 @@ class App extends React.Component {
     const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     axios.get(url)
     .then((response) => {
-      this.setState({meetings: response.data.rows}, () => {
-        console.log('willMount this.state.meetings: ', this.state.meetings);
-      });
+      //TODO add the meetings to redux and then set the state to the action. 
+      this.props.allMeetings(response.data.rows);
+      
 
     })
   }
@@ -104,10 +110,10 @@ class App extends React.Component {
               <Home meetings={this.state.meetings}/>
             </Route>
             <Route path="/add">
-              <Add />
+              <Add meetings={this.state.meetings}/>
             </Route>
             <Route path="/edit">
-              <Edit editMeeting={this.state.editMeeting}/>
+              <Edit editMeeting={this.state.editMeeting} meetings={this.state.meetings}/>
             </Route>
             <Route path="/analyze">
               <Analyze />
@@ -119,7 +125,7 @@ class App extends React.Component {
   }
 }
 
-export default connect(null, { editMeeting })(App);
+export default connect(null, { editMeeting, allMeetings })(App);
 // export default function App() {
 //   useEffect(() => {
 //     // Update the document title using the browser API
@@ -198,10 +204,10 @@ function Home(props) {
   );
 }
 
-function Add() {
+function Add(props) {
   return (
     <div>
-      <WorkflowAdd></WorkflowAdd>
+      <WorkflowAdd  meetings={props.meetings}></WorkflowAdd>
     </div>
   );
 }
@@ -210,7 +216,7 @@ function Edit(props) {
   console.log('props: ', props);
   return (
     <div>
-      <WorkflowEdit editMeeting={props.editMeeting}></WorkflowEdit>
+      <WorkflowEdit editMeeting={props.editMeeting} meetings={props.meetings}></WorkflowEdit>
     </div>
   );
 }

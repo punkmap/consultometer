@@ -12,7 +12,8 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import axios from 'axios';
 
-import { setWorkflow } from '../../../actions';
+
+import { setWorkflow, allMeetings } from '../../../actions';
 
 import AttendeesSelect from '../../molecules/AttendeesSelect'
 import MeetingTitle from '../../molecules/MeetingTitle'
@@ -40,12 +41,19 @@ class WorkflowAdd extends Component {
   constructor(props){
     super(props)
     this.state = {
+      meetings: props.meetings,
       title: '',
       dateTime: '',
-      project: '',
-      attendees: ''
+      project: {name: ''},
+      attendees: []
     }
-    
+    console.log('woprkflowadd meetings: ', this.state.meetings)
+    // const meetingsWatch = watch(store.getState, 'meetings.meetings')
+    // store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
+    //   this.setState({meetings: newVal}, () => {
+    //     console.log('ADD this.state.meetings: ', this.state.meetings);
+    //   });
+    // }))
   }
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
@@ -64,6 +72,10 @@ class WorkflowAdd extends Component {
   }
   updateAttendees(attendees){
     this.setState({attendees});
+  }
+  cancel() {
+    this.props.setWorkflow('mainPage');
+    this.nextPath('/');
   }
   save() {
     // validate form
@@ -89,10 +101,28 @@ class WorkflowAdd extends Component {
       })
       .then((response) => {
         console.log('response: ', response);
+        const newMeeting = {
+          id: response.data.id, 
+          key: response.data.id,
+          value: {
+            _id: response.data.id, 
+            _rev: response.data.rev,
+            type: 'meeting',
+            title: this.state.title,
+            dateTime: this.state.dateTime,
+            project: this.state.project.name,
+            attendees: this.state.attendees,
+          }
+        }
+        console.log('this.state.meetings: ', this.state.meetings);
+        const newMeetings = [...this.state.meetings, newMeeting];
+        console.log("newMeetings: ", newMeetings);
+        this.props.allMeetings(newMeetings);
         // dispatch({
         //   type: FOUND_USER,
         //   data: response.data[0]
         // })
+
       })
       .catch((error) => {
         console.log('error: ', error);
@@ -112,8 +142,6 @@ class WorkflowAdd extends Component {
   }
   render() {
     const { classes } = this.props;
-
-
     return (
     <Grid container
       direction="column"
@@ -125,10 +153,15 @@ class WorkflowAdd extends Component {
         <MeetingDateTime dateTime={new Date()} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
       </MuiPickersUtilsProvider>
       <ProjectSelect project={this.state.project} updateProject={this.updateProject.bind(this)}></ProjectSelect>
-      <AttendeesSelect attendees={this.state.attendees} updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
-      <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
-        save
-      </Button>
+      <AttendeesSelect updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
+      <Grid item xs={12}>
+        <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
+          cancel
+        </Button>
+        <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
+          save
+        </Button>
+      </Grid>
     </Grid>
     )
   }
@@ -137,4 +170,4 @@ WorkflowAdd.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withRouter(withStyles(styles)(connect(null, { setWorkflow })(WorkflowAdd)));
+export default withRouter(withStyles(styles)(connect(null, { setWorkflow, allMeetings })(WorkflowAdd)));

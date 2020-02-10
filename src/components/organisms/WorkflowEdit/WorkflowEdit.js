@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import axios from 'axios';
 
-import { setWorkflow } from '../../../actions';
+import { setWorkflow, allMeetings } from '../../../actions';
 
 import AttendeesSelect from '../../molecules/AttendeesSelect'
 import MeetingTitle from '../../molecules/MeetingTitle'
@@ -40,10 +40,13 @@ class WorkflowAdd extends Component {
   constructor(props){
     super(props)
     this.state = {
+      _id: this.props.editMeeting._id,
+      _rev: this.props.editMeeting._rev,
       title: this.props.editMeeting.title,
       dateTime: new Date(this.props.editMeeting.dateTime),
       project: this.props.editMeeting.project,
       attendees: this.props.editMeeting.attendees,
+      meetings: this.props.meetings,
     }
     
   }
@@ -66,48 +69,65 @@ class WorkflowAdd extends Component {
   updateAttendees(attendees){
     this.setState({attendees});
   }
-  save() {
+  cancel() {
+    this.props.setWorkflow('mainPage');
+    this.nextPath('/');
+  }
+  update() {
     // validate form
     // save meeting 
     //return to main
-    const data = {
+    const meeting = {
+      _id: this.state._id,
+      _rev: this.state._rev,
       type: 'meeting',
       title: this.state.title,
       dateTime: this.state.dateTime,
-      project: this.state.project.name,
+      project: this.state.project,
       attendees: this.state.attendees,
     };
 
-    console.log("DATA: ", data)
+    console.log("MEETING: ", meeting);
 
     const headers = {
       'Content-Type': 'application/json',
       //'Authorization': 'JWT fefege...'TODO: JWT authentication
     }
     
-    axios.post('http://api:api@64.225.122.227:5984/consultometer', data, {
+    axios.put('http://api:api@64.225.122.227:5984/consultometer/'+this.state._id, meeting, {
         headers: headers
       })
       .then((response) => {
         console.log('response: ', response);
-        // dispatch({
-        //   type: FOUND_USER,
-        //   data: response.data[0]
-        // })
+        const updatedMeeting = {
+          id: response.data.id, 
+          key: response.data.id,
+          value: {
+            _id: response.data.id, 
+            _rev: response.data.rev,
+            type: 'meeting',
+            title: this.state.title,
+            dateTime: this.state.dateTime,
+            project: this.state.project.name,
+            attendees: this.state.attendees,
+          }
+        }
+        console.log('this.state.meetings: ', this.state.meetings);
+        const meetings = this.state.meetings.filter(function( obj ) {
+          return obj.id !== response.data.id;
+        });
+        meetings.push(updatedMeeting);
+        console.log('MEETINGS: ', meetings);
+        this.props.allMeetings(meetings);
+        // const newMeetings = [...this.state.meetings, newMeeting];
+        // console.log("newMeetings: ", newMeetings);
+        // this.props.allMeetings(newMeetings);
+        
       })
       .catch((error) => {
         console.log('error: ', error);
-        // dispatch({
-        //   type: ERROR_FINDING_USER
-        // })
+        
       })
-    
-    // var headers = new Headers();
-    // const url = 'http://api:api@64.225.122.227:5984/consultometer'
-    // axios.get(url)
-    // .then((response) => {
-    //   console.log('CouchDB response: ', response);
-    // })
     this.props.setWorkflow('mainPage');
     this.nextPath('/');
   }
@@ -139,11 +159,15 @@ class WorkflowAdd extends Component {
         <MeetingDateTime dateTime={this.state.dateTime} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
       </MuiPickersUtilsProvider>
       <ProjectSelect project={{name: this.state.project}} updateProject={this.updateProject.bind(this)}></ProjectSelect>
-      <p>{this.state.addendees}</p>
       <AttendeesSelect attendees={this.state.attendees} updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
-      <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
-        save
-      </Button>
+      <Grid item xs={12}>
+        <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
+          cancel
+        </Button>
+        <Button variant="contained" color="primary" onClick={this.update.bind(this)}>
+          save
+        </Button>
+      </Grid>
     </Grid>
     )
   }
@@ -152,4 +176,4 @@ WorkflowAdd.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withRouter(withStyles(styles)(connect(null, { setWorkflow })(WorkflowAdd)));
+export default withRouter(withStyles(styles)(connect(null, { setWorkflow, allMeetings })(WorkflowAdd)));

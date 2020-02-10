@@ -13,6 +13,7 @@ class MeetingDateTime extends Component {
   }
   dateChange(event) {
     this.props.updateDate(event._d);
+    this.setState({dateTime: event._d})
   }
   render() {
     return (
