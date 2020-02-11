@@ -12,7 +12,7 @@ import TodayIcon from '@material-ui/icons/Today';
 import EditIcon from '@material-ui/icons/Edit';
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import SearchIcon from "@material-ui/icons/Search";
+import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
@@ -113,13 +113,13 @@ class MeetingList extends Component {
               Meetings
             </Typography>
             <TextField
-              label="Search Project or Title"
+              label="Filter by Project or Title"
               onChange={this.props.filterMeetings}
               InputProps={{
                 endAdornment: (
                   <InputAdornment>
                     <IconButton>
-                      <SearchIcon />
+                      <FilterListIcon />
                     </IconButton>
                   </InputAdornment>
                 )
