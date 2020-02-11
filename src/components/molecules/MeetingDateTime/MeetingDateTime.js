@@ -1,6 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import { DateTimePicker } from "@material-ui/pickers";
-import moment from 'moment';
+import FormControl from '@material-ui/core/FormControl';
+import { withStyles } from '@material-ui/styles';
+
+const styles = theme => ({
+  root: {
+    width: '100%'
+  },
+  DTP: {
+    width: '100%'
+  }
+});
 
 class MeetingDateTime extends Component {
 
@@ -16,27 +26,25 @@ class MeetingDateTime extends Component {
     this.setState({dateTime: event._d})
   }
   render() {
+
+    const { classes } = this.props;
     return (
-      <Fragment>
-       {/* <DateTimePicker
-         autoOk
-         ampm={false}
-         value={selectedDate}
-         onChange={handleDateChange}
-         label="24h clock"
-       /> */}
-       <DateTimePicker
-         autoOk
-         value={ new Date(this.state.dateTime) }
-         onChange={this.dateChange.bind(this)}
-         label="Meeting Date/Time"
-       />
-     </Fragment>
+      <div className={classes.root}>
+        <DateTimePicker
+          className={classes.DTP}
+          autoOk
+          value={ new Date(this.state.dateTime) }
+          onChange={this.dateChange.bind(this)}
+          label="Meeting Date/Time"
+          margin="dense"  
+          readOnly={this.props.readOnly}
+        />
+      </div>
     );
   }
 }
 
-export default MeetingDateTime;
+export default withStyles(styles)(MeetingDateTime);
 
 // import React, { Fragment, useState } from "react";
 // import { DateTimePicker } from "@material-ui/pickers";

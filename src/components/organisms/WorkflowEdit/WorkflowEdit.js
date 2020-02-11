@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 //import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import axios from 'axios';
+
 
 import { setWorkflow, allMeetings } from '../../../actions';
 
@@ -20,21 +22,12 @@ import ProjectSelect from '../../molecules/ProjectSelect'
 import MeetingDateTime from '../../molecules/MeetingDateTime'
 //const history = useHistory();
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+  root: {
+    flexGrow: 1,
   },
-  textField: {
-    // marginLeft: theme.spacing.unit,
-    // marginRight: theme.spacing.unit,
-    width: 200,
-  },
-  dense: {
-    marginTop: 19,
-  },
-  menu: {
-    width: 200,
-  },
+  buttonBar: {
+    margin: "1rem"
+  }
 });
 class WorkflowAdd extends Component {
   constructor(props){
@@ -145,30 +138,55 @@ class WorkflowAdd extends Component {
   }
   render() {
     const { classes } = this.props;
-
-    console.log('Workflow Edits: ', this.state.attendees);
+    let editButton; 
+    if (this.props.readOnly) {
+      editButton = <IconButton aria-label="delete" className={classes.margin}>
+        <EditIcon fontSize="small" />
+      </IconButton>;
+    }
     return (
-    <Grid container
-      direction="column"
-      justify="center"
-      alignItems="center"
-      style={{ minHeight: '100vh' }}>
-        <p>edit</p>  
-      <MeetingTitle title={this.state.title} updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
-      <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
-        <MeetingDateTime dateTime={this.state.dateTime} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
-      </MuiPickersUtilsProvider>
-      <ProjectSelect project={{name: this.state.project}} updateProject={this.updateProject.bind(this)}></ProjectSelect>
-      <AttendeesSelect attendees={this.state.attendees} updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
-      <Grid item xs={12}>
-        <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
-          cancel
-        </Button>
-        <Button variant="contained" color="primary" onClick={this.update.bind(this)}>
-          save
-        </Button>
-      </Grid>
-    </Grid>
+      <div className={classes.root}>  
+        <Grid 
+          container
+          direction="column"
+          justify="center"
+          alignItems="center"
+          style={{ minHeight: '100vh' }}>
+          {editButton}
+          <Grid item xs={6} md={6} lg={6}>
+            <MeetingTitle 
+              title={this.state.title} 
+              updateTitle={this.updateTitle.bind(this)}
+              readOnly={this.props.readOnly}
+            />
+            <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
+              <MeetingDateTime 
+                dateTime={this.state.dateTime} 
+                updateDate={this.updateDate.bind(this)}
+                readOnly={this.props.readOnly}
+              />
+            </MuiPickersUtilsProvider>
+            <ProjectSelect 
+              project={{name: this.state.project}} 
+              updateProject={this.updateProject.bind(this)}
+              readOnly={this.props.readOnly}
+            />
+            <AttendeesSelect 
+              attendees={this.state.attendees} 
+              updateAttendees={this.updateAttendees.bind(this)}
+              readOnly={this.props.readOnly}
+            />
+            <Grid item xs={12} className={classes.buttonBar}>
+              <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
+                cancel
+              </Button>
+              <Button variant="contained" color="primary" onClick={this.update.bind(this)}>
+                save
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </div>
     )
   }
 }

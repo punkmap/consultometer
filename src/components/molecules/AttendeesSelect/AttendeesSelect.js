@@ -1,18 +1,14 @@
 /* eslint-disable no-use-before-define */
 import React, { Component } from 'react';
-import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { render } from '@testing-library/react';
+import { withStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
-    '& > * + *': {
-      marginTop: theme.spacing(3),
-    },
+    width: '100%'
   },
-}));
+});
 
 class AttendeesSelect extends Component {
   constructor(props){
@@ -21,17 +17,17 @@ class AttendeesSelect extends Component {
       attendees: this.props.attendees,
     }
   } 
+
   render(){
-    //const classes = useStyles();
+    const { classes } = this.props;
     return (
-      // <div className={classes.root}>
-      <div>
+      <div className={classes.root}>
         <Autocomplete
           multiple
-          id="tags-standard"
           options={possibleAttendees.sort()}
           getOptionLabel={option => option.name}
           value={this.props.attendees}
+          disabled={this.props.readOnly}
           onChange={(event, attendees) => {
             this.setState({attendees: attendees});
             this.props.updateAttendees(attendees);
@@ -42,6 +38,7 @@ class AttendeesSelect extends Component {
               variant="standard"
               label="Attendees"
               placeholder="Favorites"
+              margin="dense" 
               fullWidth
             />
           )}
@@ -50,7 +47,7 @@ class AttendeesSelect extends Component {
     );
   }  
 }
-export default AttendeesSelect;
+export default withStyles(styles)(AttendeesSelect);
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const possibleAttendees = [

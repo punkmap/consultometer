@@ -21,21 +21,12 @@ import ProjectSelect from '../../molecules/ProjectSelect'
 import MeetingDateTime from '../../molecules/MeetingDateTime'
 //const history = useHistory();
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+  root: {
+    flexGrow: 1,
   },
-  textField: {
-    // marginLeft: theme.spacing.unit,
-    // marginRight: theme.spacing.unit,
-    width: 200,
-  },
-  dense: {
-    marginTop: 19,
-  },
-  menu: {
-    width: 200,
-  },
+  buttonBar: {
+    margin: "1rem"
+  }
 });
 class WorkflowAdd extends Component {
   constructor(props){
@@ -147,26 +138,31 @@ class WorkflowAdd extends Component {
   render() {
     const { classes } = this.props;
     return (
-    <Grid container
-      direction="column"
-      justify="center"
-      alignItems="center"
-      style={{ minHeight: '100vh' }}>
-      <MeetingTitle title={this.state.title} updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
-      <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
-        <MeetingDateTime dateTime={new Date()} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
-      </MuiPickersUtilsProvider>
-      <ProjectSelect project={this.state.project} updateProject={this.updateProject.bind(this)}></ProjectSelect>
-      <AttendeesSelect updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
-      <Grid item xs={12}>
-        <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
-          cancel
-        </Button>
-        <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
-          save
-        </Button>
-      </Grid>
-    </Grid>
+      <div className={classes.root}>  
+        <Grid 
+          container
+          direction="column"
+          justify="center"
+          alignItems="center"
+          style={{ minHeight: '100vh' }}>
+          <Grid item >
+            <MeetingTitle title={this.state.title} updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
+            <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
+              <MeetingDateTime dateTime={new Date()} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
+            </MuiPickersUtilsProvider>
+            <ProjectSelect project={this.state.project} updateProject={this.updateProject.bind(this)}></ProjectSelect>
+            <AttendeesSelect updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
+            <Grid item xs={12} className={classes.buttonBar}>
+              <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
+                cancel
+              </Button>
+              <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
+                save
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </div>
     )
   }
 }

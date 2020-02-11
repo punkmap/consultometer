@@ -2,7 +2,13 @@
 import React, { Component }from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { withStyles } from '@material-ui/styles';
 
+const styles = theme => ({
+  root: {
+    width: '100%',
+  },
+});
 class ProjectSelect extends Component {
   
   constructor(props){
@@ -18,8 +24,9 @@ class ProjectSelect extends Component {
       getOptionLabel: option => option.name,
     };
     
+    const { classes } = this.props;
     return (
-      <div>
+      <div className={classes.root}>
         <Autocomplete
           {...defaultProps}
           id="auto-select"
@@ -31,14 +38,22 @@ class ProjectSelect extends Component {
             this.setState({project});
           }}
           renderInput={params => (
-            <TextField {...params} label="Project" margin="normal" fullWidth />
+            <TextField 
+              {...params} 
+              label="Project" 
+              margin="dense" 
+              fullWidth 
+              InputProps={{
+                readOnly: this.props.readOnly,
+              }}
+            />
           )}
         />
       </div>
     );
   }
 }
-export default ProjectSelect;
+export default withStyles(styles)(ProjectSelect);
 
 //const projects = ['ATA','EAS','NC DOT','T-Mobile','Town of Cary','Trumbull'];
 

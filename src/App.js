@@ -13,6 +13,7 @@ import MeetingAdd from './components/molecules/MeetingAdd';
 import MeetingsAnalyze from './components/molecules/MeetingsAnalyze';
 import WorkflowAdd from "./components/organisms/WorkflowAdd";
 import WorkflowEdit from "./components/organisms/WorkflowEdit";
+import WorkflowLoad from "./components/organisms/WorkflowLoad";
 import WorkflowsAnalyze from "./components/organisms/WorkflowsAnalyze";
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -142,8 +143,19 @@ class App extends React.Component {
               <WorkflowAdd  meetings={this.state.meetings}></WorkflowAdd>
               {/* <Add meetings={this.state.meetings}/> */}
             </Route>
+            <Route path="/load">
+              <WorkflowEdit 
+                editMeeting={this.state.editMeeting} 
+                meetings={this.state.meetings}
+                readOnly={true}
+              />
+            </Route>
             <Route path="/edit">
-            <WorkflowEdit editMeeting={this.state.editMeeting} meetings={this.state.meetings}></WorkflowEdit>
+              <WorkflowEdit 
+                editMeeting={this.state.editMeeting} 
+                meetings={this.state.meetings}
+                readOnly={false}
+              />
               {/* <Edit editMeeting={this.state.editMeeting} meetings={this.state.meetings}/> */}
             </Route>
             <Route path="/analyze">

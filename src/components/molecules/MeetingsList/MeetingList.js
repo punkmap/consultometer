@@ -3,7 +3,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
@@ -16,10 +15,8 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
-import axios from 'axios';
 import moment from 'moment';
 
-import store from '../../../store'
 import { setWorkflow, editMeeting } from '../../../actions';
 // function generate(element) {
 //   return [0, 1, 2].map(value =>
@@ -80,7 +77,7 @@ class MeetingList extends Component {
   }
   editMeeting(meeting) {
     console.log('value: ', meeting);
-    this.props.setWorkflow('editMeetings');
+    this.props.setWorkflow('editMeeting');
 
     this.props.editMeeting(meeting);
     this.nextPath('/edit');
@@ -89,7 +86,9 @@ class MeetingList extends Component {
     // } )
   }
   openMeeting(meeting){
-    console.log('openMeeting');
+    this.props.setWorkflow('loadMeeting');
+    this.props.editMeeting(meeting);
+    this.nextPath('/load');
   }
   searchChange(event) {
     console.log(event.target.value);
@@ -148,25 +147,6 @@ class MeetingList extends Component {
                 </ListItemSecondaryAction>
               </ListItem>
               })}
-                {/* {this.state.meetings.map((value, index) => {
-                  <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <FolderIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Single-line item"
-                    secondary={true ? 'Secondary text' : null}
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                 }
-                )} */}
               </List>
             </div>
           </Grid>
