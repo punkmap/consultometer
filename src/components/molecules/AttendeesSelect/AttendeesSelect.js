@@ -31,10 +31,10 @@ class AttendeesSelect extends Component {
           id="tags-standard"
           options={possibleAttendees.sort()}
           getOptionLabel={option => option.name}
-          value={this.state.attendees}
+          value={this.props.attendees}
           onChange={(event, attendees) => {
+            this.setState({attendees: attendees});
             this.props.updateAttendees(attendees);
-            this.setState({attendees});
           }}
           renderInput={params => (
             <TextField
