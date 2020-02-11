@@ -73,6 +73,10 @@ class WorkflowAdd extends Component {
   updateAttendees(attendees){
     this.setState({attendees});
   }
+
+  nextPath(path) {
+    this.props.history.push(path);
+  }
   cancel() {
     this.props.setWorkflow('mainPage');
     this.nextPath('/');
@@ -138,7 +142,7 @@ class WorkflowAdd extends Component {
     //   console.log('CouchDB response: ', response);
     // })
     this.props.setWorkflow('mainPage');
-    //this.nextPath('/');
+    this.nextPath('/');
   }
   render() {
     const { classes } = this.props;

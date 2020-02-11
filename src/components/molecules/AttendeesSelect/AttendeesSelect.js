@@ -18,7 +18,7 @@ class AttendeesSelect extends Component {
   constructor(props){
     super(props)
     this.state = {
-      attendees: [],
+      attendees: this.props.attendees,
     }
   } 
   render(){

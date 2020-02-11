@@ -37,6 +37,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       meetings: [],
+      searchMeetings: [],
       editMeeting: null
     }
 
@@ -51,7 +52,7 @@ class App extends React.Component {
     }))
     const meetingsWatch = watch(store.getState, 'meetings.meetings')
     store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
-        this.setState({meetings: newVal}, () => {
+        this.setState({meetings: newVal, searchMeetings: newVal}, () => {
           console.log('willMount this.state.meetings: ', this.state.meetings);
         });
     }))
@@ -92,6 +93,18 @@ class App extends React.Component {
 
     // })
   }
+  filterMeetings(event) {
+    console.log(event.target.value);
+    const searchString = event.target.value;
+    this.setState({
+      searchMeetings: this.state.meetings.filter(meeting => 
+        meeting.value.title.indexOf(searchString) > -1 || 
+        meeting.value.project.indexOf(searchString) > -1
+      )
+    });
+    
+
+  }
   render() {
     return (
       <Router>
@@ -107,16 +120,35 @@ class App extends React.Component {
           */}
           <Switch>
             <Route exact path="/">
-              <Home meetings={this.state.meetings}/>
+            <Grid container
+                direction="column"
+                justify="center"
+                alignItems="center"
+                style={{ minHeight: '100vh' }}>
+              <Grid item xs={12}>
+                {/* <Typography variant="h4" gutterBottom>
+                  Meetings
+                </Typography> */}
+                <MeetingsList meetings={this.state.searchMeetings} filterMeetings={this.filterMeetings.bind(this)}></MeetingsList>
+              </Grid>
+              <Grid item xs={12}>
+                <MeetingsAnalyze></MeetingsAnalyze>
+                <MeetingAdd></MeetingAdd>
+              </Grid>
+            </Grid>
+              {/* <Home meetings={this.state.meetings}/> */}
             </Route>
             <Route path="/add">
-              <Add meetings={this.state.meetings}/>
+              <WorkflowAdd  meetings={this.state.meetings}></WorkflowAdd>
+              {/* <Add meetings={this.state.meetings}/> */}
             </Route>
             <Route path="/edit">
-              <Edit editMeeting={this.state.editMeeting} meetings={this.state.meetings}/>
+            <WorkflowEdit editMeeting={this.state.editMeeting} meetings={this.state.meetings}></WorkflowEdit>
+              {/* <Edit editMeeting={this.state.editMeeting} meetings={this.state.meetings}/> */}
             </Route>
             <Route path="/analyze">
-              <Analyze />
+            <WorkflowsAnalyze></WorkflowsAnalyze>
+              {/* <Analyze /> */}
             </Route>
           </Switch>
         </div>

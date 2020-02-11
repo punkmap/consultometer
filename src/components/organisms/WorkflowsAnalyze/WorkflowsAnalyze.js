@@ -44,15 +44,15 @@ class WorkflowAdd extends Component {
     
   }
 
-  // nextPath(path) {
-  //   this.props.history.push(path);
-  // }
-  save() {
+  nextPath(path) {
+    this.props.history.push(path);
+  }
+  close() {
     // validate form
     // save meeting 
     //return to main
     this.props.setWorkflow('mainPage');
-    //this.nextPath('/');
+    this.nextPath('/');
   }
   render() {
     return (
@@ -66,7 +66,7 @@ class WorkflowAdd extends Component {
             Analysis page here
           </Typography>
           
-          <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
+          <Button variant="contained" color="primary" onClick={this.close.bind(this)}>
             close
           </Button>
         </Grid>
@@ -75,4 +75,4 @@ class WorkflowAdd extends Component {
   }
 }
 
-export default connect(null, { setWorkflow })(WorkflowAdd);
+export default withRouter(connect(null, { setWorkflow })(WorkflowAdd));

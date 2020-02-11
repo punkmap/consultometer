@@ -22,12 +22,12 @@ class MeetingAdd extends Component {
     }))
   }
 
-  // nextPath(path) {
-  //   this.props.history.push(path);
-  // }
+  nextPath(path) {
+    this.props.history.push(path);
+  }
   addMeeting() {
     this.props.setWorkflow('addMeeting');
-    //this.nextPath('/add');
+    this.nextPath('/add');
     // this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
     //   this.props.increment(this.state.clickCount);
     // } )
@@ -42,5 +42,4 @@ class MeetingAdd extends Component {
 }
 
 
-
-export default connect(null, { setWorkflow })(MeetingAdd);
+export default withRouter(connect(null, { setWorkflow })(MeetingAdd));

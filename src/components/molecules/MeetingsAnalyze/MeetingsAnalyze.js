@@ -23,12 +23,12 @@ class MeetingsAnalyze extends Component {
   }
 
 
-  // nextPath(path) {
-  //   this.props.history.push(path);
-  // }
+  nextPath(path) {
+    this.props.history.push(path);
+  }
   analyzeMeetings() {
     this.props.setWorkflow('analyzeMeetings');
-    //this.nextPath('/analyze');
+    this.nextPath('/analyze');
     // this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
     //   this.props.increment(this.state.clickCount);
     // } )
@@ -44,4 +44,4 @@ class MeetingsAnalyze extends Component {
 
 
 
-export default connect(null, { setWorkflow })(MeetingsAnalyze);
+export default withRouter(connect(null, { setWorkflow })(MeetingsAnalyze));

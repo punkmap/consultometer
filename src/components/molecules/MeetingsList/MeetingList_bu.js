@@ -10,10 +10,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TodayIcon from '@material-ui/icons/Today';
 import EditIcon from '@material-ui/icons/Edit';
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import SearchIcon from "@material-ui/icons/Search";
-
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import axios from 'axios';
@@ -32,12 +28,18 @@ class MeetingList extends Component {
   constructor(props){
     super(props)
     this.state = {
-      meetings: this.props.meetings,
+      meetings: [],
+      elements: ['one', 'two', 'three'],
     }
+  //  const addMeetingWatch = watch(store.getState, 'click.clickCount')
+  //   store.subscribe(addMeetingWatch((newVal, oldVal, objectPath) => {
+  //       const clickCount = store.getState().click.clickCount;
+  //       this.setState({
+  //           clickCount
+  //       })
+  //   }))
   }
   componentWillMount() {
-    console.log('this.state.meetings: ', this.state.meetings);
-    console.log('this.props.meetings: ', this.props.meetings);
     console.log('ML willMount');
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     // axios.get(url)
@@ -48,7 +50,7 @@ class MeetingList extends Component {
     // })
   }
   componentDidMount() {
-    console.log('ML didMount')
+    console.log('ML didMount');
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     // axios.get(url)
     // .then((response) => {
@@ -70,11 +72,6 @@ class MeetingList extends Component {
 
     // })
   }
-  componentWillReceiveProps(nextProps){
-    console.log('nextProps: ', nextProps)
-    this.setState({meetings: nextProps.meetings});
-  }
-
   nextPath(path) {
     this.props.history.push(path);
   }
@@ -91,17 +88,12 @@ class MeetingList extends Component {
   openMeeting(meeting){
     console.log('openMeeting');
   }
-  searchChange(event) {
-    console.log(event.target.value);
-    
-  }
   // generate(element) {
   //   return this.state.meetings.map((value, index) => {});
   // }
   render() {
     const { classes } = this.props;
-    console.log('this.props.meetings: ', this.props.meetings);
-    console.log('this.state.meetings: ', this.state.meetings);
+    console.log('this.props: ', this.props);
     return (
         // <div className={classes.root}>
         <div>
@@ -112,35 +104,20 @@ class MeetingList extends Component {
             <Typography variant="h6">
               Meetings
             </Typography>
-            <TextField
-              label="Search Project or Title"
-              onChange={this.props.filterMeetings}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <IconButton>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
             {/* <div className={classes.demo}> */}
             <div>
               <List dense={true}>
-              {this.state.meetings.map((value, index) => {
+              {this.props.meetings.map((value, index) => {
                 return <ListItem key={index} onClick={() => this.openMeeting(value)}>
                 <ListItemAvatar>
                   <Avatar>
                     <TodayIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <Grid item>
-                  <Typography variant="body2">Project: {value.value.project}</Typography>
-                  <Typography variant="body2">Title: {value.value.title}</Typography>
-                  <Typography variant="body2" color="textSecondary">{moment(value.value.dateTime).format("MM-DD-YY HH:mm")}</Typography>
-                </Grid>
-                
+                <ListItemText
+                  primary= {"Title: " + value.value.title}
+                  secondary={moment(value.value.dateTime).format("DD-MM-YY HH:mm")}
+                />
                 <ListItemSecondaryAction>
                   <IconButton edge="end" aria-label="delete" onClick={() => this.editMeeting(value)}>
                     <EditIcon />
