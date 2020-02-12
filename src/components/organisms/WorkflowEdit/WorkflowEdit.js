@@ -40,6 +40,8 @@ class WorkflowAdd extends Component {
       project: this.props.editMeeting.project,
       attendees: this.props.editMeeting.attendees,
       meetings: this.props.meetings,
+      readOnly: this.props.readOnly,
+      isEditing: this.props.isEditing
     }
     
   }
@@ -61,6 +63,9 @@ class WorkflowAdd extends Component {
   }
   updateAttendees(attendees){
     this.setState({attendees});
+  }
+  edit() {
+    this.setState({readOnly: !this.state.readOnly})
   }
   cancel() {
     this.props.setWorkflow('mainPage');
@@ -140,7 +145,11 @@ class WorkflowAdd extends Component {
     const { classes } = this.props;
     let editButton; 
     if (this.props.readOnly) {
-      editButton = <IconButton aria-label="delete" className={classes.margin}>
+      editButton = <IconButton 
+        aria-label="delete" 
+        className={classes.margin} 
+        onClick={this.edit.bind(this)}
+      >
         <EditIcon fontSize="small" />
       </IconButton>;
     }
@@ -157,24 +166,24 @@ class WorkflowAdd extends Component {
             <MeetingTitle 
               title={this.state.title} 
               updateTitle={this.updateTitle.bind(this)}
-              readOnly={this.props.readOnly}
+              readOnly={this.state.readOnly}
             />
             <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
               <MeetingDateTime 
                 dateTime={this.state.dateTime} 
                 updateDate={this.updateDate.bind(this)}
-                readOnly={this.props.readOnly}
+                readOnly={this.state.readOnly}
               />
             </MuiPickersUtilsProvider>
             <ProjectSelect 
               project={{name: this.state.project}} 
               updateProject={this.updateProject.bind(this)}
-              readOnly={this.props.readOnly}
+              readOnly={this.state.readOnly}
             />
             <AttendeesSelect 
               attendees={this.state.attendees} 
               updateAttendees={this.updateAttendees.bind(this)}
-              readOnly={this.props.readOnly}
+              readOnly={this.state.readOnly}
             />
             <Grid item xs={12} className={classes.buttonBar}>
               <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>

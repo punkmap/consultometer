@@ -12,6 +12,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FilterListIcon from '@material-ui/icons/FilterList';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import StopIcon from '@material-ui/icons/Stop';
 
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
@@ -30,6 +33,7 @@ class MeetingList extends Component {
     super(props)
     this.state = {
       meetings: this.props.meetings,
+      meeting: {},
     }
   }
   componentWillMount() {
@@ -90,6 +94,25 @@ class MeetingList extends Component {
     this.props.editMeeting(meeting);
     this.nextPath('/load');
   }
+  showTimeControls(meeting){
+    if (meeting.id === this.state.meeting.id){
+      meeting = {}
+    }
+    this.setState({meeting})
+  }
+  startMeeting(event, meeting){
+    console.log('start');
+    event.stopPropagation();
+    //event.preventDefault();
+  }
+  pauseMeeting(event, meeting){
+    console.log('pause');
+    event.stopPropagation();
+  }
+  stopMeeting(event, meeting){
+    console.log('stop');
+    event.stopPropagation();
+  }
   searchChange(event) {
     console.log(event.target.value);
     
@@ -99,8 +122,7 @@ class MeetingList extends Component {
   // }
   render() {
     const { classes } = this.props;
-    console.log('this.props.meetings: ', this.props.meetings);
-    console.log('this.state.meetings: ', this.state.meetings);
+    
     return (
         // <div className={classes.root}>
         <div>
@@ -128,7 +150,21 @@ class MeetingList extends Component {
             <div>
               <List dense={true}>
               {this.state.meetings.map((value, index) => {
-                return <ListItem key={index} onClick={() => this.openMeeting(value)}>
+                let timeControls;
+                if(this.state.meeting && this.state.meeting.id === value.id){
+                  timeControls = <Grid item >
+                    <IconButton onClick={(event) => this.startMeeting(event, value)}>
+                      <PlayArrowIcon fontSize="small"/>
+                    </IconButton>
+                    <IconButton onClick={(event) => this.pauseMeeting(event, value)}>
+                      <PauseIcon fontSize="small"/>
+                    </IconButton>
+                    <IconButton onClick={(event) => this.stopMeeting(event, value)}>
+                      <StopIcon fontSize="small"/>
+                    </IconButton>
+                  </Grid>
+                }  
+                return <ListItem key={index} onClick={() => this.showTimeControls(value)}>
                 <ListItemAvatar>
                   <Avatar>
                     <TodayIcon />
@@ -138,11 +174,16 @@ class MeetingList extends Component {
                   <Typography variant="body2">Project: {value.value.project}</Typography>
                   <Typography variant="body2">Title: {value.value.title}</Typography>
                   <Typography variant="body2" color="textSecondary">{moment(value.value.dateTime).format("MM-DD-YY HH:mm")}</Typography>
+                  {timeControls}
                 </Grid>
                 
                 <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="delete" onClick={() => this.editMeeting(value)}>
-                    <EditIcon />
+                  <IconButton 
+                    edge="end" 
+                    aria-label="delete" 
+                    onClick={() => this.editMeeting(value)}
+                  >
+                    <EditIcon fontSize="small"/>
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
