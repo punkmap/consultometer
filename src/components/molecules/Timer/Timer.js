@@ -18,7 +18,8 @@ class Timer extends Component {
     this.state = {
       time: 0,
       isOn: false,
-      start: 0
+      start: 0,
+      hourlyRate: 0
     }
     this.startTimer = this.startTimer.bind(this)
     this.stopTimer = this.stopTimer.bind(this)
@@ -26,7 +27,11 @@ class Timer extends Component {
     const activeMeetingWatch = watch(store.getState, 'activeMeeting.meeting')
     store.subscribe(activeMeetingWatch((newVal, oldVal, objectPath) => {
         // const clickCount = store.getState().click.clickCount;
-        console.log('activeMeeting newVal: ', newVal);
+        const hourlyRate = newVal.value.attendees.reduce(function(prev, cur) {
+          return prev + cur.rate;
+        }, 0);
+        console.log('hourlyRate: ', hourlyRate);
+        this.setState({hourlyRate: hourlyRate})
     }))
     const timerWatch = watch(store.getState, 'timerAction')
     store.subscribe(timerWatch((newVal, oldVal, objectPath) => {
@@ -105,14 +110,15 @@ class Timer extends Component {
       seconds = seconds % 60;
       return hours+":"+minutes+":"+seconds;
   }
+  msToCost( ms ) {
+    return (this.state.hourlyRate * ms/3600000).toFixed(2);
+  }
   render() {
-    
     const { classes } = this.props;
-
     return(
       <div>
-        <h3 className={classes.timer}>timer: {this.msToHMS(this.state.time)}</h3>
-        <h3 className={classes.cost}>cost: {this.msToHMS(this.state.time)}</h3>
+        <h3 className={classes.timer}>{this.msToHMS(this.state.time)}</h3>
+        <h3 className={classes.cost}>${this.msToCost(this.state.time)}</h3>
       </div>
     )
   }
