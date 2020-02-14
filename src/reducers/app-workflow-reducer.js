@@ -3,7 +3,7 @@
 
 import { APP_WORKFLOW } from '../actions/types';
 const initialState = {
-    clickCount: 0
+    workflow: ''
 }
 export default (state = initialState, action) => {
     switch(action.type) {

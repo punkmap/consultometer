@@ -11,9 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import MeetingsList from './components/molecules/MeetingsList'
 import MeetingAdd from './components/molecules/MeetingAdd';
 import MeetingsAnalyze from './components/molecules/MeetingsAnalyze';
+import Timer from './components/molecules/Timer';
 import WorkflowAdd from "./components/organisms/WorkflowAdd";
 import WorkflowEdit from "./components/organisms/WorkflowEdit";
-import WorkflowLoad from "./components/organisms/WorkflowLoad";
 import WorkflowsAnalyze from "./components/organisms/WorkflowsAnalyze";
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -126,6 +126,9 @@ class App extends React.Component {
                 justify="center"
                 alignItems="center"
                 style={{ minHeight: '100vh' }}>
+              <Grid item xs={12}>
+                <Timer></Timer>  
+              </Grid>
               <Grid item xs={12}>
                 {/* <Typography variant="h4" gutterBottom>
                   Meetings

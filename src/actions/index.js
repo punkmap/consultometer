@@ -1,4 +1,4 @@
-import { INCREMENT, APP_WORKFLOW, EDIT_MEETING, ALL_MEETINGS } from '../actions/types';
+import { INCREMENT, APP_WORKFLOW, ACTIVE_MEETING, EDIT_MEETING, ALL_MEETINGS, TIMER_ACTION } from '../actions/types';
 
 
 export const increment = (count) => {
@@ -17,6 +17,15 @@ export const setWorkflow = (workflow) => {
         });
     };
 };
+export const activeMeeting = (meeting) => {
+    console.log('activeMeeting: ', meeting);
+    return dispatch => {
+        dispatch({
+            type: ACTIVE_MEETING,
+            payload: meeting,
+        });
+    };
+};
 export const editMeeting = (meeting) => {
     return dispatch => {
         dispatch({
@@ -31,6 +40,42 @@ export const allMeetings = (meetings) => {
         dispatch({
             type: ALL_MEETINGS,
             payload: meetings,
+        });
+    };
+};
+export const startMeeting = () => {
+    console.log('ACTION startMeeting: ');
+    return dispatch => {
+        dispatch({
+            type: TIMER_ACTION,
+            payload: 'start',
+        });
+    };
+};
+export const pauseMeeting = () => {
+    console.log('ACTION pauseMeeting: ');
+    return dispatch => {
+        dispatch({
+            type: TIMER_ACTION,
+            payload: 'pause',
+        });
+    };
+};
+export const stopMeeting = () => {
+    console.log('ACTION stopMeeting: ');
+    return dispatch => {
+        dispatch({
+            type: TIMER_ACTION,
+            payload: 'stop',
+        });
+    };
+};
+export const refreshMeeting = () => {
+    console.log('ACTION refreshMeeting: ');
+    return dispatch => {
+        dispatch({
+            type: TIMER_ACTION,
+            payload: 'refresh',
         });
     };
 };

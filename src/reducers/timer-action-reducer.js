@@ -1,17 +1,16 @@
 // default reducer
 // Note: You can remove this reducer and create your own reducer
 
-import { EDIT_MEETING } from '../actions/types';
+import { TIMER_ACTION } from '../actions/types';
 const initialState = {
-    meeting: {}
+    timerAction: ''
 }
 export default (state = initialState, action) => {
-    console.log('editMeeting action: ', action);
     switch(action.type) {
-        case EDIT_MEETING:
+        case TIMER_ACTION:
             return {
                 ...state,
-                meeting: action.payload
+                timerAction: action.payload
             };
         default:
             return state;

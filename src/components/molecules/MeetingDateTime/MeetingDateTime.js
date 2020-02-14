@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { DateTimePicker } from "@material-ui/pickers";
 import FormControl from '@material-ui/core/FormControl';
-import { withStyles } from '@material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   root: {

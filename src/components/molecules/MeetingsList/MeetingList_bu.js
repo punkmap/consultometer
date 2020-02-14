@@ -16,7 +16,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import store from '../../../store'
-import { setWorkflow, editMeeting } from '../../../actions';
+import { setWorkflow, activeMeeting } from '../../../actions';
 // function generate(element) {
 //   return [0, 1, 2].map(value =>
 //     React.cloneElement(element, {
@@ -155,4 +155,4 @@ class MeetingList extends Component {
 
 
 
-export default withRouter(connect(null, { setWorkflow, editMeeting })(MeetingList));
+export default withRouter(connect(null, { setWorkflow, activeMeeting })(MeetingList));

@@ -14,20 +14,19 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import StopIcon from '@material-ui/icons/Stop';
+import { withStyles } from '@material-ui/core/styles';
 
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import moment from 'moment';
 
-import { setWorkflow, editMeeting } from '../../../actions';
-// function generate(element) {
-//   return [0, 1, 2].map(value =>
-//     React.cloneElement(element, {
-//       key: value,
-//     }),
-//   );
-// }
+import { setWorkflow, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting } from '../../../actions';
+const styles = theme => ({
+  
+});
+
 class MeetingList extends Component {
   constructor(props){
     super(props)
@@ -92,26 +91,37 @@ class MeetingList extends Component {
   openMeeting(meeting){
     this.props.setWorkflow('loadMeeting');
     this.props.editMeeting(meeting);
+    this.props.activeMeeting(meeting);
     this.nextPath('/load');
   }
   showTimeControls(meeting){
     if (meeting.id === this.state.meeting.id){
       meeting = {}
+    } else {
+      this.props.activeMeeting(meeting);
     }
     this.setState({meeting})
   }
   startMeeting(event, meeting){
     console.log('start');
     event.stopPropagation();
+    this.props.startMeeting();
     //event.preventDefault();
   }
   pauseMeeting(event, meeting){
     console.log('pause');
     event.stopPropagation();
+    this.props.pauseMeeting();
   }
   stopMeeting(event, meeting){
     console.log('stop');
     event.stopPropagation();
+    this.props.stopMeeting();
+  }
+  refreshMeeting(event, meeting){
+    console.log('refresh');
+    event.stopPropagation();
+    this.props.refreshMeeting();
   }
   searchChange(event) {
     console.log(event.target.value);
@@ -162,6 +172,9 @@ class MeetingList extends Component {
                     <IconButton onClick={(event) => this.stopMeeting(event, value)}>
                       <StopIcon fontSize="small"/>
                     </IconButton>
+                    <IconButton onClick={(event) => this.refreshMeeting(event, value)}>
+                      <RefreshIcon fontSize="small"/>
+                    </IconButton>
                   </Grid>
                 }  
                 return <ListItem key={index} onClick={() => this.showTimeControls(value)}>
@@ -197,6 +210,5 @@ class MeetingList extends Component {
   }
 }
 
+export default withStyles(styles)(withRouter(connect(null, { setWorkflow, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting })(MeetingList)));
 
-
-export default withRouter(connect(null, { setWorkflow, editMeeting })(MeetingList));

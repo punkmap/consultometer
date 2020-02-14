@@ -3,7 +3,7 @@
 
 import { ALL_MEETINGS } from '../actions/types';
 const initialState = {
-    clickCount: 0
+    meetings: []
 }
 export default (state = initialState, action) => {
     switch(action.type) {
