@@ -100,9 +100,8 @@ class MeetingList extends Component {
   showTimeControls(meeting){
     if (meeting.id === this.state.meeting.id){
       meeting = {}
-    } else {
-      this.props.activeMeeting(meeting);
-    }
+    } 
+    this.props.activeMeeting(meeting);
     this.setState({meeting})
   }
   startMeeting(event, meeting){

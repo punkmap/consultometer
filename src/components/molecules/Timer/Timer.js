@@ -7,6 +7,7 @@ import green from '@material-ui/core/colors/green';
 
 import store from '../../../store';
 import { timerStops } from '../../../actions';
+import { isCompositeComponentWithType } from 'react-dom/test-utils';
 
 const styles = theme => ({
   timer: {
@@ -20,6 +21,7 @@ class Timer extends Component {
   constructor(props){
     super(props)
     this.state = {
+      showTimer: false,
       time: 0,
       timerStarted: false,
       isOn: false,
@@ -31,11 +33,9 @@ class Timer extends Component {
     this.resetTimer = this.resetTimer.bind(this)
     const activeMeetingWatch = watch(store.getState, 'activeMeeting.meeting')
     store.subscribe(activeMeetingWatch((newVal, oldVal, objectPath) => {
-        // const clickCount = store.getState().click.clickCount;
-        const hourlyRate = newVal.value.attendees.reduce(function(prev, cur) {
-          return prev + cur.rate;
-        }, 0);
-        this.setState({hourlyRate: hourlyRate})
+        console.log('activeMeetingWatch meeting: ', newVal);
+        //if object is not empty then show the timer else hide the timer;
+        Object.keys(newVal).length ? this.showTimer(newVal) : this.hideTimer();
     }))
     const timerWatch = watch(store.getState, 'timerAction')
     store.subscribe(timerWatch((newVal, oldVal, objectPath) => {
@@ -63,8 +63,18 @@ class Timer extends Component {
     //   this.test();
     // }))
   }
-  loadTimer(){
-    
+  showTimer(meeting){
+    const hourlyRate = meeting.value.attendees.reduce(function(prev, cur) {
+      return prev + cur.rate;
+    }, 0);
+    this.setState({
+      showTimer: true, 
+      time: meeting.value.durationMS ? meeting.value.durationMS : 0,
+      hourlyRate: hourlyRate, 
+    })
+  }
+  hideTimer(){
+    this.setState({showTimer: false})
   }
   startTimer() {
     if (!this.state.isOn) {
@@ -131,10 +141,13 @@ class Timer extends Component {
   render() {
     const { classes } = this.props;
     return(
+      this.state.showTimer ? 
       <div>
         <h3 className={classes.timer}>{this.msToHMS(this.state.time)}</h3>
         <h3 className={classes.cost}>${this.msToCost(this.state.time)}</h3>
-      </div>
+      </div> : 
+      null 
+      
     )
   }
 }
