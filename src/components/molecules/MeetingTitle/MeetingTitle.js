@@ -43,7 +43,6 @@ class MeetingsTitle extends Component {
 export default withStyles(styles)(MeetingsTitle)
 // function BasicTextFields(props) {
 //   const classes = useStyles();
-//   console.log('props.title: ', props.title);
 //   return (
 //       <TextField id="standard-basic" label="Meeting Title" value={props.title} onChange={(event) => {
 //         props.updateTitle(event.target.value);

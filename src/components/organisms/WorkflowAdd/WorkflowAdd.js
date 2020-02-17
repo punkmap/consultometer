@@ -38,11 +38,9 @@ class WorkflowAdd extends Component {
       project: {name: ''},
       attendees: []
     }
-    console.log('woprkflowadd meetings: ', this.state.meetings)
     // const meetingsWatch = watch(store.getState, 'meetings.meetings')
     // store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
     //   this.setState({meetings: newVal}, () => {
-    //     console.log('ADD this.state.meetings: ', this.state.meetings);
     //   });
     // }))
   }
@@ -84,8 +82,6 @@ class WorkflowAdd extends Component {
       attendees: this.state.attendees,
     };
 
-    console.log("DATA: ", data)
-
     const headers = {
       'Content-Type': 'application/json',
       //'Authorization': 'JWT fefege...'TODO: JWT authentication
@@ -95,7 +91,6 @@ class WorkflowAdd extends Component {
         headers: headers
       })
       .then((response) => {
-        console.log('response: ', response);
         const newMeeting = {
           id: response.data.id, 
           key: response.data.id,
@@ -109,9 +104,7 @@ class WorkflowAdd extends Component {
             attendees: this.state.attendees,
           }
         }
-        console.log('this.state.meetings: ', this.state.meetings);
         const newMeetings = [...this.state.meetings, newMeeting];
-        console.log("newMeetings: ", newMeetings);
         this.props.allMeetings(newMeetings);
         // dispatch({
         //   type: FOUND_USER,
@@ -120,7 +113,6 @@ class WorkflowAdd extends Component {
 
       })
       .catch((error) => {
-        console.log('error: ', error);
         // dispatch({
         //   type: ERROR_FINDING_USER
         // })
@@ -130,7 +122,6 @@ class WorkflowAdd extends Component {
     // const url = 'http://api:api@64.225.122.227:5984/consultometer'
     // axios.get(url)
     // .then((response) => {
-    //   console.log('CouchDB response: ', response);
     // })
     this.props.setWorkflow('mainPage');
     this.nextPath('/');

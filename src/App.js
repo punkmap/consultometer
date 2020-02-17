@@ -49,17 +49,14 @@ class App extends React.Component {
         this.setState({
             editMeeting,
         })
-        console.log('editMeetingWatch newVal: ', newVal);
     }))
     const meetingsWatch = watch(store.getState, 'meetings.meetings')
     store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
         this.setState({meetings: newVal, searchMeetings: newVal}, () => {
-          console.log('willMount this.state.meetings: ', this.state.meetings);
         });
     }))
   }
   componentWillMount() {
-    console.log('willMount');
 
     const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     axios.get(url)
@@ -71,31 +68,26 @@ class App extends React.Component {
     })
   }
   componentDidMount() {
-    console.log('didMount');
 
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     // axios.get(url)
     // .then((response) => {
     //   this.setState({meetings: response.data.rows}, () => {
-    //     console.log('this.state.meetings: ', this.state.meetings);
     //   });
 
     // })
   }
   componentDidUpdate() {
-    console.log('didUpdate');
     
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     // axios.get(url)
     // .then((response) => {
     //   this.setState({meetings: response.data.rows}, () => {
-    //     console.log('this.state.meetings: ', this.state.meetings);
     //   });
 
     // })
   }
   filterMeetings(event) {
-    console.log(event.target.value);
     const searchString = event.target.value;
     this.setState({
       searchMeetings: this.state.meetings.filter(meeting => 
@@ -259,8 +251,6 @@ function Add(props) {
   );
 }
 function Edit(props) {
-  console.log('props.meetings: ', props.meeting);
-  console.log('props: ', props);
   return (
     <div>
       <WorkflowEdit editMeeting={props.editMeeting} meetings={props.meetings}></WorkflowEdit>

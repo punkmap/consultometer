@@ -6,7 +6,6 @@ const initialState = {
     meeting: {}
 }
 export default (state = initialState, action) => {
-    console.log('editMeeting action: ', action);
     switch(action.type) {
         case EDIT_MEETING:
             return {

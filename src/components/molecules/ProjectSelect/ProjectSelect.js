@@ -33,7 +33,6 @@ class ProjectSelect extends Component {
           value={this.state.project}
           autoSelect
           onChange={(event, project) => {
-            console.log('project: ', project);
             this.props.updateProject(project);
             this.setState({project});
           }}

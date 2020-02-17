@@ -6,7 +6,8 @@ import appWorkflowReducer from './app-workflow-reducer';
 import editMeetingReducer from './edit-meeting-reducer';
 import activeMeetingReducer from './active-meeting-reducer';
 import meetingsReducer from './all-meetings-reducer';
-import timerAction from './timer-action-reducer';
+import timerActionReducer from './timer-action-reducer';
+import timerStopsReducer from './timer-stops-reducer';
 
 const rootReducers = combineReducers({
     // add reducer files references here
@@ -15,7 +16,9 @@ const rootReducers = combineReducers({
     activeMeeting: activeMeetingReducer,
     editMeeting: editMeetingReducer,
     meetings: meetingsReducer,
-    timerAction: timerAction,
+    timerAction: timerActionReducer,
+    timerStops: timerStopsReducer,
+    //timerStops: timerStopsReducer,
 });
 
 export default rootReducers;

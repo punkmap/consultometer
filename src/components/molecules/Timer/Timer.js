@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import watch from 'redux-watch';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import store from '../../../store';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
+
+import store from '../../../store';
+import { timerStops } from '../../../actions';
+
 const styles = theme => ({
   timer: {
     color: blue[700],
@@ -17,6 +21,7 @@ class Timer extends Component {
     super(props)
     this.state = {
       time: 0,
+      timerStarted: false,
       isOn: false,
       start: 0,
       hourlyRate: 0
@@ -30,7 +35,6 @@ class Timer extends Component {
         const hourlyRate = newVal.value.attendees.reduce(function(prev, cur) {
           return prev + cur.rate;
         }, 0);
-        console.log('hourlyRate: ', hourlyRate);
         this.setState({hourlyRate: hourlyRate})
     }))
     const timerWatch = watch(store.getState, 'timerAction')
@@ -56,16 +60,16 @@ class Timer extends Component {
   componentDidMount() {
     // const startMeetingWatch = watch(store.getState, 'timerAction.startMeeting')
     // store.subscribe(startMeetingWatch((newVal, oldVal, objectPath) => {
-    //   console.log('SUBSCRIBE start');
     //   this.test();
     // }))
   }
-  test() {
-    console.log('TEST');
+  loadTimer(){
+    
   }
   startTimer() {
     if (!this.state.isOn) {
       this.setState({
+        timerStarted: true,
         isOn: true,
         time: this.state.time,
         start: Date.now() - this.state.time
@@ -76,8 +80,16 @@ class Timer extends Component {
     }
   }
   stopTimer() {
-    this.setState({isOn: false})
+    this.setState({
+      timerStarted: false,
+      isOn: false,
+    })
     clearInterval(this.timer);
+    this.props.timerStops({
+      durationMS: this.state.time,
+      durationHMS: this.msToHMS(this.state.time),
+      cost: Number(this.msToCost(this.state.time)),
+    })
     //TODO ask if they want to stop the meeting if they do they
   }
   pauseTimer() {
@@ -85,18 +97,21 @@ class Timer extends Component {
     //if it is clicked without having first clicked start.
     //clicking pause should not ever start the clock unless 
     //the start button has been previously clicked
-    if (this.state.isOn === true) {
+    if (this.state.isOn) {
       clearInterval(this.timer);
       this.setState({isOn: false})
-    } else {
+    } else if (this.state.timerStarted){
       this.startTimer();
     }
   }
   resetTimer() {
-    console.log("resetTimer");
     //TODO ask if they want to reset timer
     clearInterval(this.timer);
-    this.setState({time: 0, isOn: false})
+    this.setState({
+      timerStarted: false,
+      time: 0, 
+      isOn: false
+    })
   }
    msToHMS( ms ) {
       // 1- Convert to seconds:
@@ -124,4 +139,4 @@ class Timer extends Component {
   }
 }
 
-export default withStyles(styles)(Timer);
+export default withStyles(styles)(connect(null, { timerStops })(Timer));

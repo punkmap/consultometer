@@ -11,6 +11,7 @@ import MomentUtils from '@date-io/moment';
 
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
+import { updateMeeting } from '../../../util'
 import axios from 'axios';
 
 
@@ -55,7 +56,6 @@ class WorkflowAdd extends Component {
     this.setState({title});
   }
   updateDate(dateTime){
-    console.log('dateTime: ', dateTime);
     this.setState({dateTime});
   }
   updateProject(project){
@@ -85,18 +85,8 @@ class WorkflowAdd extends Component {
       attendees: this.state.attendees,
     };
 
-    console.log("MEETING: ", meeting);
-
-    const headers = {
-      'Content-Type': 'application/json',
-      //'Authorization': 'JWT fefege...'TODO: JWT authentication
-    }
-    
-    axios.put('http://api:api@64.225.122.227:5984/consultometer/'+this.state._id, meeting, {
-        headers: headers
-      })
-      .then((response) => {
-        console.log('response: ', response);
+    updateMeeting(meeting)
+    .then(response => {
         const updatedMeeting = {
           id: response.data.id, 
           key: response.data.id,
@@ -110,35 +100,63 @@ class WorkflowAdd extends Component {
             attendees: this.state.attendees,
           }
         }
-        console.log('this.state.meetings: ', this.state.meetings);
         const meetings = this.state.meetings.filter(function( obj ) {
           return obj.id !== response.data.id;
         });
         meetings.push(updatedMeeting);
-        console.log('MEETINGS: ', meetings);
         this.props.allMeetings(meetings);
         // const newMeetings = [...this.state.meetings, newMeeting];
         // console.log("newMeetings: ", newMeetings);
         // this.props.allMeetings(newMeetings);
+    })
+    .catch(error => {
+      console.error('WorkflowEdit updateMeeting ERROR: ', error);
+    });
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   //'Authorization': 'JWT fefege...'TODO: JWT authentication
+    // }
+    
+    // axios.put('http://api:api@64.225.122.227:5984/consultometer/'+meeting._id, meeting, {
+    //     headers: headers
+    //   })
+    //   .then((response) => {
+    //     const updatedMeeting = {
+    //       id: response.data.id, 
+    //       key: response.data.id,
+    //       value: {
+    //         _id: response.data.id, 
+    //         _rev: response.data.rev,
+    //         type: 'meeting',
+    //         title: this.state.title,
+    //         dateTime: this.state.dateTime,
+    //         project: this.state.project.name,
+    //         attendees: this.state.attendees,
+    //       }
+    //     }
+    //     const meetings = this.state.meetings.filter(function( obj ) {
+    //       return obj.id !== response.data.id;
+    //     });
+    //     meetings.push(updatedMeeting);
+    //     this.props.allMeetings(meetings);
+    //     // const newMeetings = [...this.state.meetings, newMeeting];
+    //     // this.props.allMeetings(newMeetings);
         
-      })
-      .catch((error) => {
-        console.log('error: ', error);
+    //   })
+    //   .catch((error) => {
         
-      })
+    //   })
+    
     this.props.setWorkflow('mainPage');
     this.nextPath('/');
   }
   componentDidMount() {
-    console.log('WorkflowEdit attendees: ', this.state.attendees);
-    // console.log('WorkflowEdit didMount: ', this.props.editMeeting);
     // this.setState({
     //   title: this.props.editMeeting.title,
     //   dateTime: new Date(this.props.editMeeting.dateTime),
     //   project: this.props.editMeeting.project,
     //   attendees: this.props.editMeeting.attendees,
     // }, () => {
-    //   console.log("this.state: ", this.state);
     // })
   }
   render() {

@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from "react-router-dom";
+import watch from 'redux-watch';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -18,13 +21,16 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import StopIcon from '@material-ui/icons/Stop';
 import { withStyles } from '@material-ui/core/styles';
 
-import { connect } from 'react-redux';
-import { withRouter } from "react-router-dom";
 import moment from 'moment';
 
-import { setWorkflow, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting } from '../../../actions';
+import store from '../../../store';
+import { updateMeeting } from '../../../util'
+
+import { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops } from '../../../actions';
 const styles = theme => ({
-  
+  searchbar: {
+    width: '100%'
+  }
 });
 
 class MeetingList extends Component {
@@ -34,32 +40,31 @@ class MeetingList extends Component {
       meetings: this.props.meetings,
       meeting: {},
     }
+    const timerStopsWatch = watch(store.getState, 'timerStops')
+    store.subscribe(timerStopsWatch((newVal, oldVal, objectPath) => {
+        // const clickCount = store.getState().click.clickCount;
+        console.log('endMeetingWatch: NEWVAL', newVal)
+        this.timerStops(newVal);
+    }))
   }
   componentWillMount() {
-    console.log('this.state.meetings: ', this.state.meetings);
-    console.log('this.props.meetings: ', this.props.meetings);
-    console.log('ML willMount');
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     // axios.get(url)
     // .then((response) => {
     //   this.setState({meetings: response.data.rows}, () => {
-    //     console.log('Meetings List: ', this.state.meetings);
     //   });
     // })
   }
   componentDidMount() {
-    console.log('ML didMount')
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     // axios.get(url)
     // .then((response) => {
     //   this.setState({meetings: response.data.rows}, () => {
-    //     console.log('Meetings List: ', this.state.meetings);
     //   });
 
     // })
   }
   componentDidUpdate() {
-    console.log('ML didUpdate');
     // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
     // axios.get(url)
     // .then((response) => {
@@ -71,7 +76,6 @@ class MeetingList extends Component {
     // })
   }
   componentWillReceiveProps(nextProps){
-    console.log('nextProps: ', nextProps)
     this.setState({meetings: nextProps.meetings});
   }
 
@@ -79,7 +83,6 @@ class MeetingList extends Component {
     this.props.history.push(path);
   }
   editMeeting(meeting) {
-    console.log('value: ', meeting);
     this.props.setWorkflow('editMeeting');
 
     this.props.editMeeting(meeting);
@@ -103,29 +106,90 @@ class MeetingList extends Component {
     this.setState({meeting})
   }
   startMeeting(event, meeting){
-    console.log('start');
     event.stopPropagation();
     this.props.startMeeting();
     //event.preventDefault();
   }
   pauseMeeting(event, meeting){
-    console.log('pause');
     event.stopPropagation();
     this.props.pauseMeeting();
   }
   stopMeeting(event, meeting){
-    console.log('stop');
+    
+    console.log('STOP meeting: ', meeting);
     event.stopPropagation();
     this.props.stopMeeting();
+    this.setState({dialogOpen: true});
+    // event.stopPropagation();
+    // meeting.length = 
+    // this.props.stopMeeting();
+    // updateMeeting(meeting.value)
+    // .then(response => {
+    //     const updatedMeeting = {
+    //       id: response.data.id, 
+    //       key: response.data.id,
+    //       value: {
+    //         _id: response.data.id, 
+    //         _rev: response.data.rev,
+    //         type: 'meeting',
+    //         title: meeting.value.title,
+    //         dateTime: meeting.value.dateTime,
+    //         project: meeting.value.project.name,
+    //         attendees: meeting.value.attendees,
+    //       }
+    //     }
+    //     const meetings = this.state.meetings.filter(function( obj ) {
+    //       return obj.id !== response.data.id;
+    //     });
+    //     console.log('meeting: ', meeting);
+    //     meetings.push(updatedMeeting);
+    //     this.props.allMeetings(meetings);
+    //     // const newMeetings = [...this.state.meetings, newMeeting];
+    //     // this.props.allMeetings(newMeetings);
+    // })
+    // .catch(error => {
+    // });
+
+  }
+  timerStops (val){
+    let meeting = {...this.state.meeting};
+    Object.keys(val.timerDetails).forEach((key, index) => {
+      console.log(key, val.timerDetails[key]);
+      meeting.value[key] = val.timerDetails[key];
+    })
+    console.log('meeting: ', meeting);
+    updateMeeting(meeting.value)
+    .then(response => {
+        const updatedMeeting = {
+          id: response.data.id, 
+          key: response.data.id,
+          value: {
+            _id: response.data.id, 
+            _rev: response.data.rev,
+            type: 'meeting',
+            title: meeting.value.title,
+            dateTime: meeting.value.dateTime,
+            project: meeting.value.project.name,
+            attendees: meeting.value.attendees,
+          }
+        }
+        const meetings = this.state.meetings.filter(function( obj ) {
+          return obj.id !== response.data.id;
+        });
+        console.log('meeting: ', meeting);
+        meetings.push(updatedMeeting);
+        this.props.allMeetings(meetings);
+        // const newMeetings = [...this.state.meetings, newMeeting];
+        // this.props.allMeetings(newMeetings);
+    })
+    .catch(error => {
+    });
   }
   refreshMeeting(event, meeting){
-    console.log('refresh');
     event.stopPropagation();
     this.props.refreshMeeting();
   }
   searchChange(event) {
-    console.log(event.target.value);
-    
   }
   // generate(element) {
   //   return this.state.meetings.map((value, index) => {});
@@ -138,14 +202,14 @@ class MeetingList extends Component {
         <div>
           
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item >
             {/* <Typography variant="h6" className={classes.title}> */}
             <Typography variant="h6">
               Meetings
             </Typography>
-            <TextField
+            <TextField 
+              className={classes.searchbar}
               label="Filter by Project or Title"
-              onChange={this.props.filterMeetings}
               InputProps={{
                 endAdornment: (
                   <InputAdornment>
@@ -205,10 +269,11 @@ class MeetingList extends Component {
             </div>
           </Grid>
         </Grid>
+        
       </div>
     )
   }
 }
 
-export default withStyles(styles)(withRouter(connect(null, { setWorkflow, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting })(MeetingList)));
+export default withStyles(styles)(withRouter(connect(null, { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingList)));
 
