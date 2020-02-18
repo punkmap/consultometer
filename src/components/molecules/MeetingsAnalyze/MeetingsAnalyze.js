@@ -14,12 +14,12 @@ class MeetingsAnalyze extends Component {
       
     }
    const analyzeMeetingsWatch = watch(store.getState, 'click.clickCount')
-    store.subscribe(analyzeMeetingsWatch((newVal, oldVal, objectPath) => {
-        const clickCount = store.getState().click.clickCount;
-        this.setState({
-            clickCount
-        })
-    }))
+    // store.subscribe(analyzeMeetingsWatch((newVal, oldVal, objectPath) => {
+    //     const clickCount = store.getState().click.clickCount;
+    //     this.setState({
+    //         clickCount
+    //     })
+    // }))
   }
 
 

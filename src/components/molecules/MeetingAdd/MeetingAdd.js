@@ -13,13 +13,13 @@ class MeetingAdd extends Component {
     this.state = {
       
     }
-   const addMeetingWatch = watch(store.getState, 'click.clickCount')
-    store.subscribe(addMeetingWatch((newVal, oldVal, objectPath) => {
-        const clickCount = store.getState().click.clickCount;
-        this.setState({
-            clickCount
-        })
-    }))
+  //  const addMeetingWatch = watch(store.getState, 'click.clickCount')
+  //   store.subscribe(addMeetingWatch((newVal, oldVal, objectPath) => {
+  //       const clickCount = store.getState().click.clickCount;
+  //       this.setState({
+  //           clickCount
+  //       })
+  //   }))
   }
 
   nextPath(path) {

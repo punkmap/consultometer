@@ -40,46 +40,28 @@ class MeetingList extends Component {
       meetings: this.props.meetings,
       meeting: {},
     }
+    this._isMounted = false;
     const timerStopsWatch = watch(store.getState, 'timerStops')
     store.subscribe(timerStopsWatch((newVal, oldVal, objectPath) => {
-        // const clickCount = store.getState().click.clickCount;
-        if (newVal !== oldVal){
-          this.timerStops(newVal);
-        }
+        this.timerStop(newVal, oldVal);
     }))
   }
-  componentWillMount() {
-    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    // axios.get(url)
-    // .then((response) => {
-    //   this.setState({meetings: response.data.rows}, () => {
-    //   });
-    // })
-  }
   componentDidMount() {
-    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    // axios.get(url)
-    // .then((response) => {
-    //   this.setState({meetings: response.data.rows}, () => {
-    //   });
-
-    // })
+    this._isMounted = true; 
   }
-  componentDidUpdate() {
-    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    // axios.get(url)
-    // .then((response) => {
-    //   this.setState({meetings: response.data.rows}, () => {
-    //     this.state.meetings.forEach((meeting) => {
-    //     })
-    //   });
-
-    // })
+  componentWillUnmount() {
+    this._isMounted = false; 
   }
   componentWillReceiveProps(nextProps){
     this.setState({meetings: nextProps.meetings});
   }
-
+  timerStop(newVal, oldVal){
+    if (this._isMounted) {
+      if (newVal !== oldVal){
+        this.timerStops(newVal);
+      }
+    }
+  }
   nextPath(path) {
     this.props.history.push(path);
   }
@@ -150,17 +132,23 @@ class MeetingList extends Component {
     // });
 
   }
-  timerStops (val){
+  async timerStops (val){
     let meeting = {...this.state.meeting};
     console.log(meeting)
+    console.log('VAL', val);
+    console.log('VAL.timerDetails', val.timerDetails);
+    
     Object.keys(val.timerDetails).forEach((key, index) => {
-      console.log(key, val.timerDetails[key]);
+      console.log('KEY', key);
+      console.log('val.timerDetails[key]', val.timerDetails[key]);
+      console.log('meeting.value[key]: ', meeting.value[key]);
       meeting.value[key] = val.timerDetails[key];
     })
     console.log('meeting _REV: ', meeting.value._rev);
-    updateMeeting(meeting.value)
-    .then(response => {
-        const updatedMeeting = {
+    const response = await updateMeeting(meeting.value)
+    
+    if (this._isMounted){
+          const updatedMeeting = {
           id: response.data.id, 
           key: response.data.id,
           value: {
@@ -188,10 +176,42 @@ class MeetingList extends Component {
         this.props.allMeetings(meetings);
         this.setState({meetings, meeting: updatedMeeting});
         // const newMeetings = [...this.state.meetings, newMeeting];
-        // this.props.allMeetings(newMeetings);
-    })
-    .catch(error => {
-    });
+        // this.props.allMeetings(newMeetings);  
+    }
+    // updateMeeting(meeting.value)
+    // .then(response => {
+    //     const updatedMeeting = {
+    //       id: response.data.id, 
+    //       key: response.data.id,
+    //       value: {
+    //         _id: response.data.id, 
+    //         _rev: response.data.rev,
+    //         type: 'meeting',
+    //         title: meeting.value.title,
+    //         dateTime: meeting.value.dateTime,
+    //         project: meeting.value.project,
+    //         attendees: meeting.value.attendees,
+    //       }
+    //     }
+
+    //     console.log('updatedMeeting _REV: ', updatedMeeting.value._rev);
+
+    //     let meetings = [...this.state.meetings]
+    //     const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.id);
+    //     meetings[meetingIndex] = updatedMeeting;
+    //     // console.log('UPDATED MEETING: ', updatedMeeting);
+    //     // const meetings = this.state.meetings.filter(function( obj ) {
+    //     //   return obj.id !== response.data.id;
+    //     // });
+    //     // console.log('meeting: ', meeting);
+    //     // meetings.push(updatedMeeting);
+    //     this.props.allMeetings(meetings);
+    //     this.setState({meetings, meeting: updatedMeeting});
+    //     // const newMeetings = [...this.state.meetings, newMeeting];
+    //     // this.props.allMeetings(newMeetings);
+    // })
+    // .catch(error => {
+    // });
   }
   refreshMeeting(event, meeting){
     event.stopPropagation();

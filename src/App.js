@@ -37,6 +37,7 @@ class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
+      meetingsGotten: false,
       meetings: [],
       searchMeetings: [],
       editMeeting: null,
@@ -44,40 +45,50 @@ class App extends React.Component {
     this._isMounted = false;
     const editMeetingWatch = watch(store.getState, 'editMeeting.meeting.value')
     store.subscribe(editMeetingWatch((newVal, oldVal, objectPath) => {
-        // const clickCount = store.getState().click.clickCount;
-        const editMeeting = newVal;
-        this.setState({
-            editMeeting,
-        })
+        this.setEditMeeting(newVal);
     }))
     const meetingsWatch = watch(store.getState, 'meetings.meetings')
     store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
-        this.setState({meetings: newVal, searchMeetings: newVal}, () => {
-        });
+        this.setMeetings(newVal);
     }))
   }
   componentDidMount() {
     this._isMounted = true;
-    this.getMeetings();
+    if (!this.state.meetingsGotten){
+      this.setState({meetingsGotten: true}, () => {
+        this.getMeetings();
+      })
+    }
   }
   componentWillUnmount() {
     this._isMounted = false;
   }
-  componentDidUpdate() {
-    
-    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    // axios.get(url)
-    // .then((response) => {
-    //   this.setState({meetings: response.data.rows}, () => {
-    //   });
-
-    // })
+  setEditMeeting(editMeeting) {
+    if (this._isMounted) {
+      this.setState({
+          editMeeting,
+      })
+    }
+  }
+  setMeetings(meetings) {
+    if (this._isMounted) {
+      this.setState({
+          meetings,
+          searchMeetings: meetings,
+      })
+    }
   }
   async getMeetings () {
     const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
        
     const response = await axios.get(url)
-    if (this._isMounted) this.setState({meetings: response.data.rows});
+    console.log(response);
+    if (this._isMounted) this.setState({
+      meetings: response.data.rows,
+      searchMeetings: response.data.rows,
+    },() => {
+      console.log(this.state.meetings);
+    });
   }
   filterMeetings(event) {
     const searchString = event.target.value;

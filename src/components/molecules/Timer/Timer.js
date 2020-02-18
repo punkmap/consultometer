@@ -28,6 +28,7 @@ class Timer extends Component {
       start: 0,
       hourlyRate: 0
     }
+    this._isMounted = false;
     this.startTimer = this.startTimer.bind(this)
     this.stopTimer = this.stopTimer.bind(this)
     this.resetTimer = this.resetTimer.bind(this)
@@ -35,27 +36,24 @@ class Timer extends Component {
     store.subscribe(activeMeetingWatch((newVal, oldVal, objectPath) => {
         console.log('activeMeetingWatch meeting: ', newVal);
         //if object is not empty then show the timer else hide the timer;
-        Object.keys(newVal).length ? this.showTimer(newVal) : this.hideTimer();
+        this.toggleTimer(newVal)
     }))
     const timerWatch = watch(store.getState, 'timerAction')
     store.subscribe(timerWatch((newVal, oldVal, objectPath) => {
-        switch (newVal.timerAction) {
-          case 'start':
-            this.startTimer();
-            break;
-          case 'pause':
-            this.pauseTimer();
-            break;
-          case 'stop':
-            this.stopTimer();
-            break;
-          case 'refresh':
-            this.resetTimer();
-            break;  
-          default:
-            break;
-        }
+        this.parseTimerAction(newVal.timerAction);
     }))
+  }
+
+  componentDidMount() {
+    this._isMounted = true; 
+  }
+  componentWillUnmount() {
+    this._isMounted = false; 
+  }
+  toggleTimer(newVal) {
+    if (this._isMounted) {
+      Object.keys(newVal).length ? this.showTimer(newVal) : this.hideTimer();
+    }
   }
   showTimer(meeting){
     const hourlyRate = meeting.value.attendees.reduce(function(prev, cur) {
@@ -69,6 +67,27 @@ class Timer extends Component {
   }
   hideTimer(){
     this.setState({showTimer: false})
+  }
+  parseTimerAction(timerAction){
+    
+    if (this._isMounted) {
+      switch (timerAction) {
+        case 'start':
+          this.startTimer();
+          break;
+        case 'pause':
+          this.pauseTimer();
+          break;
+        case 'stop':
+          this.stopTimer();
+          break;
+        case 'refresh':
+          this.resetTimer();
+          break;  
+        default:
+          break;
+      }
+    }
   }
   startTimer() {
     if (!this.state.isOn) {

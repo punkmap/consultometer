@@ -38,12 +38,6 @@ class WorkflowAdd extends Component {
       project: {name: ''},
       attendees: []
     }
-
-    // const meetingsWatch = watch(store.getState, 'meetings.meetings')
-    // store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
-    //   this.setState({meetings: newVal}, () => {
-    //   });
-    // }))
   }
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
@@ -108,33 +102,15 @@ class WorkflowAdd extends Component {
             dateTime: this.state.dateTime,
             project: this.state.project.name,
             attendees: this.state.attendees,
+            durationMS: 0,
+            durationHMS: '0',
+            cost: 0,
           }
         }
         const newMeetings = [...this.state.meetings, newMeeting];
         this.props.allMeetings(newMeetings);  
       }
-      // axios.post('http://api:api@64.225.122.227:5984/consultometer', data, {
-      //   headers: headers
-      // })
-      // .then((response) => {
-      //   const newMeeting = {
-      //     id: response.data.id, 
-      //     key: response.data.id,
-      //     value: {
-      //       _id: response.data.id, 
-      //       _rev: response.data.rev,
-      //       type: 'meeting',
-      //       title: this.state.title,
-      //       dateTime: this.state.dateTime,
-      //       project: this.state.project.name,
-      //       attendees: this.state.attendees,
-      //     }
-      //   }
-      //   const newMeetings = [...this.state.meetings, newMeeting];
-      //   this.props.allMeetings(newMeetings);
-      // })
-      // .catch((error) => {
-      // })
+      
     this.props.setWorkflow('mainPage');
     this.nextPath('/');
   }
