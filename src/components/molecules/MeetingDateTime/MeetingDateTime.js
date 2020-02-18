@@ -19,11 +19,16 @@ class MeetingDateTime extends Component {
     this.state = {
       // dateTime: moment(props.dateTime).format("MMMM, Do, HH, hh, a"),
       dateTime: this.props.dateTime,
+      timesDateHasBeenChanged: 0,
     };
   }
   dateChange(event) {
-    this.props.updateDate(event._d);
-    this.setState({dateTime: event._d})
+    const timesDateHasBeenChanged = this.state.timesDateHasBeenChanged + 1;
+    this.setState({
+      dateTime: event._d,
+      timesDateHasBeenChanged,
+    })
+    this.props.updateDate(event._d, timesDateHasBeenChanged);
   }
   render() {
 
@@ -31,6 +36,7 @@ class MeetingDateTime extends Component {
     return (
       <div className={classes.root}>
         <DateTimePicker
+          error={this.state.timesDateHasBeenChanged < 1}
           className={classes.DTP}
           autoOk
           value={ new Date(this.state.dateTime) }

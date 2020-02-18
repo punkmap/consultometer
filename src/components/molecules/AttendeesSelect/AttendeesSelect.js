@@ -17,7 +17,9 @@ class AttendeesSelect extends Component {
       attendees: this.props.attendees,
     }
   } 
-
+  componentDidMount() {
+    console.log('ATTENDEES: ', this.props.attendees)
+  }
   render(){
     const { classes } = this.props;
     return (
@@ -29,11 +31,14 @@ class AttendeesSelect extends Component {
           value={this.props.attendees}
           disabled={this.props.readOnly}
           onChange={(event, attendees) => {
-            this.setState({attendees: attendees});
+            this.setState({attendees: attendees}, () => {
+              console.log('ATTENDEES: ', this.state.attendees);
+            });
             this.props.updateAttendees(attendees);
           }}
           renderInput={params => (
             <TextField
+              error={this.state.attendees === undefined}
               {...params}
               variant="standard"
               label="Attendees"

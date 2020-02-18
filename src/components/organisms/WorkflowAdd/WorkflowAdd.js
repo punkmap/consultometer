@@ -36,7 +36,9 @@ class WorkflowAdd extends Component {
       title: '',
       dateTime: '',
       project: {name: ''},
-      attendees: []
+      attendees: [],
+      timesDateTimeChanged: 0,
+      formValidated: false,
     }
   }
   handleChange = name => event => {
@@ -46,18 +48,52 @@ class WorkflowAdd extends Component {
   //   this.props.history.push(path);
   // }
   updateTitle(title){
-    this.setState({title});
+    this.setState({title}, () => {
+      this.formValidation()
+    });
   }
-  updateDate(dateTime){
-    this.setState({dateTime});
+  updateDate(dateTime, timesDateTimeChanged){
+    this.setState({dateTime, timesDateTimeChanged}, () => {
+      this.formValidation()
+    });
   }
   updateProject(project){
-    this.setState({project});
+    this.setState({project}, () => {
+      this.formValidation()
+    });
   }
   updateAttendees(attendees){
-    this.setState({attendees});
+    this.setState({attendees}, () => {
+      this.formValidation()
+    });
   }
-
+  formValidation() {
+      console.log('**************************************************')
+      console.log('TITLE: ', this.state.title);
+      console.log('TIMESCHANGED: ', this.state.timesDateTimeChanged);
+      console.log('PROJECT: ', this.state.project);
+      console.log('ATTENDEES: ', this.state.attendees);
+      const titleValid = this.state.title.length > 0;
+      console.log('TITLE VALID: ', titleValid);
+      const dateTimeValid = this.state.timesDateTimeChanged > 0;
+      console.log('TIMESCHANGED VALID: ', dateTimeValid);
+      const projectValid = this.state.project.name.length > 0;
+      console.log('PROJECT VALID: ', projectValid);
+      const attendeesValid = this.state.attendees.length > 0;
+      console.log('ATTENDEES VALID: ', attendeesValid);
+      console.log('ALL_VALID: ', titleValid && dateTimeValid && projectValid && attendeesValid)
+    if(titleValid && dateTimeValid && projectValid && attendeesValid) {
+      console.log('validate');
+      this.setState({formValidated: true}, () => {
+        console.log("WAS_VALIDATED: ",this.state.formValidated);
+      });
+    } else {
+      console.log("ISVALIDATED: ",this.state.formValidated);
+      if (this.state.formValidated === true){
+        this.setState({formValidated: false});
+      }
+    }
+  }
   nextPath(path) {
     this.props.history.push(path);
   }
@@ -117,7 +153,7 @@ class WorkflowAdd extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.root}>  
+      <form className={classes.root}>  
         <Grid 
           container
           direction="column"
@@ -135,13 +171,18 @@ class WorkflowAdd extends Component {
               <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
                 cancel
               </Button>
-              <Button variant="contained" color="primary" onClick={this.save.bind(this)}>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                disabled={!this.state.formValidated}
+                onClick={this.save.bind(this)}
+              >
                 save
               </Button>
             </Grid>
           </Grid>
         </Grid>
-      </div>
+      </form>
     )
   }
 }

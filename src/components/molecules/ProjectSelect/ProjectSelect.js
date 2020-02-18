@@ -39,6 +39,7 @@ class ProjectSelect extends Component {
           renderInput={params => (
             <TextField 
               {...params} 
+              error={!this.state.project.name.length}
               label="Project" 
               margin="dense" 
               fullWidth 
@@ -48,6 +49,7 @@ class ProjectSelect extends Component {
             />
           )}
         />
+
       </div>
     );
   }

@@ -4,11 +4,12 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   root: {
-    width: '100%'
+    width: '100%',
   },
   textField: {
-    width: '100%'
-  }
+    width: '100%',
+    color: 'rgba(0, 0, 0, 0.54)',
+  },
 });
 
 class MeetingsTitle extends Component {
@@ -22,7 +23,8 @@ class MeetingsTitle extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <TextField 
+        <TextField
+          error={!this.props.title.length}
           className={classes.textField} 
           id="standard-basic" 
           label="Meeting Title" 

@@ -30,7 +30,11 @@ import { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pau
 const styles = theme => ({
   searchbar: {
     width: '100%'
-  }
+  },
+  scroll: {
+    maxHeight: '30vh',
+    overflow: 'auto'
+  } 
 });
 
 class MeetingList extends Component {
@@ -214,7 +218,7 @@ class MeetingList extends Component {
               }}
             />
             {/* <div className={classes.demo}> */}
-            <div>
+            <div className={classes.scroll}> 
               <List dense={true}>
               {this.state.meetings.map((value, index) => {
                 let timeControls;
