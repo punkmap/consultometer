@@ -39,9 +39,9 @@ class App extends React.Component {
     this.state = {
       meetings: [],
       searchMeetings: [],
-      editMeeting: null
+      editMeeting: null,
     }
-
+    this._isMounted = false;
     const editMeetingWatch = watch(store.getState, 'editMeeting.meeting.value')
     store.subscribe(editMeetingWatch((newVal, oldVal, objectPath) => {
         // const clickCount = store.getState().click.clickCount;
@@ -56,26 +56,12 @@ class App extends React.Component {
         });
     }))
   }
-  componentWillMount() {
-
-    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    axios.get(url)
-    .then((response) => {
-      //TODO add the meetings to redux and then set the state to the action. 
-      this.props.allMeetings(response.data.rows);
-      
-
-    })
-  }
   componentDidMount() {
-
-    // const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-    // axios.get(url)
-    // .then((response) => {
-    //   this.setState({meetings: response.data.rows}, () => {
-    //   });
-
-    // })
+    this._isMounted = true;
+    this.getMeetings();
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
   }
   componentDidUpdate() {
     
@@ -86,6 +72,12 @@ class App extends React.Component {
     //   });
 
     // })
+  }
+  async getMeetings () {
+    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
+       
+    const response = await axios.get(url)
+    if (this._isMounted) this.setState({meetings: response.data.rows});
   }
   filterMeetings(event) {
     const searchString = event.target.value;
@@ -119,7 +111,7 @@ class App extends React.Component {
                 alignItems="center"
                 style={{ minHeight: '100vh' }}>
               <Grid item xs={12}>
-                <Timer></Timer>  
+                <Timer/>  
               </Grid>
               <Grid item xs={12}>
                 {/* <Typography variant="h4" gutterBottom>
@@ -142,14 +134,14 @@ class App extends React.Component {
               <WorkflowEdit 
                 editMeeting={this.state.editMeeting} 
                 meetings={this.state.meetings}
-                readOnly={true}
+                //readOnly={true}
               />
             </Route>
             <Route path="/edit">
               <WorkflowEdit 
                 editMeeting={this.state.editMeeting} 
                 meetings={this.state.meetings}
-                readOnly={false}
+                //readOnly={false}
               />
               {/* <Edit editMeeting={this.state.editMeeting} meetings={this.state.meetings}/> */}
             </Route>

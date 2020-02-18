@@ -42,9 +42,9 @@ class ProjectSelect extends Component {
               label="Project" 
               margin="dense" 
               fullWidth 
-              InputProps={{
-                readOnly: this.props.readOnly,
-              }}
+              // InputProps={{
+              //   readOnly: this.props.readOnly,
+              // }}
             />
           )}
         />

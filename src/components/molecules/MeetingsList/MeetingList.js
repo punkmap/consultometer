@@ -43,8 +43,9 @@ class MeetingList extends Component {
     const timerStopsWatch = watch(store.getState, 'timerStops')
     store.subscribe(timerStopsWatch((newVal, oldVal, objectPath) => {
         // const clickCount = store.getState().click.clickCount;
-        console.log('endMeetingWatch: NEWVAL', newVal)
-        this.timerStops(newVal);
+        if (newVal !== oldVal){
+          this.timerStops(newVal);
+        }
     }))
   }
   componentWillMount() {
@@ -118,7 +119,6 @@ class MeetingList extends Component {
     console.log('STOP meeting: ', meeting);
     event.stopPropagation();
     this.props.stopMeeting();
-    this.setState({dialogOpen: true});
     // event.stopPropagation();
     // meeting.length = 
     // this.props.stopMeeting();
@@ -152,11 +152,12 @@ class MeetingList extends Component {
   }
   timerStops (val){
     let meeting = {...this.state.meeting};
+    console.log(meeting)
     Object.keys(val.timerDetails).forEach((key, index) => {
       console.log(key, val.timerDetails[key]);
       meeting.value[key] = val.timerDetails[key];
     })
-    console.log('meeting: ', meeting);
+    console.log('meeting _REV: ', meeting.value._rev);
     updateMeeting(meeting.value)
     .then(response => {
         const updatedMeeting = {
@@ -168,16 +169,24 @@ class MeetingList extends Component {
             type: 'meeting',
             title: meeting.value.title,
             dateTime: meeting.value.dateTime,
-            project: meeting.value.project.name,
+            project: meeting.value.project,
             attendees: meeting.value.attendees,
           }
         }
-        const meetings = this.state.meetings.filter(function( obj ) {
-          return obj.id !== response.data.id;
-        });
-        console.log('meeting: ', meeting);
-        meetings.push(updatedMeeting);
+
+        console.log('updatedMeeting _REV: ', updatedMeeting.value._rev);
+
+        let meetings = [...this.state.meetings]
+        const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.id);
+        meetings[meetingIndex] = updatedMeeting;
+        // console.log('UPDATED MEETING: ', updatedMeeting);
+        // const meetings = this.state.meetings.filter(function( obj ) {
+        //   return obj.id !== response.data.id;
+        // });
+        // console.log('meeting: ', meeting);
+        // meetings.push(updatedMeeting);
         this.props.allMeetings(meetings);
+        this.setState({meetings, meeting: updatedMeeting});
         // const newMeetings = [...this.state.meetings, newMeeting];
         // this.props.allMeetings(newMeetings);
     })

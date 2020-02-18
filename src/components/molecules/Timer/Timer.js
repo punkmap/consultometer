@@ -57,12 +57,6 @@ class Timer extends Component {
         }
     }))
   }
-  componentDidMount() {
-    // const startMeetingWatch = watch(store.getState, 'timerAction.startMeeting')
-    // store.subscribe(startMeetingWatch((newVal, oldVal, objectPath) => {
-    //   this.test();
-    // }))
-  }
   showTimer(meeting){
     const hourlyRate = meeting.value.attendees.reduce(function(prev, cur) {
       return prev + cur.rate;

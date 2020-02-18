@@ -38,6 +38,7 @@ class WorkflowAdd extends Component {
       project: {name: ''},
       attendees: []
     }
+
     // const meetingsWatch = watch(store.getState, 'meetings.meetings')
     // store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
     //   this.setState({meetings: newVal}, () => {
@@ -70,7 +71,13 @@ class WorkflowAdd extends Component {
     this.props.setWorkflow('mainPage');
     this.nextPath('/');
   }
-  save() {
+  componentDidMount() {
+    this._isMounted = true
+  }
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+  async save() {
     // validate form
     // save meeting 
     //return to main
@@ -86,11 +93,10 @@ class WorkflowAdd extends Component {
       'Content-Type': 'application/json',
       //'Authorization': 'JWT fefege...'TODO: JWT authentication
     }
-    
-    axios.post('http://api:api@64.225.122.227:5984/consultometer', data, {
+      const response = await axios.post('http://api:api@64.225.122.227:5984/consultometer', data, {
         headers: headers
       })
-      .then((response) => {
+      if (this._isMounted) {
         const newMeeting = {
           id: response.data.id, 
           key: response.data.id,
@@ -105,24 +111,30 @@ class WorkflowAdd extends Component {
           }
         }
         const newMeetings = [...this.state.meetings, newMeeting];
-        this.props.allMeetings(newMeetings);
-        // dispatch({
-        //   type: FOUND_USER,
-        //   data: response.data[0]
-        // })
-
-      })
-      .catch((error) => {
-        // dispatch({
-        //   type: ERROR_FINDING_USER
-        // })
-      })
-    
-    // var headers = new Headers();
-    // const url = 'http://api:api@64.225.122.227:5984/consultometer'
-    // axios.get(url)
-    // .then((response) => {
-    // })
+        this.props.allMeetings(newMeetings);  
+      }
+      // axios.post('http://api:api@64.225.122.227:5984/consultometer', data, {
+      //   headers: headers
+      // })
+      // .then((response) => {
+      //   const newMeeting = {
+      //     id: response.data.id, 
+      //     key: response.data.id,
+      //     value: {
+      //       _id: response.data.id, 
+      //       _rev: response.data.rev,
+      //       type: 'meeting',
+      //       title: this.state.title,
+      //       dateTime: this.state.dateTime,
+      //       project: this.state.project.name,
+      //       attendees: this.state.attendees,
+      //     }
+      //   }
+      //   const newMeetings = [...this.state.meetings, newMeeting];
+      //   this.props.allMeetings(newMeetings);
+      // })
+      // .catch((error) => {
+      // })
     this.props.setWorkflow('mainPage');
     this.nextPath('/');
   }
