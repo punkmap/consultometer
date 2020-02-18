@@ -81,6 +81,7 @@ class MeetingList extends Component {
     this.nextPath('/load');
   }
   showTimeControls(meeting){
+    console.log('SHOWTIMECONTROLS MEETING: ', meeting);
     if (meeting.id === this.state.meeting.id){
       meeting = {}
     } 
@@ -98,53 +99,15 @@ class MeetingList extends Component {
   }
   stopMeeting(event, meeting){
     
-    console.log('STOP meeting: ', meeting);
     event.stopPropagation();
     this.props.stopMeeting();
-    // event.stopPropagation();
-    // meeting.length = 
-    // this.props.stopMeeting();
-    // updateMeeting(meeting.value)
-    // .then(response => {
-    //     const updatedMeeting = {
-    //       id: response.data.id, 
-    //       key: response.data.id,
-    //       value: {
-    //         _id: response.data.id, 
-    //         _rev: response.data.rev,
-    //         type: 'meeting',
-    //         title: meeting.value.title,
-    //         dateTime: meeting.value.dateTime,
-    //         project: meeting.value.project.name,
-    //         attendees: meeting.value.attendees,
-    //       }
-    //     }
-    //     const meetings = this.state.meetings.filter(function( obj ) {
-    //       return obj.id !== response.data.id;
-    //     });
-    //     console.log('meeting: ', meeting);
-    //     meetings.push(updatedMeeting);
-    //     this.props.allMeetings(meetings);
-    //     // const newMeetings = [...this.state.meetings, newMeeting];
-    //     // this.props.allMeetings(newMeetings);
-    // })
-    // .catch(error => {
-    // });
-
   }
   async timerStops (val){
     let meeting = {...this.state.meeting};
-    console.log(meeting)
-    console.log('VAL', val);
-    console.log('VAL.timerDetails', val.timerDetails);
     
     Object.keys(val.timerDetails).forEach((key, index) => {
-      console.log('KEY', key);
-      console.log('val.timerDetails[key]', val.timerDetails[key]);
-      console.log('meeting.value[key]: ', meeting.value[key]);
       meeting.value[key] = val.timerDetails[key];
     })
-    console.log('meeting _REV: ', meeting.value._rev);
     const response = await updateMeeting(meeting.value)
     
     if (this._isMounted){
@@ -157,6 +120,8 @@ class MeetingList extends Component {
             type: 'meeting',
             title: meeting.value.title,
             dateTime: meeting.value.dateTime,
+            durationMS: meeting.value.durationMS,
+            durationHMS: meeting.value.durationHMS,
             project: meeting.value.project,
             attendees: meeting.value.attendees,
           }

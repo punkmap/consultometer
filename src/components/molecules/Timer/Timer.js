@@ -56,6 +56,7 @@ class Timer extends Component {
     }
   }
   showTimer(meeting){
+    console.log('MEETING: ', meeting);
     const hourlyRate = meeting.value.attendees.reduce(function(prev, cur) {
       return prev + cur.rate;
     }, 0);
