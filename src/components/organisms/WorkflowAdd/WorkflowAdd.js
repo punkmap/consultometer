@@ -26,7 +26,8 @@ const styles = theme => ({
   },
   buttonBar: {
     margin: "1rem"
-  }
+  },
+  
 });
 class WorkflowAdd extends Component {
   constructor(props){
@@ -189,7 +190,12 @@ class WorkflowAdd extends Component {
             <ProjectSelect project={this.state.project} updateProject={this.updateProject.bind(this)}></ProjectSelect>
             <AttendeesSelect updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
             <Grid item xs={12} className={classes.buttonBar}>
-              <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
+              <Button 
+                className={classes.button}
+                variant="contained" 
+                color="primary" 
+                onClick={this.cancel.bind(this)}
+              >
                 cancel
               </Button>
               <Button 

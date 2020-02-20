@@ -14,17 +14,6 @@ import store from '../../../store';
 import Dialog from '../../atoms/Dialog'
 
 import { loginAction } from '../../../actions';
-// const useStyles = makeStyles(theme => ({
-//   root: {
-//     flexGrow: 1,
-//   },
-//   menuButton: {
-//     marginRight: theme.spacing(2),
-//   },
-//   title: {
-//     flexGrow: 1,
-//   },
-// }));
 const styles = theme => ({
   root: {
     flexGrow: 1,

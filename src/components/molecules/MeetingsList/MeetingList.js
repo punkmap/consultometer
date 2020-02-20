@@ -157,6 +157,7 @@ class MeetingList extends Component {
             <TextField 
               className={classes.searchbar}
               label="Filter by Project or Title"
+              onChange={this.props.filterMeetings}
               InputProps={{
                 endAdornment: (
                   <InputAdornment>

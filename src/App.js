@@ -8,6 +8,7 @@ import {
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 
 import AppBar from './components/molecules/AppBar'
 import MeetingsList from './components/molecules/MeetingsList'
@@ -25,15 +26,17 @@ import watch from 'redux-watch';
 
 
 import { editMeeting, allMeetings } from './actions';
+import { red } from "@material-ui/core/colors";
 
-// This site has 3 pages, all of which are rendered
-// dynamically in the browser (not server rendered).
-//
-// Although the page does not ever refresh, notice how
-// React Router keeps the URL up to date as you navigate
-// through the site. This preserves the browser history,
-// making sure things like the back button and bookmarks
-// work properly.
+const styles = theme => ({
+  button: {
+    padding: theme.spacing(2),
+  }, 
+  buttonBar: {
+    margin: "1rem"
+  },
+});
+
 function LoggedIn (props) {
   return <Fragment>
     <Grid item xs={12}>
@@ -45,9 +48,9 @@ function LoggedIn (props) {
       
       <MeetingsList meetings={props.meetings} filterMeetings={props.filterMeetings} authToken={props.authToken}></MeetingsList>
     </Grid>
-    <Grid item xs={12}>
-      <MeetingsAnalyze></MeetingsAnalyze>
-      <MeetingAdd></MeetingAdd>
+    <Grid item xs={12} className={props.classes.buttonBar}>
+      <MeetingsAnalyze className={props.classes.buttonBar}/>
+      <MeetingAdd className={props.classes.buttonBar}/>
     </Grid>
   </Fragment>
 }
@@ -116,23 +119,6 @@ class App extends React.Component {
       })
     }
   }
-  loggedIn(props) {
-    return <div>
-      <Grid item xs={12}>
-        <Timer/>  
-      </Grid>
-      <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
-          {props.test}
-        </Typography>
-        {/* <MeetingsList meetings={props.meetings} filterMeetings={props.filterMeetings}></MeetingsList> */}
-      </Grid>
-      <Grid item xs={12}>
-        <MeetingsAnalyze></MeetingsAnalyze>
-        <MeetingAdd></MeetingAdd>
-      </Grid>
-  </div>
-  }
   notLoggedIn() {
     return <Button>Login</Button>
   }
@@ -160,6 +146,7 @@ class App extends React.Component {
 
   }
   filterMeetings(event) {
+    console.log('filterMeetings: ', event.target.value);
     const searchString = event.target.value;
     this.setState({
       searchMeetings: this.state.meetings.filter(meeting => 
@@ -172,13 +159,14 @@ class App extends React.Component {
   }
   render() {
 
+    const { classes } = this.props;
     const appWorkflow = this.state.appWorkflow;
     
     let landing;
     if(!this.state.isLoggedIn) {
       landing = <NotLoggedIn></NotLoggedIn>
     } else {
-      landing = <LoggedIn 
+      landing = <LoggedIn classes={classes}
                   meetings={this.state.searchMeetings} 
                   filterMeetings={this.filterMeetings.bind(this)}
                   authToken={this.state.authToken}
@@ -223,175 +211,13 @@ class App extends React.Component {
     return (
         <div>
           <AppBar></AppBar>
-  
-          {/*
-            A <Switch> looks through all its children <Route>
-            elements and renders the first one whose path
-            matches the current URL. Use a <Switch> any time
-            you have multiple routes, but you want only one
-            of them to render at a time
-          */}
           <header className="App-header">
           {workflowControls}
         </header>
         </div>
     );
-    // return (
-    //   <Router>
-    //     <div>
-    //       <AppBar></AppBar>
-  
-    //       {/*
-    //         A <Switch> looks through all its children <Route>
-    //         elements and renders the first one whose path
-    //         matches the current URL. Use a <Switch> any time
-    //         you have multiple routes, but you want only one
-    //         of them to render at a time
-    //       */}
-    //       <Switch>
-    //         <Route exact path="/">
-    //         <Grid container
-    //           direction="column"
-    //           justify="center"
-    //           alignItems="center"
-    //           style={{ minHeight: '100vh' }}
-    //         >
-    //           {landing}  
-    //         </Grid>
-    //           {/* <Home meetings={this.state.meetings}/> */}
-    //         </Route>
-    //         <Route path="/add">
-    //           <WorkflowAdd  
-    //             meetings={this.state.meetings}
-    //             authToken={this.state.authToken}
-    //           />
-    //           {/* <Add meetings={this.state.meetings}/> */}
-    //         </Route>
-    //         <Route path="/load">
-    //           <WorkflowEdit 
-    //             editMeeting={this.state.editMeeting} 
-    //             meetings={this.state.meetings}
-    //             //readOnly={true}
-    //           />
-    //         </Route>
-    //         <Route path="/edit">
-    //           <WorkflowEdit 
-    //             editMeeting={this.state.editMeeting} 
-    //             meetings={this.state.meetings}
-    //             authToken={this.state.authToken}
-    //             test={'test'}
-    //           />
-    //           {/* <Edit editMeeting={this.state.editMeeting} meetings={this.state.meetings}/> */}
-    //         </Route>
-    //         <Route path="/analyze">
-    //         <WorkflowsAnalyze></WorkflowsAnalyze>
-    //           {/* <Analyze /> */}
-    //         </Route>
-    //       </Switch>
-    //     </div>
-    //   </Router>
-    // );
   }
 }
 
-export default connect(null, { editMeeting, allMeetings })(App);
-// export default function App() {
-//   useEffect(() => {
-//     // Update the document title using the browser API
-//     //document.title = `You clicked ${count} times`;
-//     const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-//     axios.get(url)
-//     .then((response) => {
-//       console.log('response: ', response);
-
-//     })
-//   });
-//   return (
-//     <Router>
-//       <div>
-//         <ul>
-//           {/* <li>
-//             <Link to="/">Home</Link>
-//           </li>
-//           <li>
-//             <Link to="/add">Add</Link>
-//           </li>
-//           <li>
-//             <Link to="/analyze">Analyze</Link>
-//           </li> */}
-//         </ul>
-
-//         <hr />
-
-//         {/*
-//           A <Switch> looks through all its children <Route>
-//           elements and renders the first one whose path
-//           matches the current URL. Use a <Switch> any time
-//           you have multiple routes, but you want only one
-//           of them to render at a time
-//         */}
-//         <Switch>
-//           <Route exact path="/">
-//             <Home />
-//           </Route>
-//           <Route path="/add">
-//             <Add />
-//           </Route>
-//           <Route path="/edit">
-//             <Add />
-//           </Route>
-//           <Route path="/analyze">
-//             <Analyze />
-//           </Route>
-//         </Switch>
-//       </div>
-//     </Router>
-//   );
-// }
-
-// You can think of these components as "pages"
-// in your app.
-
-function Home(props) {
-  return (
-      <Grid container
-          direction="column"
-          justify="center"
-          alignItems="center"
-          style={{ minHeight: '100vh' }}>
-        <Grid item xs={12}>
-          {/* <Typography variant="h4" gutterBottom>
-            Meetings
-          </Typography> */}
-          <MeetingsList meetings={props.meetings}></MeetingsList>
-        </Grid>
-        <Grid item xs={12}>
-          <MeetingsAnalyze></MeetingsAnalyze>
-          <MeetingAdd></MeetingAdd>
-        </Grid>
-      </Grid>
-  );
-}
-
-function Add(props) {
-  return (
-    <div>
-      <WorkflowAdd  meetings={props.meetings}></WorkflowAdd>
-    </div>
-  );
-}
-function Edit(props) {
-  return (
-    <div>
-      <WorkflowEdit editMeeting={props.editMeeting} meetings={props.meetings} authToken={props.authToken}></WorkflowEdit>
-    </div>
-  );
-}
-function Analyze() {
-  return (
-    <div>
-      <WorkflowsAnalyze></WorkflowsAnalyze>
-    </div>
-  );
-}
+export default withStyles(styles)(connect(null, { editMeeting, allMeetings })(App));
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import watch from 'redux-watch';
 import { withRouter } from "react-router-dom";
@@ -7,6 +8,11 @@ import { withRouter } from "react-router-dom";
 import store from '../../../store'
 import { setWorkflow } from '../../../actions';
 
+const styles = theme => ({
+  button: {
+    padding: '1rem',
+  } 
+});
 class MeetingsAnalyze extends Component {
   constructor(props){
     super(props)
@@ -43,4 +49,4 @@ class MeetingsAnalyze extends Component {
 
 
 
-export default connect(null, { setWorkflow })(MeetingsAnalyze);
+export default withStyles(styles)(connect(null, { setWorkflow })(MeetingsAnalyze));
