@@ -153,6 +153,7 @@ class WorkflowAdd extends Component {
                 dateTime={this.state.dateTime} 
                 updateDate={this.updateDate.bind(this)}
                 readOnly={this.state.readOnly}
+                isEdit={true}
               />
             </MuiPickersUtilsProvider>
             <ProjectSelect 

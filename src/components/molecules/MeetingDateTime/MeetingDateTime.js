@@ -17,9 +17,8 @@ class MeetingDateTime extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // dateTime: moment(props.dateTime).format("MMMM, Do, HH, hh, a"),
       dateTime: this.props.dateTime,
-      timesDateHasBeenChanged: 0,
+      timesDateHasBeenChanged: this.props.isEdit === true ? 1 : 0,//used to determine if date time is valid for adding
     };
   }
   dateChange(event) {
