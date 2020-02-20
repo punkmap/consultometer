@@ -1,17 +1,16 @@
 // default reducer
 // Note: You can remove this reducer and create your own reducer
 
-import { APP_WORKFLOW } from '../actions/types';
+import { LOGIN_ACTION } from '../actions/types';
 const initialState = {
-    workflow: ''
+    loginAction: ''
 }
 export default (state = initialState, action) => {
-    console.log("app-workflow-reducer action: ", action)
     switch(action.type) {
-        case APP_WORKFLOW:
+        case LOGIN_ACTION:
             return {
                 ...state,
-                workflow: action.payload
+                loginAction: action.payload
             };
         default:
             return state;

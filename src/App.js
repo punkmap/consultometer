@@ -1,4 +1,4 @@
-import React, { useEffect }from "react";
+import React, { useEffect, Fragment }from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,8 +6,10 @@ import {
   Link
 } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import AppBar from './components/molecules/AppBar'
 import MeetingsList from './components/molecules/MeetingsList'
 import MeetingAdd from './components/molecules/MeetingAdd';
 import MeetingsAnalyze from './components/molecules/MeetingsAnalyze';
@@ -32,33 +34,69 @@ import { editMeeting, allMeetings } from './actions';
 // through the site. This preserves the browser history,
 // making sure things like the back button and bookmarks
 // work properly.
-
+function LoggedIn (props) {
+  return <Fragment>
+    <Grid item xs={12}>
+      <Timer/>  
+    </Grid>
+    <Grid item xs={12}>
+      <Typography variant="h4" gutterBottom>
+      </Typography>
+      
+      <MeetingsList meetings={props.meetings} filterMeetings={props.filterMeetings} authToken={props.authToken}></MeetingsList>
+    </Grid>
+    <Grid item xs={12}>
+      <MeetingsAnalyze></MeetingsAnalyze>
+      <MeetingAdd></MeetingAdd>
+    </Grid>
+  </Fragment>
+}
+function NotLoggedIn (props) {
+  return <h3>Log in to get started</h3>
+}
 class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
+      appWorkflow: 'mainPage',
+      isLoggedIn: false,
       meetingsGotten: false,
       meetings: [],
       searchMeetings: [],
       editMeeting: null,
+      authToken: '',
     }
     this._isMounted = false;
     const editMeetingWatch = watch(store.getState, 'editMeeting.meeting.value')
     store.subscribe(editMeetingWatch((newVal, oldVal, objectPath) => {
         this.setEditMeeting(newVal);
-    }))
+    }));
     const meetingsWatch = watch(store.getState, 'meetings.meetings')
     store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
         this.setMeetings(newVal);
+    }));
+    const loginWatch = watch(store.getState, 'loginAction')
+    store.subscribe(loginWatch((newVal, oldVal, objectPath) => {
+        this.loginStateHandler(newVal.loginAction);
+    }));
+    const appWorkflowWatch = watch(store.getState, 'appWorkflow.workflow')
+      store.subscribe(appWorkflowWatch((newVal, oldVal, objectPath) => {
+      console.log('appWorkflow newVal: ', newVal);
+      this.setState((state, props) => ({appWorkflow: newVal}))
     }))
   }
   componentDidMount() {
     this._isMounted = true;
-    if (!this.state.meetingsGotten){
-      this.setState({meetingsGotten: true}, () => {
-        this.getMeetings();
-      })
+    if (!this.state.isLoggedIn){
+       
+    } else {
+
     }
+    // if (!this.state.meetingsGotten){
+    //   this.setState({meetingsGotten: true}, () => {
+    //     this.getMeetings();
+    //   })
+    // }
   }
   componentWillUnmount() {
     this._isMounted = false;
@@ -78,17 +116,48 @@ class App extends React.Component {
       })
     }
   }
-  async getMeetings () {
-    const url = 'http://64.225.122.227:5984/consultometer/_design/meetings/_view/meeting-view'
-       
-    const response = await axios.get(url)
-    console.log(response);
+  loggedIn(props) {
+    return <div>
+      <Grid item xs={12}>
+        <Timer/>  
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h4" gutterBottom>
+          {props.test}
+        </Typography>
+        {/* <MeetingsList meetings={props.meetings} filterMeetings={props.filterMeetings}></MeetingsList> */}
+      </Grid>
+      <Grid item xs={12}>
+        <MeetingsAnalyze></MeetingsAnalyze>
+        <MeetingAdd></MeetingAdd>
+      </Grid>
+  </div>
+  }
+  notLoggedIn() {
+    return <Button>Login</Button>
+  }
+  loginStateHandler(loginState) {
+    if(loginState.loggedIn === true){
+      this.getMeetings(loginState.token);
+      this.setState({authToken: loginState.token}, () => {
+        console.log('this.state.authToken: ', this.state.authToken);
+      });
+    }
+  }
+  async getMeetings (token) {
+    const url = 'http://localhost:5000/api/meetings'
+    const params = {token};
+    const response = await axios.get(url, {
+      params
+    })
+    console.log('RESPONSE: ', response);
     if (this._isMounted) this.setState({
-      meetings: response.data.rows,
-      searchMeetings: response.data.rows,
+      meetings: response.data.body.rows,
+      searchMeetings: response.data.body.rows,
     },() => {
-      console.log(this.state.meetings);
+      this.setState({isLoggedIn: true});
     });
+
   }
   filterMeetings(event) {
     const searchString = event.target.value;
@@ -102,10 +171,58 @@ class App extends React.Component {
 
   }
   render() {
+
+    const appWorkflow = this.state.appWorkflow;
+    
+    let landing;
+    if(!this.state.isLoggedIn) {
+      landing = <NotLoggedIn></NotLoggedIn>
+    } else {
+      landing = <LoggedIn 
+                  meetings={this.state.searchMeetings} 
+                  filterMeetings={this.filterMeetings.bind(this)}
+                  authToken={this.state.authToken}
+                />
+    }
+    let workflowControls;
+    switch (appWorkflow) {
+      case 'mainPage':
+        workflowControls = 
+        <Grid container
+          direction="column"
+          justify="center"
+          alignItems="center"
+          style={{ minHeight: '100vh' }}
+        >
+          {landing}  
+        </Grid>
+        break;
+      case 'addMeeting':
+        workflowControls = 
+        <WorkflowAdd  
+          meetings={this.state.meetings}
+          authToken={this.state.authToken}
+        />
+        break;
+      case 'editMeeting':
+        workflowControls = 
+        <WorkflowEdit 
+          editMeeting={this.state.editMeeting} 
+          meetings={this.state.meetings}
+          authToken={this.state.authToken}
+          test={'test'}
+        />
+        break;
+      case 'analyzeMeetings':
+        workflowControls = 
+        <WorkflowsAnalyze></WorkflowsAnalyze>
+        break;
+      default:
+        break;
+    }
     return (
-      <Router>
         <div>
-          
+          <AppBar></AppBar>
   
           {/*
             A <Switch> looks through all its children <Route>
@@ -114,56 +231,66 @@ class App extends React.Component {
             you have multiple routes, but you want only one
             of them to render at a time
           */}
-          <Switch>
-            <Route exact path="/">
-            <Grid container
-                direction="column"
-                justify="center"
-                alignItems="center"
-                style={{ minHeight: '100vh' }}>
-              <Grid item xs={12}>
-                <Timer/>  
-              </Grid>
-              <Grid item xs={12}>
-                {/* <Typography variant="h4" gutterBottom>
-                  Meetings
-                </Typography> */}
-                <MeetingsList meetings={this.state.searchMeetings} filterMeetings={this.filterMeetings.bind(this)}></MeetingsList>
-              </Grid>
-              <Grid item xs={12}>
-                <MeetingsAnalyze></MeetingsAnalyze>
-                <MeetingAdd></MeetingAdd>
-              </Grid>
-            </Grid>
-              {/* <Home meetings={this.state.meetings}/> */}
-            </Route>
-            <Route path="/add">
-              <WorkflowAdd  meetings={this.state.meetings}></WorkflowAdd>
-              {/* <Add meetings={this.state.meetings}/> */}
-            </Route>
-            <Route path="/load">
-              <WorkflowEdit 
-                editMeeting={this.state.editMeeting} 
-                meetings={this.state.meetings}
-                //readOnly={true}
-              />
-            </Route>
-            <Route path="/edit">
-              <WorkflowEdit 
-                editMeeting={this.state.editMeeting} 
-                meetings={this.state.meetings}
-                //readOnly={false}
-              />
-              {/* <Edit editMeeting={this.state.editMeeting} meetings={this.state.meetings}/> */}
-            </Route>
-            <Route path="/analyze">
-            <WorkflowsAnalyze></WorkflowsAnalyze>
-              {/* <Analyze /> */}
-            </Route>
-          </Switch>
+          <header className="App-header">
+          {workflowControls}
+        </header>
         </div>
-      </Router>
     );
+    // return (
+    //   <Router>
+    //     <div>
+    //       <AppBar></AppBar>
+  
+    //       {/*
+    //         A <Switch> looks through all its children <Route>
+    //         elements and renders the first one whose path
+    //         matches the current URL. Use a <Switch> any time
+    //         you have multiple routes, but you want only one
+    //         of them to render at a time
+    //       */}
+    //       <Switch>
+    //         <Route exact path="/">
+    //         <Grid container
+    //           direction="column"
+    //           justify="center"
+    //           alignItems="center"
+    //           style={{ minHeight: '100vh' }}
+    //         >
+    //           {landing}  
+    //         </Grid>
+    //           {/* <Home meetings={this.state.meetings}/> */}
+    //         </Route>
+    //         <Route path="/add">
+    //           <WorkflowAdd  
+    //             meetings={this.state.meetings}
+    //             authToken={this.state.authToken}
+    //           />
+    //           {/* <Add meetings={this.state.meetings}/> */}
+    //         </Route>
+    //         <Route path="/load">
+    //           <WorkflowEdit 
+    //             editMeeting={this.state.editMeeting} 
+    //             meetings={this.state.meetings}
+    //             //readOnly={true}
+    //           />
+    //         </Route>
+    //         <Route path="/edit">
+    //           <WorkflowEdit 
+    //             editMeeting={this.state.editMeeting} 
+    //             meetings={this.state.meetings}
+    //             authToken={this.state.authToken}
+    //             test={'test'}
+    //           />
+    //           {/* <Edit editMeeting={this.state.editMeeting} meetings={this.state.meetings}/> */}
+    //         </Route>
+    //         <Route path="/analyze">
+    //         <WorkflowsAnalyze></WorkflowsAnalyze>
+    //           {/* <Analyze /> */}
+    //         </Route>
+    //       </Switch>
+    //     </div>
+    //   </Router>
+    // );
   }
 }
 
@@ -256,7 +383,7 @@ function Add(props) {
 function Edit(props) {
   return (
     <div>
-      <WorkflowEdit editMeeting={props.editMeeting} meetings={props.meetings}></WorkflowEdit>
+      <WorkflowEdit editMeeting={props.editMeeting} meetings={props.meetings} authToken={props.authToken}></WorkflowEdit>
     </div>
   );
 }

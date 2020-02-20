@@ -43,6 +43,7 @@ class MeetingList extends Component {
     this.state = {
       meetings: this.props.meetings,
       meeting: {},
+      authToken: this.props.authToken,
     }
     this._isMounted = false;
     const timerStopsWatch = watch(store.getState, 'timerStops')
@@ -66,26 +67,20 @@ class MeetingList extends Component {
       }
     }
   }
-  nextPath(path) {
-    this.props.history.push(path);
-  }
+  // nextPath(path) {
+  //   this.props.history.push(path);
+  // }
   editMeeting(meeting) {
     this.props.setWorkflow('editMeeting');
 
     this.props.editMeeting(meeting);
-    this.nextPath('/edit');
+    
     // this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
     //   this.props.increment(this.state.clickCount);
     // } )
   }
-  openMeeting(meeting){
-    this.props.setWorkflow('loadMeeting');
-    this.props.editMeeting(meeting);
-    this.props.activeMeeting(meeting);
-    this.nextPath('/load');
-  }
+  
   showTimeControls(meeting){
-    console.log('SHOWTIMECONTROLS MEETING: ', meeting);
     if (meeting.id === this.state.meeting.id){
       meeting = {}
     } 
@@ -108,19 +103,17 @@ class MeetingList extends Component {
   }
   async timerStops (val){
     let meeting = {...this.state.meeting};
-    
     Object.keys(val.timerDetails).forEach((key, index) => {
       meeting.value[key] = val.timerDetails[key];
     })
-    const response = await updateMeeting(meeting.value)
-    
+    const response = await updateMeeting(meeting.value, this.state.authToken)
     if (this._isMounted){
           const updatedMeeting = {
-          id: response.data.id, 
-          key: response.data.id,
+          id: response.data.body.id, 
+          key: response.data.body.id,
           value: {
-            _id: response.data.id, 
-            _rev: response.data.rev,
+            _id: response.data.body.id, 
+            _rev: response.data.body.rev,
             type: 'meeting',
             title: meeting.value.title,
             dateTime: meeting.value.dateTime,
@@ -131,56 +124,13 @@ class MeetingList extends Component {
           }
         }
 
-        console.log('updatedMeeting _REV: ', updatedMeeting.value._rev);
-
         let meetings = [...this.state.meetings]
         const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.id);
         meetings[meetingIndex] = updatedMeeting;
-        // console.log('UPDATED MEETING: ', updatedMeeting);
-        // const meetings = this.state.meetings.filter(function( obj ) {
-        //   return obj.id !== response.data.id;
-        // });
-        // console.log('meeting: ', meeting);
-        // meetings.push(updatedMeeting);
         this.props.allMeetings(meetings);
         this.setState({meetings, meeting: updatedMeeting});
-        // const newMeetings = [...this.state.meetings, newMeeting];
-        // this.props.allMeetings(newMeetings);  
     }
-    // updateMeeting(meeting.value)
-    // .then(response => {
-    //     const updatedMeeting = {
-    //       id: response.data.id, 
-    //       key: response.data.id,
-    //       value: {
-    //         _id: response.data.id, 
-    //         _rev: response.data.rev,
-    //         type: 'meeting',
-    //         title: meeting.value.title,
-    //         dateTime: meeting.value.dateTime,
-    //         project: meeting.value.project,
-    //         attendees: meeting.value.attendees,
-    //       }
-    //     }
-
-    //     console.log('updatedMeeting _REV: ', updatedMeeting.value._rev);
-
-    //     let meetings = [...this.state.meetings]
-    //     const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.id);
-    //     meetings[meetingIndex] = updatedMeeting;
-    //     // console.log('UPDATED MEETING: ', updatedMeeting);
-    //     // const meetings = this.state.meetings.filter(function( obj ) {
-    //     //   return obj.id !== response.data.id;
-    //     // });
-    //     // console.log('meeting: ', meeting);
-    //     // meetings.push(updatedMeeting);
-    //     this.props.allMeetings(meetings);
-    //     this.setState({meetings, meeting: updatedMeeting});
-    //     // const newMeetings = [...this.state.meetings, newMeeting];
-    //     // this.props.allMeetings(newMeetings);
-    // })
-    // .catch(error => {
-    // });
+    
   }
   refreshMeeting(event, meeting){
     event.stopPropagation();
@@ -272,5 +222,5 @@ class MeetingList extends Component {
   }
 }
 
-export default withStyles(styles)(withRouter(connect(null, { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingList)));
+export default withStyles(styles)(connect(null, { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingList));
 

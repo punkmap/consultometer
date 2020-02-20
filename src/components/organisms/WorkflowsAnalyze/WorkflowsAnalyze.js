@@ -44,15 +44,14 @@ class WorkflowAdd extends Component {
     
   }
 
-  nextPath(path) {
-    this.props.history.push(path);
-  }
+  // nextPath(path) {
+  //   this.props.history.push(path);
+  // }
   close() {
     // validate form
     // save meeting 
     //return to main
     this.props.setWorkflow('mainPage');
-    this.nextPath('/');
   }
   render() {
     return (
@@ -75,4 +74,4 @@ class WorkflowAdd extends Component {
   }
 }
 
-export default withRouter(connect(null, { setWorkflow })(WorkflowAdd));
+export default connect(null, { setWorkflow })(WorkflowAdd);

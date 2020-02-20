@@ -34,7 +34,6 @@ class Timer extends Component {
     this.resetTimer = this.resetTimer.bind(this)
     const activeMeetingWatch = watch(store.getState, 'activeMeeting.meeting')
     store.subscribe(activeMeetingWatch((newVal, oldVal, objectPath) => {
-        console.log('activeMeetingWatch meeting: ', newVal);
         //if object is not empty then show the timer else hide the timer;
         this.toggleTimer(newVal)
     }))
@@ -56,7 +55,6 @@ class Timer extends Component {
     }
   }
   showTimer(meeting){
-    console.log('MEETING: ', meeting);
     const hourlyRate = meeting.value.attendees.reduce(function(prev, cur) {
       return prev + cur.rate;
     }, 0);

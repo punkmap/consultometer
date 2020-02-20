@@ -8,6 +8,7 @@ import activeMeetingReducer from './active-meeting-reducer';
 import meetingsReducer from './all-meetings-reducer';
 import timerActionReducer from './timer-action-reducer';
 import timerStopsReducer from './timer-stops-reducer';
+import loginActionReducer from './login-action-reducer';
 
 const rootReducers = combineReducers({
     // add reducer files references here
@@ -18,7 +19,7 @@ const rootReducers = combineReducers({
     meetings: meetingsReducer,
     timerAction: timerActionReducer,
     timerStops: timerStopsReducer,
-    //timerStops: timerStopsReducer,
+    loginAction: loginActionReducer,
 });
 
 export default rootReducers;

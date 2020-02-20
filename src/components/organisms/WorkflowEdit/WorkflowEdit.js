@@ -41,16 +41,17 @@ class WorkflowAdd extends Component {
       attendees: this.props.editMeeting.attendees,
       meetings: this.props.meetings,
       readOnly: this.props.readOnly,
-      isEditing: this.props.isEditing
+      isEditing: this.props.isEditing,
+      authToken: this.props.authToken,
     }
     this._isMounted = false;
   }
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
-  nextPath(path) {
-    this.props.history.push(path);
-  }
+  // nextPath(path) {
+  //   this.props.history.push(path);
+  // }
   updateTitle(title){
     this.setState({title});
   }
@@ -68,7 +69,18 @@ class WorkflowAdd extends Component {
   }
   cancel() {
     this.props.setWorkflow('mainPage');
-    this.nextPath('/');
+    
+  }
+  componentDidMount() {
+    console.log('NEW DATE: ', Date.now());
+    console.log('MEETING DATE: ', new Date(this.props.editMeeting.dateTime));
+    let dateTime = Date.parse(this.props.editMeeting.dateTime);
+    console.log('DATETIME: ', dateTime);
+    dateTime += 3600000
+    console.log('DATETIME: ', dateTime);
+    console.log('MEETING DATE: ', new Date(dateTime));
+    console.log('TOKEN: ', this.props.authToken);
+    console.log('TEST: ', this.props.test);
   }
   async update() {
     // validate form
@@ -83,7 +95,8 @@ class WorkflowAdd extends Component {
       project: this.state.project,
       attendees: this.state.attendees,
     };
-    const response = await updateMeeting(meeting);
+    console.log('this.state.authToken: ', this.state.authToken);
+    const response = await updateMeeting(meeting, this.state.authToken);
     if (this._isMounted){
         const updatedMeeting = {
           id: response.data.id, 
@@ -106,7 +119,7 @@ class WorkflowAdd extends Component {
     }
     
     this.props.setWorkflow('mainPage');
-    this.nextPath('/');
+    
   }
   render() {
     const { classes } = this.props;
@@ -170,4 +183,4 @@ WorkflowAdd.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withRouter(withStyles(styles)(connect(null, { setWorkflow, allMeetings })(WorkflowAdd)));
+export default withStyles(styles)(connect(null, { setWorkflow, allMeetings })(WorkflowAdd));

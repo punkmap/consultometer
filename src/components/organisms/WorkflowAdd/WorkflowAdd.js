@@ -39,6 +39,7 @@ class WorkflowAdd extends Component {
       attendees: [],
       timesDateTimeChanged: 0,
       formValidated: false,
+      authToken: this.props.authToken,
     }
   }
   handleChange = name => event => {
@@ -94,12 +95,11 @@ class WorkflowAdd extends Component {
       }
     }
   }
-  nextPath(path) {
-    this.props.history.push(path);
-  }
+  // nextPath(path) {
+  //   this.props.history.push(path);
+  // }
   cancel() {
     this.props.setWorkflow('mainPage');
-    this.nextPath('/');
   }
   componentDidMount() {
     this._isMounted = true
@@ -111,7 +111,7 @@ class WorkflowAdd extends Component {
     // validate form
     // save meeting 
     //return to main
-    const data = {
+    const meeting = {
       type: 'meeting',
       title: this.state.title,
       dateTime: this.state.dateTime,
@@ -121,34 +121,55 @@ class WorkflowAdd extends Component {
 
     const headers = {
       'Content-Type': 'application/json',
-      //'Authorization': 'JWT fefege...'TODO: JWT authentication
     }
-      const response = await axios.post('http://api:api@64.225.122.227:5984/consultometer', data, {
-        headers: headers
-      })
-      if (this._isMounted) {
-        const newMeeting = {
-          id: response.data.id, 
-          key: response.data.id,
-          value: {
-            _id: response.data.id, 
-            _rev: response.data.rev,
-            type: 'meeting',
-            title: this.state.title,
-            dateTime: this.state.dateTime,
-            project: this.state.project.name,
-            attendees: this.state.attendees,
-            durationMS: 0,
-            durationHMS: '0',
-            cost: 0,
-          }
+    const authToken = this.state.authToken;
+    // const params = new URLSearchParams();
+    // params.append('data', data);
+    // params.append('authToken', this.state.authToken);
+    console.log('AUTHTOKEN: ', authToken);
+    axios.post('http://localhost:5000/api/meeting', { meeting, authToken }, {
+        headers: headers,
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            console.log(response)
         }
-        const newMeetings = [...this.state.meetings, newMeeting];
-        this.props.allMeetings(newMeetings);  
-      }
+    })
+    .catch((error) => {
+        console.error(error);
+    })
+
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   //'Authorization': 'JWT fefege...'TODO: JWT authentication
+    // }
+    //   const response = await axios.post('http://localhost:5000/api/meeting/', data, {
+    //     headers: headers
+    //   });
+    //   console.log('RESPONSE: ', response)
+      // if (this._isMounted) {
+      //   const newMeeting = {
+      //     id: response.data.id, 
+      //     key: response.data.id,
+      //     value: {
+      //       _id: response.data.id, 
+      //       _rev: response.data.rev,
+      //       type: 'meeting',
+      //       title: this.state.title,
+      //       dateTime: this.state.dateTime,
+      //       project: this.state.project.name,
+      //       attendees: this.state.attendees,
+      //       durationMS: 0,
+      //       durationHMS: '0',
+      //       cost: 0,
+      //     }
+      //   }
+      //   const newMeetings = [...this.state.meetings, newMeeting];
+      //   this.props.allMeetings(newMeetings);  
+      // }
       
     this.props.setWorkflow('mainPage');
-    this.nextPath('/');
+    // this.nextPath('/');
   }
   render() {
     const { classes } = this.props;
@@ -190,4 +211,4 @@ WorkflowAdd.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withRouter(withStyles(styles)(connect(null, { setWorkflow, allMeetings })(WorkflowAdd)));
+export default withStyles(styles)(connect(null, { setWorkflow, allMeetings })(WorkflowAdd));

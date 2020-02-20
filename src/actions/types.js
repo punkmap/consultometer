@@ -9,4 +9,5 @@ export const ALL_MEETINGS = 'ALL_MEETINGS';
 export const ADD_MEETINGS = 'ADD_MEETINGS';
 export const TIMER_ACTION = 'TIMER_ACTION';
 export const TIMER_STOPS = 'TIMER_STOPS';
+export const LOGIN_ACTION = 'LOGIN_ACTION';
 

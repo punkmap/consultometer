@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function AlertDialog(props) {
+export default function ADialog(props) {
 
   // const handleClickOpen = () => {
   //   setOpen(true);
@@ -24,19 +24,12 @@ export default function AlertDialog(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{props.dialogTitle}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {props.contentText}
-          </DialogContentText>
+          {props.dialogContent}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => props.closeDialog('cancel')} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => props.closeDialog('ok')} color="primary" autoFocus>
-            Ok
-          </Button>
+          {props.dialogActions}
         </DialogActions>
       </Dialog>
     </div>
