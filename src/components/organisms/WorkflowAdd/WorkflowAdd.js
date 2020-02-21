@@ -111,21 +111,35 @@ class WorkflowAdd extends Component {
       project: this.state.project.name,
       attendees: this.state.attendees,
     };
-
+    
     const headers = {
       'Content-Type': 'application/json',
     }
     const authToken = this.state.authToken;
-    // const params = new URLSearchParams();
-    // params.append('data', data);
-    // params.append('authToken', this.state.authToken);
     console.log('AUTHTOKEN: ', authToken);
     axios.post('http://localhost:5000/api/meeting', { meeting, authToken }, {
         headers: headers,
     })
     .then((response) => {
+        console.log('WORKFLOWADD RESPONSE: ', response);
+        console.log('this._isMounted: ', this._isMounted);
         if (response.status === 200) {
-            console.log(response)
+          const newMeeting = {
+            id: response.data.id, 
+            key: response.data.id,
+            value: {
+              _id: response.data.id, 
+              _rev: response.data.rev,
+              type: 'meeting',
+              title: this.state.title,
+              dateTime: this.state.dateTime,
+              project: this.state.project.name,
+              attendees: this.state.attendees,
+            }
+          }
+          const newMeetings = [...this.state.meetings, newMeeting];
+          console.log('calling new allmeetings')
+          this.props.allMeetings(newMeetings);  
         }
     })
     .catch((error) => {

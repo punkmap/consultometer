@@ -10,7 +10,6 @@ export const increment = (count) => {
     };
 };
 export const setWorkflow = (workflow) => {
-    console.log('WORKFLOW: ', workflow);
     return dispatch => {
         dispatch({
             type: APP_WORKFLOW,
@@ -19,6 +18,7 @@ export const setWorkflow = (workflow) => {
     };
 };
 export const activeMeeting = (meeting) => {
+    console.log('ACTIVEMEETING: ', meeting);
     return dispatch => {
         dispatch({
             type: ACTIVE_MEETING,
@@ -35,6 +35,7 @@ export const editMeeting = (meeting) => {
     };
 };
 export const allMeetings = (meetings) => {
+    console.log('ALLMEETINGS: ', meetings);
     return dispatch => {
         dispatch({
             type: ALL_MEETINGS,

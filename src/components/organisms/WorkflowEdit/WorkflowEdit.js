@@ -103,27 +103,26 @@ class WorkflowAdd extends Component {
     };
     console.log('this.state.authToken: ', this.state.authToken);
     const response = await updateMeeting(meeting, this.state.authToken);
-    if (this._isMounted){
-        const updatedMeeting = {
-          id: response.data.id, 
-          key: response.data.id,
-          value: {
-            _id: response.data.id, 
-            _rev: response.data.rev,
-            type: 'meeting',
-            title: this.state.title,
-            purpose: this.state.purpose,
-            dateTime: this.state.dateTime,
-            project: this.state.project.name,
-            attendees: this.state.attendees,
-          }
-        }
-        const meetings = this.state.meetings.filter(function( obj ) {
-          return obj.id !== response.data.id;
-        });
-        meetings.push(updatedMeeting);
-        this.props.allMeetings(meetings);  
+    
+    const updatedMeeting = {
+      id: response.data.id, 
+      key: response.data.id,
+      value: {
+        _id: response.data.id, 
+        _rev: response.data.rev,
+        type: 'meeting',
+        title: this.state.title,
+        purpose: this.state.purpose,
+        dateTime: this.state.dateTime,
+        project: this.state.project.name,
+        attendees: this.state.attendees,
+      }
     }
+    const meetings = this.state.meetings.filter(function( obj ) {
+      return obj.id !== response.data.id;
+    });
+    meetings.push(updatedMeeting);
+    this.props.allMeetings(meetings);  
     
     this.props.setWorkflow('mainPage');
     

@@ -76,6 +76,7 @@ class App extends React.Component {
     }));
     const meetingsWatch = watch(store.getState, 'meetings.meetings')
     store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
+        console.log('APP MEETINGS Watch: ', newVal);
         this.setMeetings(newVal);
     }));
     const loginWatch = watch(store.getState, 'loginAction')
