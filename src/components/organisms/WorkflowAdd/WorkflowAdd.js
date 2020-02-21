@@ -17,6 +17,7 @@ import { setWorkflow, allMeetings } from '../../../actions';
 
 import AttendeesSelect from '../../molecules/AttendeesSelect'
 import MeetingTitle from '../../molecules/MeetingTitle'
+import MeetingPurpose from '../../molecules/MeetingPurpose'
 import ProjectSelect from '../../molecules/ProjectSelect'
 import MeetingDateTime from '../../molecules/MeetingDateTime'
 //const history = useHistory();
@@ -35,6 +36,7 @@ class WorkflowAdd extends Component {
     this.state = {
       meetings: props.meetings,
       title: '',
+      purpose: '',
       dateTime: '',
       project: {name: ''},
       attendees: [],
@@ -51,6 +53,11 @@ class WorkflowAdd extends Component {
   // }
   updateTitle(title){
     this.setState({title}, () => {
+      this.formValidation()
+    });
+  }
+  updatePurpose(purpose){
+    this.setState({purpose}, () => {
       this.formValidation()
     });
   }
@@ -71,10 +78,11 @@ class WorkflowAdd extends Component {
   }
   formValidation() {
       const titleValid = this.state.title.length > 0;
+      const purposeValid = this.state.purpose.length > 0;
       const dateTimeValid = this.state.timesDateTimeChanged > 0;
       const projectValid = this.state.project.name.length > 0;
       const attendeesValid = this.state.attendees.length > 0;
-    if(titleValid && dateTimeValid && projectValid && attendeesValid) {
+    if(titleValid && purposeValid && dateTimeValid && projectValid && attendeesValid) {
       this.setState({formValidated: true});
     } else {
       if (this.state.formValidated === true){
@@ -82,9 +90,6 @@ class WorkflowAdd extends Component {
       }
     }
   }
-  // nextPath(path) {
-  //   this.props.history.push(path);
-  // }
   cancel() {
     this.props.setWorkflow('mainPage');
   }
@@ -101,6 +106,7 @@ class WorkflowAdd extends Component {
     const meeting = {
       type: 'meeting',
       title: this.state.title,
+      purpose: this.state.purpose,
       dateTime: this.state.dateTime,
       project: this.state.project.name,
       attendees: this.state.attendees,
@@ -125,38 +131,8 @@ class WorkflowAdd extends Component {
     .catch((error) => {
         console.error(error);
     })
-
-    // const headers = {
-    //   'Content-Type': 'application/json',
-    //   //'Authorization': 'JWT fefege...'TODO: JWT authentication
-    // }
-    //   const response = await axios.post('http://localhost:5000/api/meeting/', data, {
-    //     headers: headers
-    //   });
-    //   console.log('RESPONSE: ', response)
-      // if (this._isMounted) {
-      //   const newMeeting = {
-      //     id: response.data.id, 
-      //     key: response.data.id,
-      //     value: {
-      //       _id: response.data.id, 
-      //       _rev: response.data.rev,
-      //       type: 'meeting',
-      //       title: this.state.title,
-      //       dateTime: this.state.dateTime,
-      //       project: this.state.project.name,
-      //       attendees: this.state.attendees,
-      //       durationMS: 0,
-      //       durationHMS: '0',
-      //       cost: 0,
-      //     }
-      //   }
-      //   const newMeetings = [...this.state.meetings, newMeeting];
-      //   this.props.allMeetings(newMeetings);  
-      // }
       
     this.props.setWorkflow('mainPage');
-    // this.nextPath('/');
   }
   render() {
     const { classes } = this.props;
@@ -170,6 +146,7 @@ class WorkflowAdd extends Component {
           style={{ minHeight: '100vh' }}>
           <Grid item >
             <MeetingTitle title={this.state.title} updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
+            <MeetingPurpose purpose={this.state.purpose} updatePurpose={this.updatePurpose.bind(this)}/>
             <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
               <MeetingDateTime dateTime={new Date()} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
             </MuiPickersUtilsProvider>

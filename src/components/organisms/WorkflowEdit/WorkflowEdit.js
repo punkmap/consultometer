@@ -18,6 +18,7 @@ import { setWorkflow, allMeetings } from '../../../actions';
 
 import AttendeesSelect from '../../molecules/AttendeesSelect'
 import MeetingTitle from '../../molecules/MeetingTitle'
+import MeetingPurpose from '../../molecules/MeetingPurpose'
 import ProjectSelect from '../../molecules/ProjectSelect'
 import MeetingDateTime from '../../molecules/MeetingDateTime'
 //const history = useHistory();
@@ -36,6 +37,7 @@ class WorkflowAdd extends Component {
       _id: this.props.editMeeting._id,
       _rev: this.props.editMeeting._rev,
       title: this.props.editMeeting.title,
+      purpose: this.props.editMeeting.purpose,
       dateTime: new Date(this.props.editMeeting.dateTime),
       project: this.props.editMeeting.project,
       attendees: this.props.editMeeting.attendees,
@@ -54,6 +56,9 @@ class WorkflowAdd extends Component {
   // }
   updateTitle(title){
     this.setState({title});
+  }
+  updatePurpose(purpose){
+    this.setState({purpose});
   }
   updateDate(dateTime){
     this.setState({dateTime});
@@ -91,6 +96,7 @@ class WorkflowAdd extends Component {
       _rev: this.state._rev,
       type: 'meeting',
       title: this.state.title,
+      purpose: this.state.purpose,
       dateTime: this.state.dateTime,
       project: this.state.project,
       attendees: this.state.attendees,
@@ -106,6 +112,7 @@ class WorkflowAdd extends Component {
             _rev: response.data.rev,
             type: 'meeting',
             title: this.state.title,
+            purpose: this.state.purpose,
             dateTime: this.state.dateTime,
             project: this.state.project.name,
             attendees: this.state.attendees,
@@ -146,6 +153,11 @@ class WorkflowAdd extends Component {
             <MeetingTitle 
               title={this.state.title} 
               updateTitle={this.updateTitle.bind(this)}
+              readOnly={this.state.readOnly}
+            />
+            <MeetingPurpose 
+              purpose={this.state.purpose} 
+              updatePurpose={this.updatePurpose.bind(this)}
               readOnly={this.state.readOnly}
             />
             <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
