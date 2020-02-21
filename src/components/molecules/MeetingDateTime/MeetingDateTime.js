@@ -1,6 +1,5 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component} from 'react';
 import { DateTimePicker } from "@material-ui/pickers";
-import FormControl from '@material-ui/core/FormControl';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -18,7 +17,7 @@ class MeetingDateTime extends Component {
     super(props);
     this.state = {
       dateTime: this.props.dateTime,
-      timesDateHasBeenChanged: this.props.isEdit === true ? 1 : 0,//used to determine if date time is valid for adding
+      timesDateHasBeenChanged: this.props.isEdit === true ? 1 : 0,//used to determine if date time is valid during meeting add. if meeting edit date time is already valid
     };
   }
   dateChange(event) {
@@ -35,7 +34,7 @@ class MeetingDateTime extends Component {
     return (
       <div className={classes.root}>
         <DateTimePicker
-          error={this.state.timesDateHasBeenChanged < 1}
+          error={this.state.timesDateHasBeenChanged < 1}//if date has not been changed then it is not yet valid. 
           className={classes.DTP}
           autoOk
           value={ new Date(this.state.dateTime) }

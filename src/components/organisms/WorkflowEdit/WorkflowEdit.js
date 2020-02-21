@@ -163,6 +163,7 @@ class WorkflowAdd extends Component {
             />
             <AttendeesSelect 
               attendees={this.state.attendees} 
+              authToken={this.state.authToken}
               updateAttendees={this.updateAttendees.bind(this)}
               readOnly={this.state.readOnly}
             />

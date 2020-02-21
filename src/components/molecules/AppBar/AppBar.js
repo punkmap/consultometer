@@ -48,7 +48,7 @@ class ButtonAppBar extends Component {
     super(props)
     this.state = {
         isLoggedIn: false,
-        dialogOpen: false,
+        dialogOpen: true,
         username: 'api', 
         password: 'api'
     }

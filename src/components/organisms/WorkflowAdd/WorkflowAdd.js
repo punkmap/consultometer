@@ -70,27 +70,13 @@ class WorkflowAdd extends Component {
     });
   }
   formValidation() {
-      console.log('**************************************************')
-      console.log('TITLE: ', this.state.title);
-      console.log('TIMESCHANGED: ', this.state.timesDateTimeChanged);
-      console.log('PROJECT: ', this.state.project);
-      console.log('ATTENDEES: ', this.state.attendees);
       const titleValid = this.state.title.length > 0;
-      console.log('TITLE VALID: ', titleValid);
       const dateTimeValid = this.state.timesDateTimeChanged > 0;
-      console.log('TIMESCHANGED VALID: ', dateTimeValid);
       const projectValid = this.state.project.name.length > 0;
-      console.log('PROJECT VALID: ', projectValid);
       const attendeesValid = this.state.attendees.length > 0;
-      console.log('ATTENDEES VALID: ', attendeesValid);
-      console.log('ALL_VALID: ', titleValid && dateTimeValid && projectValid && attendeesValid)
     if(titleValid && dateTimeValid && projectValid && attendeesValid) {
-      console.log('validate');
-      this.setState({formValidated: true}, () => {
-        console.log("WAS_VALIDATED: ",this.state.formValidated);
-      });
+      this.setState({formValidated: true});
     } else {
-      console.log("ISVALIDATED: ",this.state.formValidated);
       if (this.state.formValidated === true){
         this.setState({formValidated: false});
       }
@@ -188,7 +174,10 @@ class WorkflowAdd extends Component {
               <MeetingDateTime dateTime={new Date()} updateDate={this.updateDate.bind(this)}></MeetingDateTime>
             </MuiPickersUtilsProvider>
             <ProjectSelect project={this.state.project} updateProject={this.updateProject.bind(this)}></ProjectSelect>
-            <AttendeesSelect updateAttendees={this.updateAttendees.bind(this)}></AttendeesSelect>
+            <AttendeesSelect 
+              authToken={this.state.authToken}
+              updateAttendees={this.updateAttendees.bind(this)}
+            />
             <Grid item xs={12} className={classes.buttonBar}>
               <Button 
                 className={classes.button}
