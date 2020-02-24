@@ -116,13 +116,10 @@ class WorkflowAdd extends Component {
       'Content-Type': 'application/json',
     }
     const authToken = this.state.authToken;
-    console.log('AUTHTOKEN: ', authToken);
     axios.post('http://localhost:5000/api/meeting', { meeting, authToken }, {
         headers: headers,
     })
     .then((response) => {
-        console.log('WORKFLOWADD RESPONSE: ', response);
-        console.log('this._isMounted: ', this._isMounted);
         if (response.status === 200) {
           const newMeeting = {
             id: response.data.id, 
@@ -138,7 +135,6 @@ class WorkflowAdd extends Component {
             }
           }
           const newMeetings = [...this.state.meetings, newMeeting];
-          console.log('calling new allmeetings')
           this.props.allMeetings(newMeetings);  
         }
     })

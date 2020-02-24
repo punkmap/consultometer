@@ -76,7 +76,6 @@ class App extends React.Component {
     }));
     const meetingsWatch = watch(store.getState, 'meetings.meetings')
     store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
-        console.log('APP MEETINGS Watch: ', newVal);
         this.setMeetings(newVal);
     }));
     const loginWatch = watch(store.getState, 'loginAction')
@@ -85,7 +84,6 @@ class App extends React.Component {
     }));
     const appWorkflowWatch = watch(store.getState, 'appWorkflow.workflow')
       store.subscribe(appWorkflowWatch((newVal, oldVal, objectPath) => {
-      console.log('appWorkflow newVal: ', newVal);
       this.setState((state, props) => ({appWorkflow: newVal}))
     }))
   }
@@ -127,7 +125,6 @@ class App extends React.Component {
     if(loginState.loggedIn === true){
       this.getMeetings(loginState.token);
       this.setState({authToken: loginState.token}, () => {
-        console.log('this.state.authToken: ', this.state.authToken);
       });
     }
   }
@@ -137,7 +134,6 @@ class App extends React.Component {
     const response = await axios.get(url, {
       params
     })
-    console.log('RESPONSE: ', response);
     if (this._isMounted) this.setState({
       meetings: response.data.body.rows,
       searchMeetings: response.data.body.rows,
@@ -147,7 +143,6 @@ class App extends React.Component {
 
   }
   filterMeetings(event) {
-    console.log('filterMeetings: ', event.target.value);
     const searchString = event.target.value;
     this.setState({
       searchMeetings: this.state.meetings.filter(meeting => 

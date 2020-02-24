@@ -6,7 +6,6 @@ const initialState = {
     workflow: ''
 }
 export default (state = initialState, action) => {
-    console.log("app-workflow-reducer action: ", action)
     switch(action.type) {
         case APP_WORKFLOW:
             return {

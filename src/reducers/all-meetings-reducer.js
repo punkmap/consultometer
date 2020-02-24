@@ -6,7 +6,6 @@ const initialState = {
     meetings: []
 }
 export default (state = initialState, action) => {
-    console.log('ALLMEETINGS REDUCER: ', action);
     switch(action.type) {
         case ALL_MEETINGS:
             return {

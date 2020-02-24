@@ -77,15 +77,8 @@ class WorkflowAdd extends Component {
     
   }
   componentDidMount() {
-    console.log('NEW DATE: ', Date.now());
-    console.log('MEETING DATE: ', new Date(this.props.editMeeting.dateTime));
     let dateTime = Date.parse(this.props.editMeeting.dateTime);
-    console.log('DATETIME: ', dateTime);
     dateTime += 3600000
-    console.log('DATETIME: ', dateTime);
-    console.log('MEETING DATE: ', new Date(dateTime));
-    console.log('TOKEN: ', this.props.authToken);
-    console.log('TEST: ', this.props.test);
   }
   async update() {
     // validate form
@@ -101,29 +94,41 @@ class WorkflowAdd extends Component {
       project: this.state.project,
       attendees: this.state.attendees,
     };
-    console.log('this.state.authToken: ', this.state.authToken);
+    console.log('MEETING: ', meeting);
     const response = await updateMeeting(meeting, this.state.authToken);
-    
+    console.log('response: ', response);
     const updatedMeeting = {
-      id: response.data.id, 
-      key: response.data.id,
+      id: response.data.body.id, 
+      key: response.data.body.id,
       value: {
-        _id: response.data.id, 
-        _rev: response.data.rev,
+        _id: response.data.body.id, 
+        _rev: response.data.body.rev,
         type: 'meeting',
         title: this.state.title,
         purpose: this.state.purpose,
         dateTime: this.state.dateTime,
-        project: this.state.project.name,
+        project: this.state.project,
         attendees: this.state.attendees,
       }
     }
-    const meetings = this.state.meetings.filter(function( obj ) {
-      return obj.id !== response.data.id;
-    });
-    meetings.push(updatedMeeting);
-    this.props.allMeetings(meetings);  
+    // console.log('this.state.meetings: ', this.state.meetings);
+    // const meetings = this.state.meetings.filter(function( obj ) {
+    //   return obj.id !== response.data.id;
+    // });
+    // console.log('this.state.meetings 2: ', this.state.meetings);
+    // meetings.push(updatedMeeting);
+    // this.props.allMeetings(meetings);
+    console.log('updatedMeeting: ', updatedMeeting);  
     
+    console.log('this.state.meetings 1: ', this.state.meetings);
+    let meetings = [...this.state.meetings]
+    const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
+    console.log('meetingIndex: ', meetingIndex);
+    meetings[meetingIndex] = updatedMeeting;
+    console.log('meetings[meetingIndex]: ', meetings[meetingIndex])
+    console.log('this.state.meetings 2: ', this.state.meetings);
+    this.props.allMeetings(meetings);
+
     this.props.setWorkflow('mainPage');
     
   }

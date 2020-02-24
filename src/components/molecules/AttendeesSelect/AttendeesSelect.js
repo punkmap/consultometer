@@ -119,6 +119,7 @@ class AttendeesSelect extends Component {
       possibleAttendees[possibleAttendees.findIndex((pa) => pa.value._id === attendee.value._id)].value = attendee.value;
       let attendees = this.state.attendees;
       attendees[attendees.findIndex((aa) => aa.value._id === attendee.value._id)].value = attendee.value;
+      console.log('this.state.meetings: ', this.state.meeting);
       this.setState({attendees, possibleAttendees, editAttendeeOption: attendee});
     }
   }
