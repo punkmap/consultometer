@@ -129,6 +129,7 @@ class WorkflowAdd extends Component {
               _rev: response.data.body.rev,
               type: 'meeting',
               title: this.state.title,
+              purpose: this.state.purpose,
               dateTime: this.state.dateTime,
               project: this.state.project.name,
               attendees: this.state.attendees,

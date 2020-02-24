@@ -84,6 +84,7 @@ class WorkflowAdd extends Component {
     // validate form
     // save meeting 
     //return to main
+    console.log('UPDATE');
     const meeting = {
       _id: this.state._id,
       _rev: this.state._rev,
@@ -94,6 +95,7 @@ class WorkflowAdd extends Component {
       project: this.state.project,
       attendees: this.state.attendees,
     };
+    console.log("MEETING: ", meeting);
     const response = await updateMeeting(meeting, this.state.authToken);
     const updatedMeeting = {
       id: response.data.body.id, 
@@ -109,6 +111,7 @@ class WorkflowAdd extends Component {
         attendees: this.state.attendees,
       }
     }
+    console.log("UPDATED MEETING: ", updatedMeeting);
     let meetings = [...this.state.meetings]
     const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
     meetings[meetingIndex] = updatedMeeting;

@@ -48,7 +48,8 @@ class MeetingList extends Component {
     this._isMounted = false;
     const timerStopsWatch = watch(store.getState, 'timerStops')
     store.subscribe(timerStopsWatch((newVal, oldVal, objectPath) => {
-        this.timerStop(newVal, oldVal);
+        
+      this.timerStop(newVal, oldVal);
     }))
   }
   componentDidMount() {
@@ -61,23 +62,18 @@ class MeetingList extends Component {
     this.setState({meetings: nextProps.meetings});
   }
   timerStop(newVal, oldVal){
+    console.log('timerStop: ', newVal);
     if (this._isMounted) {
       if (newVal !== oldVal){
         this.timerStops(newVal);
       }
     }
   }
-  // nextPath(path) {
-  //   this.props.history.push(path);
-  // }
   editMeeting(meeting) {
+    console.log("EDITMEETING._rev: ", meeting.value._rev)
     this.props.setWorkflow('editMeeting');
 
     this.props.editMeeting(meeting);
-    
-    // this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
-    //   this.props.increment(this.state.clickCount);
-    // } )
   }
   
   showTimeControls(meeting){
@@ -103,6 +99,7 @@ class MeetingList extends Component {
   }
   async timerStops (val){
     let meeting = {...this.state.meeting};
+    console.log('TIMERSTOPS MEETING: ', meeting);
     Object.keys(val.timerDetails).forEach((key, index) => {
       meeting.value[key] = val.timerDetails[key];
     })
@@ -116,6 +113,7 @@ class MeetingList extends Component {
             _rev: response.data.body.rev,
             type: 'meeting',
             title: meeting.value.title,
+            purpose: meeting.value.purpose,
             dateTime: meeting.value.dateTime,
             durationMS: meeting.value.durationMS,
             durationHMS: meeting.value.durationHMS,
@@ -125,10 +123,13 @@ class MeetingList extends Component {
         }
 
         let meetings = [...this.state.meetings]
-        const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.id);
+        const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
         meetings[meetingIndex] = updatedMeeting;
         this.props.allMeetings(meetings);
-        this.setState({meetings, meeting: updatedMeeting});
+        console.log("updatedMeeting._rev: ", updatedMeeting.value._rev);
+        this.setState({meetings, meeting: updatedMeeting}, () => {
+          console.log("updateMeetings: ", this.state.meetings);
+        });
     }
     
   }
@@ -206,7 +207,7 @@ class MeetingList extends Component {
                   <IconButton 
                     edge="end" 
                     aria-label="delete" 
-                    onClick={() => this.editMeeting(value)}
+                    onClick={() => this.editMeeting(this.state.meetings[index])}
                   >
                     <EditIcon fontSize="small"/>
                   </IconButton>

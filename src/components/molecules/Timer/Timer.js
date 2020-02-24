@@ -112,7 +112,6 @@ class Timer extends Component {
       durationHMS: this.msToHMS(this.state.time),
       cost: Number(this.msToCost(this.state.time)),
     })
-    //TODO ask if they want to stop the meeting if they do they
   }
   pauseTimer() {
     //TODO create switch that makes it so pause has no affect 
