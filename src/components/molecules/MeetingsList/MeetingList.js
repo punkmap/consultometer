@@ -71,7 +71,6 @@ class MeetingList extends Component {
   //   this.props.history.push(path);
   // }
   editMeeting(meeting) {
-    console.log('editMeeting: ', meeting);
     this.props.setWorkflow('editMeeting');
 
     this.props.editMeeting(meeting);

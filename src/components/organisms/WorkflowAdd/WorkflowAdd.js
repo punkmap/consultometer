@@ -122,11 +122,11 @@ class WorkflowAdd extends Component {
     .then((response) => {
         if (response.status === 200) {
           const newMeeting = {
-            id: response.data.id, 
-            key: response.data.id,
+            id: response.data.body.id, 
+            key: response.data.body.id,
             value: {
-              _id: response.data.id, 
-              _rev: response.data.rev,
+              _id: response.data.body.id, 
+              _rev: response.data.body.rev,
               type: 'meeting',
               title: this.state.title,
               dateTime: this.state.dateTime,

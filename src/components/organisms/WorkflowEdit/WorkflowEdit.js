@@ -94,9 +94,7 @@ class WorkflowAdd extends Component {
       project: this.state.project,
       attendees: this.state.attendees,
     };
-    console.log('MEETING: ', meeting);
     const response = await updateMeeting(meeting, this.state.authToken);
-    console.log('response: ', response);
     const updatedMeeting = {
       id: response.data.body.id, 
       key: response.data.body.id,
@@ -111,26 +109,11 @@ class WorkflowAdd extends Component {
         attendees: this.state.attendees,
       }
     }
-    // console.log('this.state.meetings: ', this.state.meetings);
-    // const meetings = this.state.meetings.filter(function( obj ) {
-    //   return obj.id !== response.data.id;
-    // });
-    // console.log('this.state.meetings 2: ', this.state.meetings);
-    // meetings.push(updatedMeeting);
-    // this.props.allMeetings(meetings);
-    console.log('updatedMeeting: ', updatedMeeting);  
-    
-    console.log('this.state.meetings 1: ', this.state.meetings);
     let meetings = [...this.state.meetings]
     const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
-    console.log('meetingIndex: ', meetingIndex);
     meetings[meetingIndex] = updatedMeeting;
-    console.log('meetings[meetingIndex]: ', meetings[meetingIndex])
-    console.log('this.state.meetings 2: ', this.state.meetings);
     this.props.allMeetings(meetings);
-
     this.props.setWorkflow('mainPage');
-    
   }
   render() {
     const { classes } = this.props;
