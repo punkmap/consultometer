@@ -1,0 +1,8 @@
+ssh punkmap@64.225.125.231 <<EOF
+ cd /var/www/html/sites/consultometer/
+ git pull
+ npm install
+ npm run build
+ pm2 restart all
+ exit
+EOF
