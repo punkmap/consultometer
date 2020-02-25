@@ -116,7 +116,7 @@ class WorkflowAdd extends Component {
       'Content-Type': 'application/json',
     }
     const authToken = this.state.authToken;
-    axios.post('http://64.225.125.231:5000/api/meeting', { meeting, authToken }, {
+    axios.post('https://64.225.125.231:5000/api/meeting', { meeting, authToken }, {
         headers: headers,
     })
     .then((response) => {

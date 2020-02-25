@@ -6,7 +6,7 @@ export const updateMeeting = (meeting, authToken) => {
             'Content-Type': 'application/json',
           }
         //axios.put('http://64.225.122.227:5984/consultometer/'+meeting._id, meeting, {  
-        axios.put('http://64.225.125.231:5000/api/meeting/',{ meeting, authToken }, {
+        axios.put('https://64.225.125.231:5000/api/meeting/',{ meeting, authToken }, {
             headers: headers
         })
         .then((response) => {
