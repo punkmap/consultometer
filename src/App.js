@@ -129,7 +129,7 @@ class App extends React.Component {
     }
   }
   async getMeetings (token) {
-    const url = 'http://localhost:5000/api/meetings'
+    const url = 'http://64.225.125.231:5000/api/meetings'
     const params = {token};
     const response = await axios.get(url, {
       params
