@@ -1,12 +1,14 @@
 
 import axios from 'axios';
+
+import { config } from './config'
 export const updateMeeting = (meeting, authToken) => {
     return new Promise((resolve, reject) => {
         const headers = {
             'Content-Type': 'application/json',
           }
         //axios.put('http://64.225.122.227:5984/consultometer/'+meeting._id, meeting, {  
-        axios.put('http://localhost:5000/api/meeting/',{ meeting, authToken }, {
+        axios.put(config.API_URL+'/api/meeting/',{ meeting, authToken }, {
             headers: headers
         })
         .then((response) => {

@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 
 import store from './store'
 import watch from 'redux-watch';
-
+import { config } from './config'
 
 import { editMeeting, allMeetings } from './actions';
 import { red } from "@material-ui/core/colors";
@@ -89,6 +89,9 @@ class App extends React.Component {
   }
   componentDidMount() {
     this._isMounted = true;
+
+
+console.log('CONFIG: ', config);
     if (!this.state.isLoggedIn){
        
     } else {
@@ -129,7 +132,7 @@ class App extends React.Component {
     }
   }
   async getMeetings (token) {
-    const url = 'http://localhost:5000/api/meetings'
+    const url = config.API_URL + '/api/meetings';
     const params = {token};
     const response = await axios.get(url, {
       params
