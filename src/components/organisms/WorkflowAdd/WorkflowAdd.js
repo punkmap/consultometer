@@ -20,6 +20,8 @@ import MeetingTitle from '../../molecules/MeetingTitle'
 import MeetingPurpose from '../../molecules/MeetingPurpose'
 import ProjectSelect from '../../molecules/ProjectSelect'
 import MeetingDateTime from '../../molecules/MeetingDateTime'
+
+import { config } from '../../../config'
 //const history = useHistory();
 const styles = theme => ({
   root: {
@@ -116,7 +118,7 @@ class WorkflowAdd extends Component {
       'Content-Type': 'application/json',
     }
     const authToken = this.state.authToken;
-    axios.post('https://consultometer.api.punkmap.com/api/meeting', { meeting, authToken }, {
+    axios.post(config.API_URL+'/api/meeting', { meeting, authToken }, {
         headers: headers,
     })
     .then((response) => {

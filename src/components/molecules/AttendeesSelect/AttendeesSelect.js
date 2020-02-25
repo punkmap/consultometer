@@ -15,6 +15,8 @@ import axios from 'axios';
 
 import Dialog from '../../atoms/Dialog'
 
+import { config } from '../../../config'
+
 const styles = theme => ({
   root: {
     width: '100%'
@@ -52,7 +54,7 @@ class AttendeesSelect extends Component {
     this._isMounted = false; 
   }
   async getAttendees (token) {
-    const url = 'https://consultometer.api.punkmap.com/api/attendees'
+    const url = config.API_URL+'/api/attendees'
     const params = {token};
     const response = await axios.get(url, {
       params
@@ -83,7 +85,7 @@ class AttendeesSelect extends Component {
       'Content-Type': 'application/json',
     }
     const authToken = this.state.authToken;
-    const response = await axios.post('https://consultometer.api.punkmap.com/api/attendee', { attendee, authToken }, {
+    const response = await axios.post(config.API_URL+'/api/attendee', { attendee, authToken }, {
         headers: headers,
     })
     const newAttendee = {id: response.data.body.id, key: response.data.body.id, value: {...attendee, _id: response.data.body.id, _rev: response.data.body.rev}};
@@ -109,7 +111,7 @@ class AttendeesSelect extends Component {
     attendee.value.name = this.state.editAttendeeName;
     attendee.value.rate = this.state.editAttendeeRate;
     const params = {attendee, authToken}
-    const response = await axios.put('https://consultometer.api.punkmap.com/api/attendee', params, {
+    const response = await axios.put(config.API_URL+'/api/attendee', params, {
         headers: headers,
     })
     attendee.value._rev = response.data.body.rev;
@@ -139,7 +141,7 @@ class AttendeesSelect extends Component {
     }
     const authToken = this.state.authToken;
     const params = {id, rev, authToken}
-    const response = await axios.delete('https://consultometer.api.punkmap.com/api/attendee', {
+    const response = await axios.delete(config.API_URL+'/api/attendee', {
         headers: headers,
         data: {params}
     })

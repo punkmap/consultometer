@@ -12,6 +12,7 @@ import axios from 'axios';
 
 import store from '../../../store';
 import Dialog from '../../atoms/Dialog'
+import { config } from '../../../config'
 
 import { loginAction } from '../../../actions';
 const styles = theme => ({
@@ -88,7 +89,7 @@ class ButtonAppBar extends Component {
         const params = new URLSearchParams();
         params.append('name', this.state.username);
         params.append('password', this.state.password);
-        axios.post('https://consultometer.api.punkmap.com/api/login', params, {
+        axios.post(config.API_URL+'/api/login', params, {
             headers: headers,
         })
         .then((response) => {
