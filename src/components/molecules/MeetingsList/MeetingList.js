@@ -62,7 +62,6 @@ class MeetingList extends Component {
     this.setState({meetings: nextProps.meetings});
   }
   timerStop(newVal, oldVal){
-    console.log('timerStop: ', newVal);
     if (this._isMounted) {
       if (newVal !== oldVal){
         this.timerStops(newVal);
@@ -70,7 +69,6 @@ class MeetingList extends Component {
     }
   }
   editMeeting(meeting) {
-    console.log("EDITMEETING._rev: ", meeting.value._rev)
     this.props.setWorkflow('editMeeting');
 
     this.props.editMeeting(meeting);
@@ -99,7 +97,6 @@ class MeetingList extends Component {
   }
   async timerStops (val){
     let meeting = {...this.state.meeting};
-    console.log('TIMERSTOPS MEETING: ', meeting);
     Object.keys(val.timerDetails).forEach((key, index) => {
       meeting.value[key] = val.timerDetails[key];
     })
@@ -126,10 +123,7 @@ class MeetingList extends Component {
         const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
         meetings[meetingIndex] = updatedMeeting;
         this.props.allMeetings(meetings);
-        console.log("updatedMeeting._rev: ", updatedMeeting.value._rev);
-        this.setState({meetings, meeting: updatedMeeting}, () => {
-          console.log("updateMeetings: ", this.state.meetings);
-        });
+        this.setState({meetings, meeting: updatedMeeting});
     }
     
   }
@@ -174,23 +168,23 @@ class MeetingList extends Component {
               <List dense={true}>
               {this.state.meetings.map((value, index) => {
                 let timeControls;
-                if(this.state.meeting && this.state.meeting.id === value.id){
+                if(this.state.meeting && this.state.meeting.id === this.state.meetings[index].id){
                   timeControls = <Grid item >
-                    <IconButton onClick={(event) => this.startMeeting(event, value)}>
+                    <IconButton onClick={(event) => this.startMeeting(event, this.state.meetings[index])}>
                       <PlayArrowIcon fontSize="small"/>
                     </IconButton>
-                    <IconButton onClick={(event) => this.pauseMeeting(event, value)}>
+                    <IconButton onClick={(event) => this.pauseMeeting(event, this.state.meetings[index])}>
                       <PauseIcon fontSize="small"/>
                     </IconButton>
-                    <IconButton onClick={(event) => this.stopMeeting(event, value)}>
+                    <IconButton onClick={(event) => this.stopMeeting(event, this.state.meetings[index])}>
                       <StopIcon fontSize="small"/>
                     </IconButton>
-                    <IconButton onClick={(event) => this.refreshMeeting(event, value)}>
+                    <IconButton onClick={(event) => this.refreshMeeting(event, this.state.meetings[index])}>
                       <RefreshIcon fontSize="small"/>
                     </IconButton>
                   </Grid>
                 }  
-                return <ListItem key={index} onClick={() => this.showTimeControls(value)}>
+                return <ListItem key={index} onClick={() => this.showTimeControls(this.state.meetings[index])}>
                 <ListItemAvatar>
                   <Avatar>
                     <TodayIcon />
