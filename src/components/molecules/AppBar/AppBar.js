@@ -151,7 +151,7 @@ class ButtonAppBar extends Component {
                 <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                 </IconButton>
                 <Typography variant="h6" className={classes.title}>
-                    {'Consultometer'}
+                    {'consult-o-meter'}
                 </Typography>
                 {authButton}
             </Toolbar>
