@@ -7,8 +7,6 @@ ssh punkmap@64.225.125.231 <<EOF
  
  tee >(logger) <<< "*****NG BUILD START*****"
  npm run build
- tee >(logger) <<< "*****PM2 RESTART*****"
- pm2 restart all
  tee >(logger) <<< "*****DEPLOY FINISHED*****"
  exit
 EOF
