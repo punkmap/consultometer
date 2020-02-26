@@ -1,8 +1,14 @@
 ssh punkmap@64.225.125.231 <<EOF
+ echo 'LET'S GET STARTED'
  cd /var/www/html/sites/consultometer/
+ echo 'IN DIRECTORY'
  git pull
+ echo 'GIT PULLED'
  npm install
+ echo 'NPM INSTALLED'
  npm run build
+ echo 'NPM BUILT'
  pm2 restart all
+ echo 'PM2 RESTARTED'
  exit
 EOF
