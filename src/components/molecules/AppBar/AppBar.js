@@ -95,16 +95,14 @@ class ButtonAppBar extends Component {
         .then((response) => {
             if (response.status === 200) {
                 const token = response.data.token
-                console.log('STATUS: ', response.data.status);
+                console.log('TO STATUS : ', response.data.status);
                 this.props.loginAction({loggedIn: true, token});
             }
         })
         .catch((error) => {
             console.error(error);
         })
-
     }
-    
     this.setState({dialogOpen: false});
   }
   render() {
