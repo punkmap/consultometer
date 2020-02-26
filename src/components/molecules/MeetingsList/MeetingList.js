@@ -1,21 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from "react-router-dom";
 import watch from 'redux-watch';
+
 import List from '@material-ui/core/List';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import TodayIcon from '@material-ui/icons/Today';
-import EditIcon from '@material-ui/icons/Edit';
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -25,10 +15,11 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import StopIcon from '@material-ui/icons/Stop';
 import { withStyles } from '@material-ui/core/styles';
 
-import moment from 'moment';
 
 import store from '../../../store';
 import { updateMeeting } from '../../../util'
+
+import MeetingCard from '../MeetingCard'
 
 import { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops } from '../../../actions';
 const styles = theme => ({
@@ -38,7 +29,10 @@ const styles = theme => ({
   scroll: {
     maxHeight: '30vh',
     overflow: 'auto'
-  } 
+  },
+  box: {
+    minWidth: '1000px'
+  }
 });
 
 class MeetingList extends Component {
@@ -87,6 +81,7 @@ class MeetingList extends Component {
   }
   startMeeting(event, meeting){
     event.stopPropagation();
+    this.setState({meeting});
     this.props.startMeeting();
     //event.preventDefault();
   }
@@ -95,7 +90,6 @@ class MeetingList extends Component {
     this.props.pauseMeeting();
   }
   stopMeeting(event, meeting){
-    
     event.stopPropagation();
     this.props.stopMeeting();
   }
@@ -171,53 +165,34 @@ class MeetingList extends Component {
             <div className={classes.scroll}> 
               <List dense={true}>
               {this.state.meetings.map((value, index) => {
-                let timeControls;
-                if(this.state.meeting && this.state.meeting.id === this.state.meetings[index].id){
-                  timeControls = <Grid item >
-                    <IconButton onClick={(event) => this.startMeeting(event, this.state.meetings[index])}>
-                      <PlayArrowIcon fontSize="small"/>
-                    </IconButton>
-                    <IconButton onClick={(event) => this.pauseMeeting(event, this.state.meetings[index])}>
-                      <PauseIcon fontSize="small"/>
-                    </IconButton>
-                    <IconButton onClick={(event) => this.stopMeeting(event, this.state.meetings[index])}>
-                      <StopIcon fontSize="small"/>
-                    </IconButton>
-                    <IconButton onClick={(event) => this.refreshMeeting(event, this.state.meetings[index])}>
-                      <RefreshIcon fontSize="small"/>
-                    </IconButton>
-                  </Grid>
-                }  
-                return <Card variant="outlined" key={index}>
-                <CardContent>
-                  <ListItem key={index} onClick={() => this.showTimeControls(this.state.meetings[index])}>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <TodayIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <Grid item>
-                      <Typography variant="h6">{value.value.project}</Typography>
-                      <Typography variant="body2">{value.value.title}</Typography>
-                      <Typography variant="body2" color="textSecondary">{moment(value.value.dateTime).format("MM-DD-YY HH:mm")}</Typography>
-                      {timeControls}
-                    </Grid>
-                    
-                    <ListItemSecondaryAction>
-                      <IconButton 
-                        edge="end" 
-                        aria-label="delete" 
-                        onClick={() => this.editMeeting(this.state.meetings[index])}
-                      >
-                        <EditIcon fontSize="small"/>
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Learn More</Button>
-                </CardActions>
-              </Card> 
+                // let timeControls;
+                // if(this.state.meeting && this.state.meeting.id === this.state.meetings[index].id){
+                //   timeControls = <div>
+                //     <IconButton onClick={(event) => this.startMeeting(event, this.state.meetings[index])}>
+                //       <PlayArrowIcon fontSize="small"/>
+                //     </IconButton>
+                //     <IconButton onClick={(event) => this.pauseMeeting(event, this.state.meetings[index])}>
+                //       <PauseIcon fontSize="small"/>
+                //     </IconButton>
+                //     <IconButton onClick={(event) => this.stopMeeting(event, this.state.meetings[index])}>
+                //       <StopIcon fontSize="small"/>
+                //     </IconButton>
+                //     <IconButton onClick={(event) => this.refreshMeeting(event, this.state.meetings[index])}>
+                //       <RefreshIcon fontSize="small"/>
+                //     </IconButton>
+                //   </div>
+                // }  
+                return <MeetingCard 
+                          key={'meetingCard'+index} 
+                          keyIndex={index}
+                          cardValue={value.value}
+                          meetings={this.state.meetings}
+                          editMeeting={this.editMeeting.bind(this)}
+                          startMeeting={this.startMeeting.bind(this)}
+                          pauseMeeting={this.pauseMeeting.bind(this)}
+                          stopMeeting={this.stopMeeting.bind(this)}
+                          refreshMeeting={this.refreshMeeting.bind(this)}
+                        /> 
               })}
               </List>
             </div>

@@ -39,6 +39,7 @@ class Timer extends Component {
     }))
     const timerWatch = watch(store.getState, 'timerAction')
     store.subscribe(timerWatch((newVal, oldVal, objectPath) => {
+        console.log('TIMERACTION ACTION: ', newVal.timerAction);
         this.parseTimerAction(newVal.timerAction);
     }))
   }
