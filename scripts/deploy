@@ -1,14 +1,11 @@
 ssh punkmap@64.225.125.231 <<EOF
- echo 'LET'S GET STARTED'
  cd /var/www/html/sites/consultometer/
- echo 'IN DIRECTORY'
+ tee >(logger) <<< "*****GIT PULL START*****"
  git pull
- echo 'GIT PULLED'
+ tee >(logger) <<< "*****NPM INSTALL START*****"
  npm install
- echo 'NPM INSTALLED'
- npm run build
- echo 'NPM BUILT'
- pm2 restart all
- echo 'PM2 RESTARTED'
+ tee >(logger) <<< "*****NG BUILD START*****"
+ /usr/local/bin/ng build
+ tee >(logger) <<< "*****DEPLOY NG8MAP END*****"
  exit
 EOF
