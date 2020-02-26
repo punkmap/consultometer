@@ -80,11 +80,10 @@ class WorkflowAdd extends Component {
   }
   formValidation() {
       const titleValid = this.state.title.length > 0;
-      const purposeValid = this.state.purpose.length > 0;
       const dateTimeValid = this.state.timesDateTimeChanged > 0;
       const projectValid = this.state.project.name.length > 0;
       const attendeesValid = this.state.attendees.length > 0;
-    if(titleValid && purposeValid && dateTimeValid && projectValid && attendeesValid) {
+    if(titleValid && dateTimeValid && projectValid && attendeesValid) {
       this.setState({formValidated: true});
     } else {
       if (this.state.formValidated === true){
