@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import watch from 'redux-watch';
 import List from '@material-ui/core/List';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -184,29 +188,36 @@ class MeetingList extends Component {
                     </IconButton>
                   </Grid>
                 }  
-                return <ListItem key={index} onClick={() => this.showTimeControls(this.state.meetings[index])}>
-                <ListItemAvatar>
-                  <Avatar>
-                    <TodayIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <Grid item>
-                  <Typography variant="h6">{value.value.project}</Typography>
-                  <Typography variant="body2">{value.value.title}</Typography>
-                  <Typography variant="body2" color="textSecondary">{moment(value.value.dateTime).format("MM-DD-YY HH:mm")}</Typography>
-                  {timeControls}
-                </Grid>
-                
-                <ListItemSecondaryAction>
-                  <IconButton 
-                    edge="end" 
-                    aria-label="delete" 
-                    onClick={() => this.editMeeting(this.state.meetings[index])}
-                  >
-                    <EditIcon fontSize="small"/>
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
+                return <Card variant="outlined" key={index}>
+                <CardContent>
+                  <ListItem key={index} onClick={() => this.showTimeControls(this.state.meetings[index])}>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <TodayIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <Grid item>
+                      <Typography variant="h6">{value.value.project}</Typography>
+                      <Typography variant="body2">{value.value.title}</Typography>
+                      <Typography variant="body2" color="textSecondary">{moment(value.value.dateTime).format("MM-DD-YY HH:mm")}</Typography>
+                      {timeControls}
+                    </Grid>
+                    
+                    <ListItemSecondaryAction>
+                      <IconButton 
+                        edge="end" 
+                        aria-label="delete" 
+                        onClick={() => this.editMeeting(this.state.meetings[index])}
+                      >
+                        <EditIcon fontSize="small"/>
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                </CardContent>
+                <CardActions>
+                  <Button size="small">Learn More</Button>
+                </CardActions>
+              </Card> 
               })}
               </List>
             </div>

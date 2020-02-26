@@ -23,7 +23,6 @@ class MeetingPurpose extends Component {
     return (
       <div className={classes.root}>
         <TextField
-          error={!this.props.purpose.length}
           className={classes.textField} 
           id="standard-basic" 
           label="Meeting Purpose" 
