@@ -191,8 +191,8 @@ class MeetingList extends Component {
                   </Avatar>
                 </ListItemAvatar>
                 <Grid item>
-                  <Typography variant="body2">Project: {value.value.project}</Typography>
-                  <Typography variant="body2">Title: {value.value.title}</Typography>
+                  <Typography variant="h6">{value.value.project}</Typography>
+                  <Typography variant="body2">{value.value.title}</Typography>
                   <Typography variant="body2" color="textSecondary">{moment(value.value.dateTime).format("MM-DD-YY HH:mm")}</Typography>
                   {timeControls}
                 </Grid>
