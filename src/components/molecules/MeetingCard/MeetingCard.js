@@ -25,6 +25,8 @@ import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
 
@@ -160,6 +162,11 @@ export default function RecipeReviewCard(props) {
                           <Typography variant="body2" className={classes.timer}> {msToHMS(time)}</Typography>
                           <Typography variant="body2" className={classes.cost}>${msToCost(time)}</Typography>
                       </Grid>
+                      <Grid item >
+                          <Typography variant="body2">A/V</Typography>
+                          <Typography variant="body2" className={classes.timer}> {msToHMS(time)}</Typography>
+                          <Typography variant="body2" className={classes.cost}>${msToCost(time)}</Typography>
+                      </Grid>
                     </Grid>
                 </Grid>
                 
@@ -188,7 +195,10 @@ export default function RecipeReviewCard(props) {
                 <StopIcon fontSize="small"/>
             </IconButton>
             <IconButton onClick={(event) => props.refreshMeeting(event, props.meetings[props.keyIndex])}>
-            <RefreshIcon fontSize="small"/>
+                <RefreshIcon fontSize="small"/>
+            </IconButton>
+            <FormControlLabel control={<Switch value="checkedC" color="primary"/>} label="A/V" />
+            <IconButton
             className={clsx(classes.expand, {
                 [classes.expandOpen]: expanded,
             })}
