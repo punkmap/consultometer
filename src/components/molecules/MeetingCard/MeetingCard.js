@@ -96,6 +96,9 @@ export default function RecipeReviewCard(props) {
         //setTimerRunning(true);
     // }
   };
+  const stopAV = () => {
+    
+  }
   const [rate, setRate] = useState(props.meetings[props.keyIndex].value.attendees.reduce(function(prev, cur) {
     return Number(prev) + Number(cur.value.rate);
 }, 0));
