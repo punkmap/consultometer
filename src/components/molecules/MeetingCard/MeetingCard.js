@@ -1,8 +1,9 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import clsx from 'clsx';
 import moment from 'moment';
 
+import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -24,6 +25,10 @@ import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import blue from '@material-ui/core/colors/blue';
+import green from '@material-ui/core/colors/green';
+
+import { timerStops } from '../../../actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,16 +48,87 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     backgroundColor: red[500],
   },
-
+  timer: {
+    color: blue[700],
+  },
+  cost: {
+    color: green[700],
+  }
 }));
-
+let aTimer;
 export default function RecipeReviewCard(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
+  const dispatch = useDispatch();
+  const [expanded, setExpanded] = useState(false);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [time, setTime] = useState(props.meetings[props.keyIndex].value.durationMS);
+  const [timer, setTimer] = useState();
+  const [start, setStart] = useState(Date.now() - props.meetings[props.keyIndex].value.durationMS);
+  useEffect(() => {
+    console.log('StartSet: ', start);
+  }, [start]);
+  const [rate, setRate] = useState(props.meetings[props.keyIndex].value.attendees.reduce(function(prev, cur) {
+    return Number(prev) + Number(cur.value.rate);
+}, 0));
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  //rate callback here
+  const startMeeting = (meeting) => {
+    //const meeting = props.meetings[props.keyIndex];
+    const timeNow=Date.now()-time;
+    if(timerRunning){
+        clearInterval(timer);
+        setTimerRunning(false);
+    }else{
+        setTimer(setInterval(()=>{setTime(Date.now()-timeNow)},1000));
+        setTimerRunning(true);
+    }
+  };
+  const pauseMeeting = (meeting) => {
+    if (timerRunning) {
 
+        console.log('PAUSE START: ', Date(start));
+        clearInterval(timer);
+        setTimerRunning(false);
+    } 
+    else {
+        startMeeting(meeting);
+    }
+  }
+
+  const stopMeeting = (meeting) => {
+    setTimerRunning(false);
+    clearInterval(timer);
+    dispatch(timerStops({
+      meeting,
+      timer: {
+        durationMS: time,
+        durationHMS: msToHMS(time),
+        cost: Number(msToCost(time)),
+      }
+    }));
+  }
+  const msToHMS = ( ms ) => {
+    // 1- Convert to seconds:
+    var seconds = ms / 1000;
+    // 2- Extract hours:
+    var hours = parseInt( seconds / 3600 ); // 3,600 seconds in 1 hour
+    seconds = Math.round(seconds % 3600); // seconds remaining after extracting hours
+    // 3- Extract minutes:
+    var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
+    // 4- Keep only seconds not extracted to minutes:
+    seconds = seconds % 60;
+    //make double digits for single digit numbers. 
+    seconds = seconds.toString().length === 1 ? '0' + seconds : seconds
+    minutes = minutes.toString().length === 1 ? '0' + minutes : minutes
+    hours = hours.toString().length === 1 ? '0' + hours : hours
+    console.log('seconds.length: ', seconds.toString().length);
+    return hours+":"+ minutes+":"+seconds;
+}
+  const msToCost = ( ms ) => {
+  return (rate * ms/3600000).toFixed(2);
+}
   return (
     <Card className={classes.root} key={'card'+props.keyIndex}>
       <Paper>
@@ -78,8 +154,15 @@ export default function RecipeReviewCard(props) {
                 <Grid item >
                     <Typography variant="body2">{props.cardValue.title}</Typography>
                     <Typography variant="body2" color="textSecondary">{props.cardValue.purpose}</Typography>
-                    {/* {props.timeControls} */}
+                    <Grid container direction="row" justify="space-between">
+                      <Grid item >
+                          <Typography variant="body2">Total</Typography>
+                          <Typography variant="body2" className={classes.timer}> {msToHMS(time)}</Typography>
+                          <Typography variant="body2" className={classes.cost}>${msToCost(time)}</Typography>
+                      </Grid>
+                    </Grid>
                 </Grid>
+                
                 
                 <ListItemSecondaryAction>
                     <IconButton 
@@ -93,19 +176,19 @@ export default function RecipeReviewCard(props) {
             </ListItem>
         </CardContent>
         <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
-            <IconButton onClick={(event) => props.startMeeting(event, props.meetings[props.keyIndex])}>
+        
+            <IconButton onClick={(event) => startMeeting(props.meetings[props.keyIndex])}>
+            {/* <IconButton onClick={(event) => handleStartClick()}> */}
                 <PlayArrowIcon fontSize="small"/>
             </IconButton>
-            <IconButton onClick={(event) => props.pauseMeeting(event, props.meetings[props.keyIndex])}>
+            <IconButton onClick={(event) => pauseMeeting(props.meetings[props.keyIndex])}>
                 <PauseIcon fontSize="small"/>
             </IconButton>
-            <IconButton onClick={(event) => props.stopMeeting(event, props.meetings[props.keyIndex])}>
+            <IconButton onClick={(event) => stopMeeting(props.meetings[props.keyIndex])}>
                 <StopIcon fontSize="small"/>
             </IconButton>
             <IconButton onClick={(event) => props.refreshMeeting(event, props.meetings[props.keyIndex])}>
-                <RefreshIcon fontSize="small"/>
-            </IconButton>
-            <IconButton
+            <RefreshIcon fontSize="small"/>
             className={clsx(classes.expand, {
                 [classes.expandOpen]: expanded,
             })}

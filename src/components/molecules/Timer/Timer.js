@@ -96,6 +96,8 @@ class Timer extends Component {
         isOn: true,
         time: this.state.time,
         start: Date.now() - this.state.time
+      }, () => {
+        console.log('TIMER STATE ISON: ', this.state.isOn);
       })
       this.timer = setInterval(() => this.setState({
         time: Date.now() - this.state.start

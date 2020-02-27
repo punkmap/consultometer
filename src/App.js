@@ -40,7 +40,7 @@ const styles = theme => ({
 function LoggedIn (props) {
   return <Fragment>
     <Grid item xs={12}>
-      <Timer/>  
+      {/* <Timer/>   */}
     </Grid>
     <Grid item xs={12}>
       <Typography variant="h4" gutterBottom>

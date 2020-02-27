@@ -46,7 +46,7 @@ class MeetingList extends Component {
     this._isMounted = false;
     const timerStopsWatch = watch(store.getState, 'timerStops')
     store.subscribe(timerStopsWatch((newVal, oldVal, objectPath) => {
-        
+      console.log('TIMERSTOPS newVal: ', newVal);  
       this.timerStop(newVal, oldVal);
     }))
   }
@@ -94,9 +94,10 @@ class MeetingList extends Component {
     this.props.stopMeeting();
   }
   async timerStops (val){
-    let meeting = {...this.state.meeting};
-    Object.keys(val.timerDetails).forEach((key, index) => {
-      meeting.value[key] = val.timerDetails[key];
+    let meeting = {...val.timerDetails.meeting};
+    console.log('MEETING: ', meeting);
+    Object.keys(val.timerDetails.timer).forEach((key, index) => {
+      meeting.value[key] = val.timerDetails.timer[key];
     })
     const response = await updateMeeting(meeting.value, this.state.authToken)
     if (this._isMounted){
