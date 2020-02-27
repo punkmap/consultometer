@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 
 import { connect } from 'react-redux';
-import { withRouter } from "react-router-dom";
 import axios from 'axios';
 
 
@@ -108,6 +106,9 @@ class WorkflowAdd extends Component {
       type: 'meeting',
       title: this.state.title,
       purpose: this.state.purpose,
+      durationMS: 0,
+      durationAVMS: 0,
+      durationHMS: '',
       dateTime: this.state.dateTime,
       project: this.state.project.name,
       attendees: this.state.attendees,

@@ -27,6 +27,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import CheckIcon from '@material-ui/icons/Check';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
 
@@ -50,6 +52,9 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     backgroundColor: red[500],
   },
+  switchControl: {
+    marginLeft: 'auto',
+  },
   timer: {
     color: blue[700],
   },
@@ -57,18 +62,40 @@ const useStyles = makeStyles(theme => ({
     color: green[700],
   }
 }));
-let aTimer;
 export default function RecipeReviewCard(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
   const [timerRunning, setTimerRunning] = useState(false);
-  const [time, setTime] = useState(props.meetings[props.keyIndex].value.durationMS);
+  const [time, setTime] = useState(props.meetings[props.keyIndex].value.durationMS ? props.meetings[props.keyIndex].value.durationMS : 0);
   const [timer, setTimer] = useState();
+  const [avTime, setAVTime] = useState(props.meetings[props.keyIndex].value.durationAVMS ? props.meetings[props.keyIndex].value.durationAVMS : 0);
+  const [avTimer, setAVTimer] = useState();
   const [start, setStart] = useState(Date.now() - props.meetings[props.keyIndex].value.durationMS);
+  const [switchState, setSwitchState] = useState(false);
   useEffect(() => {
-    console.log('StartSet: ', start);
-  }, [start]);
+    console.log('SWITCHSTATE: ', switchState);
+    if (switchState === true && timerRunning){
+      console.log('start av timer')
+      startAV();
+    } 
+    else if (switchState === false && 
+      timerRunning){
+      console.log('stop av timer')
+    }
+  }, [switchState]);
+  const startAV = () => {
+    //const meeting = props.meetings[props.keyIndex];
+    const timeNow=Date.now()-avTime;
+    // if(timerRunning){
+
+    //     clearInterval(avTimer);
+    //     setTimerRunning(false);
+    // }else{
+        setAVTimer(setInterval(()=>{setAVTime(Date.now()-timeNow)},1000));
+        //setTimerRunning(true);
+    // }
+  };
   const [rate, setRate] = useState(props.meetings[props.keyIndex].value.attendees.reduce(function(prev, cur) {
     return Number(prev) + Number(cur.value.rate);
 }, 0));
@@ -98,7 +125,7 @@ export default function RecipeReviewCard(props) {
         startMeeting(meeting);
     }
   }
-
+  
   const stopMeeting = (meeting) => {
     setTimerRunning(false);
     clearInterval(timer);
@@ -125,12 +152,19 @@ export default function RecipeReviewCard(props) {
     seconds = seconds.toString().length === 1 ? '0' + seconds : seconds
     minutes = minutes.toString().length === 1 ? '0' + minutes : minutes
     hours = hours.toString().length === 1 ? '0' + hours : hours
-    console.log('seconds.length: ', seconds.toString().length);
     return hours+":"+ minutes+":"+seconds;
 }
   const msToCost = ( ms ) => {
-  return (rate * ms/3600000).toFixed(2);
-}
+    return (rate * ms/3600000).toFixed(2);
+  }
+  // const handleAVSwitch = () => {
+  //   console.log('AVSWITCHVAL: ', avSwitchVal);
+  //   setAVSwitchVal(prev => !prev)
+  // }
+  const toggleSwitchState = () => {
+    console.log('CHECKED: ', switchState);
+    setSwitchState(prev => !prev);
+  };
   return (
     <Card className={classes.root} key={'card'+props.keyIndex}>
       <Paper>
@@ -164,8 +198,8 @@ export default function RecipeReviewCard(props) {
                       </Grid>
                       <Grid item >
                           <Typography variant="body2">A/V</Typography>
-                          <Typography variant="body2" className={classes.timer}> {msToHMS(time)}</Typography>
-                          <Typography variant="body2" className={classes.cost}>${msToCost(time)}</Typography>
+                          <Typography variant="body2" className={classes.timer}> {msToHMS(avTime)}</Typography>
+                          <Typography variant="body2" className={classes.cost}>${msToCost(avTime)}</Typography>
                       </Grid>
                     </Grid>
                 </Grid>
@@ -197,7 +231,18 @@ export default function RecipeReviewCard(props) {
             <IconButton onClick={(event) => props.refreshMeeting(event, props.meetings[props.keyIndex])}>
                 <RefreshIcon fontSize="small"/>
             </IconButton>
-            <FormControlLabel control={<Switch value="checkedC" color="primary"/>} label="A/V" />
+            
+
+
+            <FormControlLabel 
+                className={classes.switchControl}
+                control={
+                <Switch size="small" 
+                        checked={switchState} 
+                        onChange={toggleSwitchState} 
+                />} 
+                label="A/V" 
+            />
             <IconButton
             className={clsx(classes.expand, {
                 [classes.expandOpen]: expanded,

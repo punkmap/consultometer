@@ -112,6 +112,7 @@ class MeetingList extends Component {
             purpose: meeting.value.purpose,
             dateTime: meeting.value.dateTime,
             durationMS: meeting.value.durationMS,
+            durationAVMS: meeting.value.durationAVMS,
             durationHMS: meeting.value.durationHMS,
             project: meeting.value.project,
             attendees: meeting.value.attendees,
