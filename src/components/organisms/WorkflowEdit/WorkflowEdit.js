@@ -28,7 +28,11 @@ const styles = theme => ({
   },
   buttonBar: {
     margin: "1rem"
-  }
+  },
+  actionGrid: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+  },
 });
 class WorkflowAdd extends Component {
   constructor(props){
@@ -174,13 +178,17 @@ class WorkflowAdd extends Component {
               updateAttendees={this.updateAttendees.bind(this)}
               readOnly={this.state.readOnly}
             />
-            <Grid item xs={12} className={classes.buttonBar}>
-              <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
-                cancel
-              </Button>
-              <Button variant="contained" color="primary" onClick={this.update.bind(this)}>
-                update
-              </Button>
+            <Grid container className={classes.buttonBar}>
+              <Grid item className={classes.actionGrid}>
+                <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
+                  cancel
+                </Button>
+              </Grid>
+              <Grid item className={classes.actionGrid}>
+                <Button variant="contained" color="primary" onClick={this.update.bind(this)}>
+                  update
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
