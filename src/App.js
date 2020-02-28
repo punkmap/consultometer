@@ -35,22 +35,30 @@ const styles = theme => ({
   buttonBar: {
     margin: "1rem"
   },
+  actionGrid: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+  }
 });
 
 function LoggedIn (props) {
   return <Fragment>
-    <Grid item xs={12}>
+    <Grid container xs={12}>
       {/* <Timer/>   */}
     </Grid>
-    <Grid item xs={12}>
+    <Grid container xs={12}>
       <Typography variant="h4" gutterBottom>
       </Typography>
       
       <MeetingsList meetings={props.meetings} filterMeetings={props.filterMeetings} authToken={props.authToken}></MeetingsList>
     </Grid>
-    <Grid item xs={12} className={props.classes.buttonBar}>
-      <MeetingsAnalyze className={props.classes.buttonBar}/>
-      <MeetingAdd className={props.classes.buttonBar}/>
+    <Grid container  direction="row" justify="center">
+      <Grid item className={props.classes.actionGrid}>
+        <MeetingsAnalyze className={props.classes.buttonBar}/>
+        </Grid>
+      <Grid item className={props.classes.actionGrid}>  
+        <MeetingAdd className={props.classes.buttonBar}/>
+      </Grid>
     </Grid>
   </Fragment>
 }

@@ -23,11 +23,15 @@ import MeetingCard from '../MeetingCard'
 
 import { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops } from '../../../actions';
 const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    margin: '1em',
+  },
   searchbar: {
     width: '100%'
   },
   scroll: {
-    maxHeight: '30vh',
+    maxHeight: '60vh',
     overflow: 'auto'
   },
   box: {
@@ -140,10 +144,8 @@ class MeetingList extends Component {
     const { classes } = this.props;
     
     return (
-        // <div className={classes.root}>
-        <div>
           
-        <Grid container spacing={2}>
+        <Grid container className={classes.root}>
           <Grid item >
             {/* <Typography variant="h6" className={classes.title}> */}
             <Typography variant="h6">
@@ -201,7 +203,6 @@ class MeetingList extends Component {
           </Grid>
         </Grid>
         
-      </div>
     )
   }
 }
