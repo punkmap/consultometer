@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import clsx from 'clsx';
 import moment from 'moment';
@@ -62,67 +62,71 @@ const useStyles = makeStyles(theme => ({
     color: green[700],
   }
 }));
-export default function RecipeReviewCard(props) {
+export default function MeetingCard(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
+  const [rate, setRate] = useState(props.meetings[props.keyIndex].value.attendees.reduce(function(prev, cur) {
+      return Number(prev) + Number(cur.value.rate);
+  }, 0));
   const [timerRunning, setTimerRunning] = useState(false);
   const [time, setTime] = useState(props.meetings[props.keyIndex].value.durationMS ? props.meetings[props.keyIndex].value.durationMS : 0);
   const [timer, setTimer] = useState();
-  const [avTime, setAVTime] = useState(props.meetings[props.keyIndex].value.durationAVMS ? props.meetings[props.keyIndex].value.durationAVMS : 0);
+  const [avTime, setAVTime] = useState(props.meetings[props.keyIndex].value.avDurationMS ? props.meetings[props.keyIndex].value.avDurationMS : 0);
   const [avTimer, setAVTimer] = useState();
+  const avTimerRef = useRef(avTimer);
+  avTimerRef.current = avTimer;
+  const [avTimerRunning, setAVTimerRunning] = useState(false);
+  const avTimerRunningRef = useRef(avTimerRunning);
+  avTimerRunningRef.current = avTimerRunning;
   const [start, setStart] = useState(Date.now() - props.meetings[props.keyIndex].value.durationMS);
   const [switchState, setSwitchState] = useState(false);
-  useEffect(() => {
-    console.log('SWITCHSTATE: ', switchState);
-    if (switchState === true && timerRunning){
-      console.log('start av timer')
-      startAV();
-    } 
-    else if (switchState === false && 
-      timerRunning){
-      console.log('stop av timer')
-    }
-  }, [switchState]);
-  const startAV = () => {
-    //const meeting = props.meetings[props.keyIndex];
-    const timeNow=Date.now()-avTime;
-    // if(timerRunning){
+  const switchStateRef = useRef(switchState);
+  switchStateRef.current = switchState;
+  
+  const startAVTimer = () => {
+    //start the timer for audio visual
 
-    //     clearInterval(avTimer);
-    //     setTimerRunning(false);
-    // }else{
-        setAVTimer(setInterval(()=>{setAVTime(Date.now()-timeNow)},1000));
-        //setTimerRunning(true);
-    // }
+    setAVTimerRunning(true);
+    const timeNow=Date.now()-avTime;
+    setAVTimer(setInterval(()=>{setAVTime(Date.now()-timeNow)},1000));
   };
-  const stopAV = () => {
-    
+  const stopAVTimer = () => {
+    //stop the timer for audio visual
+
+    clearInterval(avTimerRef.current);
+    setAVTimerRunning(false);
   }
-  const [rate, setRate] = useState(props.meetings[props.keyIndex].value.attendees.reduce(function(prev, cur) {
-    return Number(prev) + Number(cur.value.rate);
-}, 0));
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  //rate callback here
   const startMeeting = (meeting) => {
-    //const meeting = props.meetings[props.keyIndex];
+    //start the meeting timer
+    
     const timeNow=Date.now()-time;
     if(timerRunning){
         clearInterval(timer);
         setTimerRunning(false);
     }else{
-        setTimer(setInterval(()=>{setTime(Date.now()-timeNow)},1000));
+        setTimer(setInterval(()=>{
+          setTime(Date.now()-timeNow);
+          //else if to synchronize timers
+          if (switchStateRef.current === true && avTimerRunningRef.current === false){
+            startAVTimer();
+          }
+          else if (switchStateRef.current === false && avTimerRunningRef.current === true){
+            stopAVTimer();
+          }  
+        },1000));
         setTimerRunning(true);
     }
   };
   const pauseMeeting = (meeting) => {
     if (timerRunning) {
-
-        console.log('PAUSE START: ', Date(start));
         clearInterval(timer);
         setTimerRunning(false);
+        clearInterval(avTimer);
+        setAVTimerRunning(false);
     } 
     else {
         startMeeting(meeting);
@@ -130,26 +134,31 @@ export default function RecipeReviewCard(props) {
   }
   
   const stopMeeting = (meeting) => {
-    setTimerRunning(false);
     clearInterval(timer);
+    setTimerRunning(false);
+    clearInterval(avTimer);
+    setAVTimerRunning(false);
     dispatch(timerStops({
       meeting,
       timer: {
         durationMS: time,
         durationHMS: msToHMS(time),
         cost: Number(msToCost(time)),
+        avDurationMS: avTime,
+        avDurationHMS: msToHMS(avTime),
+        avCost: Number(msToCost(avTime)),
       }
     }));
   }
   const msToHMS = ( ms ) => {
-    // 1- Convert to seconds:
+    //Convert to seconds:
     var seconds = ms / 1000;
-    // 2- Extract hours:
+    //Extract hours:
     var hours = parseInt( seconds / 3600 ); // 3,600 seconds in 1 hour
     seconds = Math.round(seconds % 3600); // seconds remaining after extracting hours
-    // 3- Extract minutes:
+    //Extract minutes:
     var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
-    // 4- Keep only seconds not extracted to minutes:
+    //Keep only seconds not extracted to minutes:
     seconds = seconds % 60;
     //make double digits for single digit numbers. 
     seconds = seconds.toString().length === 1 ? '0' + seconds : seconds
@@ -160,12 +169,8 @@ export default function RecipeReviewCard(props) {
   const msToCost = ( ms ) => {
     return (rate * ms/3600000).toFixed(2);
   }
-  // const handleAVSwitch = () => {
-  //   console.log('AVSWITCHVAL: ', avSwitchVal);
-  //   setAVSwitchVal(prev => !prev)
-  // }
   const toggleSwitchState = () => {
-    console.log('CHECKED: ', switchState);
+    //change the state of the A/V? switch
     setSwitchState(prev => !prev);
   };
   return (
@@ -186,8 +191,6 @@ export default function RecipeReviewCard(props) {
             title={props.cardValue.project}
             subheader={moment(props.cardValue.dateTime).format("MM-DD-YY HH:mm")}
         />
-        
-        
         <CardContent key={'cardContent'+props.keyIndex}>
             <ListItem key={'li'+props.keyIndex}>
                 <Grid item >
@@ -206,8 +209,6 @@ export default function RecipeReviewCard(props) {
                       </Grid>
                     </Grid>
                 </Grid>
-                
-                
                 <ListItemSecondaryAction>
                     <IconButton 
                         edge="end" 
@@ -220,7 +221,6 @@ export default function RecipeReviewCard(props) {
             </ListItem>
         </CardContent>
         <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
-        
             <IconButton onClick={(event) => startMeeting(props.meetings[props.keyIndex])}>
             {/* <IconButton onClick={(event) => handleStartClick()}> */}
                 <PlayArrowIcon fontSize="small"/>
@@ -234,9 +234,6 @@ export default function RecipeReviewCard(props) {
             <IconButton onClick={(event) => props.refreshMeeting(event, props.meetings[props.keyIndex])}>
                 <RefreshIcon fontSize="small"/>
             </IconButton>
-            
-
-
             <FormControlLabel 
                 className={classes.switchControl}
                 control={
