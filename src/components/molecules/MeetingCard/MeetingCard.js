@@ -67,24 +67,25 @@ export default function MeetingCard(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
-  const [rate, setRate] = useState(props.meetings[props.keyIndex].value.attendees.reduce(function(prev, cur) {
+  const [meeting, setMeeting] = useState(props.meetings[props.keyIndex]);
+  const [rate, setRate] = useState(meeting.value.attendees.reduce(function(prev, cur) {
       return Number(prev) + Number(cur.value.rate);
   }, 0));
   const [timerRunning, setTimerRunning] = useState(false);
-  const [time, setTime] = useState(props.meetings[props.keyIndex].value.durationMS ? props.meetings[props.keyIndex].value.durationMS : 0);
+  const [time, setTime] = useState(meeting.value.durationMS ? meeting.value.durationMS : 0);
   const [timer, setTimer] = useState();
-  const [avTime, setAVTime] = useState(props.meetings[props.keyIndex].value.avDurationMS ? props.meetings[props.keyIndex].value.avDurationMS : 0);
+  const [avTime, setAVTime] = useState(meeting.value.avDurationMS ? meeting.value.avDurationMS : 0);
   const [avTimer, setAVTimer] = useState();
   const avTimerRef = useRef(avTimer);
   avTimerRef.current = avTimer;
   const [avTimerRunning, setAVTimerRunning] = useState(false);
   const avTimerRunningRef = useRef(avTimerRunning);
   avTimerRunningRef.current = avTimerRunning;
-  const [start, setStart] = useState(Date.now() - props.meetings[props.keyIndex].value.durationMS);
+  const [start, setStart] = useState(Date.now() - meeting.value.durationMS);
   const [switchState, setSwitchState] = useState(false);
   const switchStateRef = useRef(switchState);
   switchStateRef.current = switchState;
-  
+
   const startAVTimer = () => {
     //start the timer for audio visual
 
@@ -101,6 +102,12 @@ export default function MeetingCard(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  const saveText = (textInfo) => {
+    console.log('SAVETEXT TEXTINFO: ', textInfo);
+    console.log('meeting.value.purpose: ', meeting.value.purpose);
+    console.log('meeting.value._id: ', meeting.value._id);
+    
+  }
   const startMeeting = (meeting) => {
     //start the meeting timer
     
@@ -214,7 +221,7 @@ export default function MeetingCard(props) {
                     <IconButton 
                         edge="end" 
                         aria-label="delete" 
-                        onClick={() => props.editMeeting(props.meetings[props.keyIndex])}
+                        onClick={() => props.editMeeting(meeting)}
                     >
                         <EditIcon fontSize="small"/>
                     </IconButton>
@@ -222,17 +229,17 @@ export default function MeetingCard(props) {
             </ListItem>
         </CardContent>
         <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
-            <IconButton onClick={(event) => startMeeting(props.meetings[props.keyIndex])}>
+            <IconButton onClick={(event) => startMeeting(meeting)}>
             {/* <IconButton onClick={(event) => handleStartClick()}> */}
                 <PlayArrowIcon fontSize="small"/>
             </IconButton>
-            <IconButton onClick={(event) => pauseMeeting(props.meetings[props.keyIndex])}>
+            <IconButton onClick={(event) => pauseMeeting(meeting)}>
                 <PauseIcon fontSize="small"/>
             </IconButton>
-            <IconButton onClick={(event) => stopMeeting(props.meetings[props.keyIndex])}>
+            <IconButton onClick={(event) => stopMeeting(meeting)}>
                 <StopIcon fontSize="small"/>
             </IconButton>
-            <IconButton onClick={(event) => props.refreshMeeting(event, props.meetings[props.keyIndex])}>
+            <IconButton onClick={(event) => props.refreshMeeting(event, meeting)}>
                 <RefreshIcon fontSize="small"/>
             </IconButton>
             <FormControlLabel 
@@ -257,7 +264,10 @@ export default function MeetingCard(props) {
         </CardActions>
         <Collapse key={'collapse'+props.keyIndex} in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-            <TextEditor></TextEditor>
+            <TextEditor 
+              saveText={saveText}
+              meeting={meeting}
+            ></TextEditor>
             </CardContent>
         </Collapse>
       </Paper>

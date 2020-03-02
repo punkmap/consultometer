@@ -52,7 +52,11 @@ class MeetingList extends Component {
     store.subscribe(timerStopsWatch((newVal, oldVal, objectPath) => {
       console.log('TIMERSTOPS newVal: ', newVal);  
       this.timerStop(newVal, oldVal);
-    }))
+    }));
+    const saveNoteWatch = watch(store.getState, 'saveNote')
+    store.subscribe(saveNoteWatch((newVal, oldVal, objectPath) => {
+      this.saveNote(newVal, oldVal);
+    }));
   }
   componentDidMount() {
     this._isMounted = true; 
@@ -66,7 +70,10 @@ class MeetingList extends Component {
   timerStop(newVal, oldVal){
     if (this._isMounted) {
       if (newVal !== oldVal){
-        this.timerStops(newVal);
+        console.log(newVal)
+        const meeting = {...newVal.timerDetails.meeting};
+        const updateVals = {...newVal.timerDetails.timer}; 
+        this.saveMeeting(meeting, updateVals);
       }
     }
   }
@@ -97,13 +104,22 @@ class MeetingList extends Component {
     event.stopPropagation();
     this.props.stopMeeting();
   }
-  async timerStops (val){
-    let meeting = {...val.timerDetails.meeting};
-    console.log('MEETING: ', meeting);
-    Object.keys(val.timerDetails.timer).forEach((key, index) => {
-      meeting.value[key] = val.timerDetails.timer[key];
+  saveNote (newVal, oldVal) {
+    if (newVal !== oldVal) {
+      const meeting = this.state.meetings.filter((meeting) => {
+        return meeting.value._id === newVal.contentBlock.meeting.value._id;
+      })[0];
+      const updateVals = { meetingNotes: newVal.contentBlock.contentBlock};
+      this.saveMeeting(meeting, updateVals);
+    }  
+  }
+  async saveMeeting (meeting, updateVals){
+    console.log(updateVals);
+    Object.keys(updateVals).forEach((key, index) => {
+      meeting.value[key] = updateVals[key];
     })
     const response = await updateMeeting(meeting.value, this.state.authToken)
+    console.log()
     if (this._isMounted){
           const updatedMeeting = {
           id: response.data.body.id, 
@@ -122,14 +138,13 @@ class MeetingList extends Component {
             attendees: meeting.value.attendees,
           }
         }
-
+        console.log('updatedMeeting: ', updatedMeeting);
         let meetings = [...this.state.meetings]
         const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
         meetings[meetingIndex] = updatedMeeting;
         this.props.allMeetings(meetings);
         this.setState({meetings, meeting: updatedMeeting});
     }
-    
   }
   refreshMeeting(event, meeting){
     event.stopPropagation();

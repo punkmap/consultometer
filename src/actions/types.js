@@ -10,4 +10,5 @@ export const ADD_MEETINGS = 'ADD_MEETINGS';
 export const TIMER_ACTION = 'TIMER_ACTION';
 export const TIMER_STOPS = 'TIMER_STOPS';
 export const LOGIN_ACTION = 'LOGIN_ACTION';
+export const SAVE_NOTE = 'SAVE_NOTE';
 

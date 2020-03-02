@@ -1,6 +1,6 @@
 
 import React, { Fragment } from 'react';
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertToRaw, convertFromRaw} from 'draft-js';
 import IconButton from '@material-ui/core/IconButton';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
@@ -10,14 +10,33 @@ import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import CodeIcon from '@material-ui/icons/Code';
 import Button from '@material-ui/core/Button';
 
+import { connect } from 'react-redux';
+import { saveNote } from '../../../actions';
 
-export default class RichEditorExample extends React.Component {
+
+class TextEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
-
+    this.state = {
+      editorState: this.props.meeting.value.meetingNotes ? EditorState.createWithContent(convertFromRaw(this.props.meeting.value.meetingNotes)) : EditorState.createEmpty(),
+      lastTimeout: null,
+    };
+    console.log('EDITORSTATE: ', this.state.editorState);
     this.focus = () => this.refs.editor.focus();
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = (editorState) => {
+      this.setState({editorState})
+      if(this.state.lastTimeout) clearTimeout(this.state.lastTimeout)
+      const saveTimeout = setTimeout(() => {
+        //save the text to the user's meeting
+        //props.saveText(editorState.getCurrentContent().getBlocksAsArray());
+        console.log("setTimeout");
+        const contentBlock = convertToRaw(editorState.getCurrentContent())
+        const meeting = {...props.meeting};
+        this.props.saveNote({meeting, contentBlock});
+        clearTimeout(saveTimeout);
+      }, 1000);
+      this.setState({lastTimeout:saveTimeout});
+    };
 
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.onTab = (e) => this._onTab(e);
@@ -30,7 +49,9 @@ export default class RichEditorExample extends React.Component {
   _handleKeyCommand(command) {
     const {editorState} = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
+    console.log('HANDLEKEYCOMMAND NEWSTATE: ', newState);
     if (newState) {
+      console.log('NEWSTATE: ', newState);
       this.onChange(newState);
       return true;
     }
@@ -99,6 +120,8 @@ export default class RichEditorExample extends React.Component {
   }
 }
 
+
+export default connect(null, { saveNote })(TextEditor);
 // Custom overrides for "code" style.
 const styleMap = {
   CODE: {

@@ -1,4 +1,4 @@
-import { INCREMENT, APP_WORKFLOW, ACTIVE_MEETING, EDIT_MEETING, ALL_MEETINGS, TIMER_ACTION, TIMER_STOPS, LOGIN_ACTION } from '../actions/types';
+import { INCREMENT, APP_WORKFLOW, ACTIVE_MEETING, EDIT_MEETING, ALL_MEETINGS, TIMER_ACTION, TIMER_STOPS, LOGIN_ACTION, SAVE_NOTE } from '../actions/types';
 
 
 export const increment = (count) => {
@@ -85,6 +85,14 @@ export const loginAction = (details) => {
     return dispatch => {
         dispatch({
             type: LOGIN_ACTION,
+            payload: details,
+        });
+    };
+};
+export const saveNote = (details) => {
+    return dispatch => {
+        dispatch({
+            type: SAVE_NOTE,
             payload: details,
         });
     };
