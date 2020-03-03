@@ -101,10 +101,7 @@ class WorkflowAdd extends Component {
   componentWillUnmount() {
     this._isMounted = false
   }
-  async save() {
-    // validate form
-    // save meeting 
-    //return to main
+  async addMeeting() {
     const meeting = {
       type: 'meeting',
       title: this.state.title,
@@ -141,7 +138,7 @@ class WorkflowAdd extends Component {
             }
           }
           const newMeetings = [...this.state.meetings, newMeeting];
-          this.props.allMeetings(newMeetings);  
+          this.props.allMeetings(newMeetings.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1));  
         }
     })
     .catch((error) => {
@@ -187,9 +184,9 @@ class WorkflowAdd extends Component {
                   variant="contained" 
                   color="primary" 
                   disabled={!this.state.formValidated}
-                  onClick={this.save.bind(this)}
+                  onClick={this.addMeeting.bind(this)}
                 >
-                  save
+                  add
                 </Button>
               </Grid>
             </Grid>

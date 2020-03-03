@@ -124,7 +124,7 @@ class WorkflowAdd extends Component {
     let meetings = [...this.state.meetings]
     const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
     meetings[meetingIndex] = updatedMeeting;
-    this.props.allMeetings(meetings);
+    this.props.allMeetings(meetings.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1));
     this.props.setWorkflow('mainPage');
   }
   render() {
