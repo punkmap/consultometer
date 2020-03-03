@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 import AppBar from './components/molecules/AppBar'
-import MeetingsList from './components/molecules/MeetingsList'
+import MeetingsListFuture from './components/molecules/MeetingsListFuture'
 import MeetingAdd from './components/molecules/MeetingAdd';
 import MeetingsAnalyze from './components/molecules/MeetingsAnalyze';
 import Timer from './components/molecules/Timer';
@@ -52,7 +52,7 @@ function LoggedIn (props) {
       <Typography variant="h4" gutterBottom>
       </Typography>
       
-      <MeetingsList meetings={props.meetings} filterMeetings={props.filterMeetings} authToken={props.authToken}></MeetingsList>
+      <MeetingsListFuture meetings={props.meetings} filterMeetings={props.filterMeetings} authToken={props.authToken}></MeetingsListFuture>
     </Grid>
     <Grid item xs={12} className={props.classes.buttonBar}>
       <Grid container  direction="row" justify="center">
@@ -145,7 +145,7 @@ console.log('CONFIG: ', config);
     }
   }
   async getMeetings (token) {
-    const url = config.API_URL + '/api/meetings';
+    const url = config.API_URL + '/api/meetings-future';
     const params = {token};
     const response = await axios.get(url, {
       params

@@ -1,1 +1,0 @@
-export { default, default as MeetingsList } from './MeetingList'

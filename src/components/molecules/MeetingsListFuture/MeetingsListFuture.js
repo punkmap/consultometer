@@ -39,7 +39,7 @@ const styles = theme => ({
   }
 });
 
-class MeetingList extends Component {
+class MeetingsListFuture extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -205,5 +205,5 @@ class MeetingList extends Component {
   }
 }
 
-export default withStyles(styles)(connect(null, { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingList));
+export default withStyles(styles)(connect(null, { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingsListFuture));
 

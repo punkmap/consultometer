@@ -13,26 +13,8 @@ import { withRouter } from "react-router-dom";
 
 
 import { setWorkflow } from '../../../actions';
+import MeetingsListAll from '../../molecules/MeetingsListAll'
 
-
-// const useStyles = makeStyles(theme => ({
-//   root: {
-//     flexGrow: 1,
-//   },
-//   paper: {
-//     height: 140,
-//     width: 100,
-//   },
-//   control: {
-//     padding: theme.spacing(2),
-//   },
-// }));
-// const [spacing, setSpacing] = React.useState(2);
-//     const classes = useStyles();
-
-//     const handleChange = event => {
-//       setSpacing(Number(event.target.value));
-//     };
     
 class WorkflowAdd extends Component {
   constructor(props){
@@ -44,13 +26,7 @@ class WorkflowAdd extends Component {
     
   }
 
-  // nextPath(path) {
-  //   this.props.history.push(path);
-  // }
   close() {
-    // validate form
-    // save meeting 
-    //return to main
     this.props.setWorkflow('mainPage');
   }
   render() {
@@ -62,7 +38,7 @@ class WorkflowAdd extends Component {
           alignItems="center"
           style={{ minHeight: '100vh' }}>
           <Typography variant="h4" gutterBottom>
-            Analysis page here
+            <MeetingsListAll/>
           </Typography>
           
           <Button variant="contained" color="primary" onClick={this.close.bind(this)}>
