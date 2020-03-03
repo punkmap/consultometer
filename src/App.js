@@ -127,6 +127,7 @@ console.log('CONFIG: ', config);
   }
   setMeetings(meetings) {
     if (this._isMounted) {
+      console.log('SET MEETINGS: ', meetings);
       this.setState({
           meetings,
           searchMeetings: meetings,
@@ -149,9 +150,11 @@ console.log('CONFIG: ', config);
     const response = await axios.get(url, {
       params
     })
+
+    console.log('GET MEETINGS: ', response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1));
     if (this._isMounted) this.setState({
-      meetings: response.data.body.rows,
-      searchMeetings: response.data.body.rows,
+      meetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
+      searchMeetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
     },() => {
       this.setState({isLoggedIn: true});
     });
