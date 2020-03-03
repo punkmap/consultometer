@@ -33,6 +33,7 @@ import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
 
 import TextEditor from '../../atoms/TextEditor'
+import IconBtn from '../../atoms/IconBtn'
 import { timerStops } from '../../../actions';
 
 const useStyles = makeStyles(theme => ({
@@ -72,6 +73,8 @@ export default function MeetingCard(props) {
       return Number(prev) + Number(cur.value.rate);
   }, 0));
   const [timerRunning, setTimerRunning] = useState(false);
+  const [timerWasStarted, setTimerWasStarted] = useState(false);
+  const [timerPaused, setTimerPaused] = useState(false);
   const [time, setTime] = useState(meeting.value.durationMS ? meeting.value.durationMS : 0);
   const [timer, setTimer] = useState();
   const [avTime, setAVTime] = useState(meeting.value.avDurationMS ? meeting.value.avDurationMS : 0);
@@ -115,6 +118,7 @@ export default function MeetingCard(props) {
     if(timerRunning){
         clearInterval(timer);
         setTimerRunning(false);
+        setTimerWasStarted(false);
     }else{
         setTimer(setInterval(()=>{
           setTime(Date.now()-timeNow);
@@ -127,16 +131,21 @@ export default function MeetingCard(props) {
           }  
         },1000));
         setTimerRunning(true);
+        setTimerPaused(false);
+        setTimerWasStarted(true);
     }
   };
   const pauseMeeting = (meeting) => {
     if (timerRunning) {
         clearInterval(timer);
         setTimerRunning(false);
+        setTimerPaused(true);
+        console.log('setTimerPaused');
         clearInterval(avTimer);
         setAVTimerRunning(false);
     } 
-    else {
+    else if (!timerRunning && timerWasStarted) {
+        setTimerPaused(false);
         startMeeting(meeting);
     }
   }
@@ -146,6 +155,7 @@ export default function MeetingCard(props) {
     setTimerRunning(false);
     clearInterval(avTimer);
     setAVTimerRunning(false);
+    setTimerWasStarted(false);
     dispatch(timerStops({
       meeting,
       timer: {
@@ -229,19 +239,36 @@ export default function MeetingCard(props) {
             </ListItem>
         </CardContent>
         <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
-            <IconButton onClick={(event) => startMeeting(meeting)}>
-            {/* <IconButton onClick={(event) => handleStartClick()}> */}
+            <IconBtn 
+              icon={<PlayArrowIcon fontSize="small"/>} 
+              click={(event) => startMeeting(meeting)}
+              active={timerRunning}
+            />
+            {/* <IconButton onClick={(event) => startMeeting(meeting)}>
                 <PlayArrowIcon fontSize="small"/>
-            </IconButton>
-            <IconButton onClick={(event) => pauseMeeting(meeting)}>
+            </IconButton> */}
+            <IconBtn 
+              icon={<PauseIcon fontSize="small"/>} 
+              click={(event) => pauseMeeting(meeting)}
+              active={timerPaused}
+            />
+            {/* <IconButton onClick={(event) => pauseMeeting(meeting)}>
                 <PauseIcon fontSize="small"/>
-            </IconButton>
-            <IconButton onClick={(event) => stopMeeting(meeting)}>
+            </IconButton> */}
+            <IconBtn 
+              icon={<StopIcon fontSize="small"/>} 
+              click={(event) => stopMeeting(meeting)}
+            />
+            {/* <IconButton onClick={(event) => stopMeeting(meeting)}>
                 <StopIcon fontSize="small"/>
-            </IconButton>
-            <IconButton onClick={(event) => props.refreshMeeting(event, meeting)}>
+            </IconButton> */}
+            <IconBtn 
+              icon={<RefreshIcon fontSize="small"/>} 
+              click={(event) => props.refreshMeeting(event, meeting)}
+            />
+            {/* <IconButton onClick={(event) => props.refreshMeeting(event, meeting)}>
                 <RefreshIcon fontSize="small"/>
-            </IconButton>
+            </IconButton> */}
             <FormControlLabel 
                 className={classes.switchControl}
                 control={

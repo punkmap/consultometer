@@ -184,23 +184,6 @@ class MeetingList extends Component {
             <div className={classes.scroll}> 
               <List dense={true}>
               {this.state.meetings.map((value, index) => {
-                // let timeControls;
-                // if(this.state.meeting && this.state.meeting.id === this.state.meetings[index].id){
-                //   timeControls = <div>
-                //     <IconButton onClick={(event) => this.startMeeting(event, this.state.meetings[index])}>
-                //       <PlayArrowIcon fontSize="small"/>
-                //     </IconButton>
-                //     <IconButton onClick={(event) => this.pauseMeeting(event, this.state.meetings[index])}>
-                //       <PauseIcon fontSize="small"/>
-                //     </IconButton>
-                //     <IconButton onClick={(event) => this.stopMeeting(event, this.state.meetings[index])}>
-                //       <StopIcon fontSize="small"/>
-                //     </IconButton>
-                //     <IconButton onClick={(event) => this.refreshMeeting(event, this.state.meetings[index])}>
-                //       <RefreshIcon fontSize="small"/>
-                //     </IconButton>
-                //   </div>
-                // }  
                 return <MeetingCard 
                           key={'meetingCard'+index} 
                           keyIndex={index}

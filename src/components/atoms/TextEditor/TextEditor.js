@@ -1,30 +1,30 @@
 
-import React, { Fragment } from 'react';
+import React, { Component } from 'react';
 import {Editor, EditorState, RichUtils, convertToRaw, convertFromRaw} from 'draft-js';
+import './TextEditor.css'
 import IconButton from '@material-ui/core/IconButton';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import CodeIcon from '@material-ui/icons/Code';
 import Button from '@material-ui/core/Button';
 
 import { connect } from 'react-redux';
 import { saveNote } from '../../../actions';
-
-
-class TextEditor extends React.Component {
+import IconBtn from '../IconBtn'
+class TextEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      editorState: this.props.meeting.value.meetingNotes ? EditorState.createWithContent(convertFromRaw(this.props.meeting.value.meetingNotes)) : EditorState.createEmpty(),
-      lastTimeout: null,
-    };
-    console.log('EDITORSTATE: ', this.state.editorState);
+    this.state = {editorState: EditorState.createEmpty()};
+
     this.focus = () => this.refs.editor.focus();
     this.onChange = (editorState) => {
-      this.setState({editorState})
+      this.setState({editorState});
+      console.log(editorState.getCurrentContent().getLastBlock().getText());
+      console.log(editorState.getCurrentContent().getLastBlock().getLength())
       if(this.state.lastTimeout) clearTimeout(this.state.lastTimeout)
       const saveTimeout = setTimeout(() => {
         //save the text to the user's meeting
@@ -36,22 +36,21 @@ class TextEditor extends React.Component {
         clearTimeout(saveTimeout);
       }, 1000);
       this.setState({lastTimeout:saveTimeout});
+      if (editorState.getCurrentContent().getLastBlock().getLength() === 0) {
+          
+      }
     };
 
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.onTab = (e) => this._onTab(e);
     this.toggleBlockType = (type) => this._toggleBlockType(type);
-    this.toggleInlineStyle = (style) => {
-      this._toggleInlineStyle(style)
-    };
+    this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
   }
 
   _handleKeyCommand(command) {
     const {editorState} = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
-    console.log('HANDLEKEYCOMMAND NEWSTATE: ', newState);
     if (newState) {
-      console.log('NEWSTATE: ', newState);
       this.onChange(newState);
       return true;
     }
@@ -73,8 +72,6 @@ class TextEditor extends React.Component {
   }
 
   _toggleInlineStyle(inlineStyle) {
-
-    console.log('inlineStyle: ', inlineStyle);
     this.onChange(
       RichUtils.toggleInlineStyle(
         this.state.editorState,
@@ -102,6 +99,10 @@ class TextEditor extends React.Component {
           editorState={editorState}
           onToggle={this.toggleInlineStyle}
         />
+        <BlockStyleControls
+          editorState={editorState}
+          onToggle={this.toggleBlockType}
+        />
         <div className={className} onClick={this.focus}>
           <Editor
             blockStyleFn={getBlockStyle}
@@ -110,7 +111,7 @@ class TextEditor extends React.Component {
             handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             onTab={this.onTab}
-            placeholder="meeting notes here..."
+            placeholder="Tell a story..."
             ref="editor"
             spellCheck={true}
           />
@@ -119,8 +120,6 @@ class TextEditor extends React.Component {
     );
   }
 }
-
-
 export default connect(null, { saveNote })(TextEditor);
 // Custom overrides for "code" style.
 const styleMap = {
@@ -144,7 +143,6 @@ class StyleButton extends React.Component {
     super();
     this.onToggle = (e) => {
       e.preventDefault();
-      console.log('this.props.style: ', this.props.style);
       this.props.onToggle(this.props.style);
     };
   }
@@ -157,62 +155,57 @@ class StyleButton extends React.Component {
 
     return (
       <span className={className} onMouseDown={this.onToggle}>
-        {this.props.label}
+        <IconBtn 
+          icon={this.props.type.icon}
+          active={this.props.active}
+        />
       </span>
-      // <div>
-      //   {this.type.style}
-      //   {/* <IconButton
-          
-      //     onClick={this.onToggle}
-      //   >
-      //     {this.props.type.icon}
-      //   </IconButton> */}
-      // </div>
     );
   }
 }
-class StyleIconButton extends React.Component {
-  constructor() {
-    super();
-    this.onToggle = (e) => {
-      e.preventDefault();
-      console.log('this.props.style: ', this.props.style);
-      this.props.onToggle(this.props.style);
-    };
-  }
+const BLOCK_TYPES = [
+  {label: 'UL', style: 'unordered-list-item', icon: <FormatListBulletedIcon fontSize="small"/>},
+  {label: 'OL', style: 'ordered-list-item', icon: <FormatListNumberedIcon fontSize="small"/>},
+  {label: 'Code Block', style: 'code-block', icon: <CodeIcon fontSize="small"/>},
+];
 
-  render() {
-    let className = 'RichEditor-styleButton';
-    if (this.props.active) {
-      className += ' RichEditor-activeButton';
-    }
+const BlockStyleControls = (props) => {
+  const {editorState} = props;
+  const selection = editorState.getSelection();
+  const blockType = editorState
+    .getCurrentContent()
+    .getBlockForKey(selection.getStartKey())
+    .getType();
 
-    return (
-        <span className={className} onMouseDown={this.onToggle}>
-          <IconButton>
-            {this.props.type.icon}
-          </IconButton>
-        </span>
-    );
-  }
-}
+  return (
+    <div className="RichEditor-controls">
+      {BLOCK_TYPES.map((type) =>
+        <StyleButton
+          key={type.label}
+          type={type}
+          active={type.style === blockType}
+          label={type.label}
+          onToggle={props.onToggle}
+          style={type.style}
+        />
+      )}
+    </div>
+  );
+};
 
-var BUTTON_OBJECTS = [
-  {label: 'Bold', style: 'BOLD', icon: <FormatBoldIcon/>},
-  {label: 'Italic', style: 'ITALIC', icon: <FormatItalicIcon/>},
-  {label: 'Underline', style: 'UNDERLINE', icon: <FormatUnderlinedIcon/>},
-  {label: 'Monospace', style: 'CODE', icon: <CodeIcon/>},
-
-  {label: 'UL', style: 'unordered-list-item', icon: <FormatListBulletedIcon/>},
-  {label: 'OL', style: 'ordered-list-item', icon: <FormatListNumberedIcon/>},
+var INLINE_STYLES = [
+    {label: 'Bold', style: 'BOLD', icon: <FormatBoldIcon fontSize="small"/>},
+    {label: 'Italic', style: 'ITALIC', icon: <FormatItalicIcon fontSize="small"/>},
+    {label: 'Underline', style: 'UNDERLINE', icon: <FormatUnderlinedIcon fontSize="small"/>},
+    //
 ];
 
 const InlineStyleControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
   return (
     <div className="RichEditor-controls">
-      {BUTTON_OBJECTS.map(type =>
-        <StyleIconButton
+      {INLINE_STYLES.map(type =>
+        <StyleButton
           key={type.label}
           type={type}
           active={currentStyle.has(type.style)}
@@ -220,37 +213,8 @@ const InlineStyleControls = (props) => {
           onToggle={props.onToggle}
           style={type.style}
         />
-        // <IconButton
-        //     key={type.label}
-        //     //active={currentStyle.has(type.style)}
-        //     label={type.label}
-        //     value={type.style}
-        //     onClick={() => {props.onToggle(type.style)}}
-        //   >
-        //     {type.icon}
-        //   </IconButton>
       )}
     </div>
-    // <div className="RichEditor-controls">
-    //   {BUTTON_OBJECTS.map(type =>
-    //     <Fragment>
-    //       <StyleButton
-    //       key={type.label}
-    //       active={currentStyle.has(type.style)}
-    //       label={type.label}
-    //       onToggle={props.onToggle}
-    //       style={type.style}
-    //     />
-    //       {/* <IconButton
-    //         key={type.label}
-    //         active={currentStyle.has(type.style)}
-    //         label={type.label}
-    //         onClick={() => {props.onToggle(type.style)}}
-    //       >
-    //         {type.icon}
-    //       </IconButton> */}
-    //     </Fragment>
-    //   )}
-    // </div>
   );
 };
+
