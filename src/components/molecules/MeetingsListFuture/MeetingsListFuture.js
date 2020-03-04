@@ -9,10 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FilterListIcon from '@material-ui/icons/FilterList';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import PauseIcon from '@material-ui/icons/Pause';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import StopIcon from '@material-ui/icons/Stop';
 import { withStyles } from '@material-ui/core/styles';
 
 
@@ -21,7 +17,7 @@ import { updateMeeting } from '../../../util'
 
 import MeetingCard from '../MeetingCard'
 
-import { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops } from '../../../actions';
+import { setWorkflow, futureMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops } from '../../../actions';
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -142,7 +138,7 @@ class MeetingsListFuture extends Component {
         let meetings = [...this.state.meetings]
         const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
         meetings[meetingIndex] = updatedMeeting;
-        this.props.allMeetings(meetings);
+        this.props.futureMeetings(meetings);
         this.setState({meetings, meeting: updatedMeeting});
     }
   }
@@ -205,5 +201,5 @@ class MeetingsListFuture extends Component {
   }
 }
 
-export default withStyles(styles)(connect(null, { setWorkflow, allMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingsListFuture));
+export default withStyles(styles)(connect(null, { setWorkflow, futureMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingsListFuture));
 

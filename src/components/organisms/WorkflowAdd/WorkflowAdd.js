@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 
-import { setWorkflow, allMeetings } from '../../../actions';
+import { setWorkflow, futureMeetings } from '../../../actions';
 
 import AttendeesSelect from '../../molecules/AttendeesSelect'
 import MeetingTitle from '../../molecules/MeetingTitle'
@@ -138,7 +138,7 @@ class WorkflowAdd extends Component {
             }
           }
           const newMeetings = [...this.state.meetings, newMeeting];
-          this.props.allMeetings(newMeetings.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1));  
+          this.props.futureMeetings(newMeetings.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1));  
         }
     })
     .catch((error) => {
@@ -200,4 +200,4 @@ WorkflowAdd.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(connect(null, { setWorkflow, allMeetings })(WorkflowAdd));
+export default withStyles(styles)(connect(null, { setWorkflow, futureMeetings })(WorkflowAdd));

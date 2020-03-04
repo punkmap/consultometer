@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
+import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -62,7 +63,7 @@ const useStyles = makeStyles(theme => ({
   },
   cost: {
     color: green[700],
-  }
+  },
 }));
 export default function MeetingCard(props) {
   const classes = useStyles();
@@ -210,7 +211,7 @@ export default function MeetingCard(props) {
             subheader={moment(props.cardValue.dateTime).format("MM-DD-YY HH:mm")}
         />
         <CardContent key={'cardContent'+props.keyIndex}>
-            <ListItem key={'li'+props.keyIndex}>
+            <ListItem key={'li'+props.keyIndex} >
                 <Grid item >
                     <Typography variant="body2">{props.cardValue.title}</Typography>
                     <Typography variant="body2" color="textSecondary">{props.cardValue.purpose}</Typography>
@@ -227,68 +228,75 @@ export default function MeetingCard(props) {
                       </Grid>
                     </Grid>
                 </Grid>
-                <ListItemSecondaryAction>
-                    <IconButton 
-                        edge="end" 
-                        aria-label="delete" 
-                        onClick={() => props.editMeeting(meeting)}
-                    >
-                        <EditIcon fontSize="small"/>
-                    </IconButton>
-                </ListItemSecondaryAction>
+                <div>{props.infoOnly}</div>
+                <Box display={ props.infoOnly ? "none" : "block" }>
+                  <ListItemSecondaryAction  >
+                      <IconButton 
+                          edge="end" 
+                          aria-label="delete" 
+                          onClick={() => props.editMeeting(meeting)}
+                      >
+                          <EditIcon fontSize="small"/>
+                      </IconButton>
+                  </ListItemSecondaryAction>
+                </Box>
+                
             </ListItem>
         </CardContent>
-        <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
-            <IconBtn 
-              icon={<PlayArrowIcon fontSize="small"/>} 
-              click={(event) => startMeeting(meeting)}
-              active={timerRunning}
-            />
-            {/* <IconButton onClick={(event) => startMeeting(meeting)}>
-                <PlayArrowIcon fontSize="small"/>
-            </IconButton> */}
-            <IconBtn 
-              icon={<PauseIcon fontSize="small"/>} 
-              click={(event) => pauseMeeting(meeting)}
-              active={timerPaused}
-            />
-            {/* <IconButton onClick={(event) => pauseMeeting(meeting)}>
-                <PauseIcon fontSize="small"/>
-            </IconButton> */}
-            <IconBtn 
-              icon={<StopIcon fontSize="small"/>} 
-              click={(event) => stopMeeting(meeting)}
-            />
-            {/* <IconButton onClick={(event) => stopMeeting(meeting)}>
-                <StopIcon fontSize="small"/>
-            </IconButton> */}
-            <IconBtn 
-              icon={<RefreshIcon fontSize="small"/>} 
-              click={(event) => props.refreshMeeting(event, meeting)}
-            />
-            {/* <IconButton onClick={(event) => props.refreshMeeting(event, meeting)}>
-                <RefreshIcon fontSize="small"/>
-            </IconButton> */}
-            <FormControlLabel 
-                className={classes.switchControl}
-                control={
-                <Switch size="small" 
-                        checked={switchState} 
-                        onChange={toggleSwitchState} 
-                />} 
-                label="A/V" 
-            />
-            <IconButton
-            className={clsx(classes.expand, {
-                [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-            >
-            <ExpandMoreIcon />
-            </IconButton>
-        </CardActions>
+        <Box display={ props.infoOnly ? "none" : "block" }>
+          <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
+              <IconBtn 
+                icon={<PlayArrowIcon fontSize="small"/>} 
+                click={(event) => startMeeting(meeting)}
+                active={timerRunning}
+              />
+              {/* <IconButton onClick={(event) => startMeeting(meeting)}>
+                  <PlayArrowIcon fontSize="small"/>
+              </IconButton> */}
+              <IconBtn 
+                icon={<PauseIcon fontSize="small"/>} 
+                click={(event) => pauseMeeting(meeting)}
+                active={timerPaused}
+              />
+              {/* <IconButton onClick={(event) => pauseMeeting(meeting)}>
+                  <PauseIcon fontSize="small"/>
+              </IconButton> */}
+              <IconBtn 
+                icon={<StopIcon fontSize="small"/>} 
+                click={(event) => stopMeeting(meeting)}
+              />
+              {/* <IconButton onClick={(event) => stopMeeting(meeting)}>
+                  <StopIcon fontSize="small"/>
+              </IconButton> */}
+              <IconBtn 
+                icon={<RefreshIcon fontSize="small"/>} 
+                click={(event) => props.refreshMeeting(event, meeting)}
+              />
+              {/* <IconButton onClick={(event) => props.refreshMeeting(event, meeting)}>
+                  <RefreshIcon fontSize="small"/>
+              </IconButton> */}
+              <FormControlLabel 
+                  className={classes.switchControl}
+                  control={
+                  <Switch size="small" 
+                          checked={switchState} 
+                          onChange={toggleSwitchState} 
+                  />} 
+                  label="A/V" 
+              />
+              <IconButton
+              className={clsx(classes.expand, {
+                  [classes.expandOpen]: expanded,
+              })}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+              >
+              <ExpandMoreIcon />
+              </IconButton>
+          </CardActions>
+        </Box>
+        
         <Collapse key={'collapse'+props.keyIndex} in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
             <TextEditor 

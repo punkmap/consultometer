@@ -14,7 +14,7 @@ import { withRouter } from "react-router-dom";
 import { updateMeeting } from '../../../util'
 
 
-import { setWorkflow, allMeetings } from '../../../actions';
+import { setWorkflow, futureMeetings } from '../../../actions';
 
 import AttendeesSelect from '../../molecules/AttendeesSelect'
 import MeetingTitle from '../../molecules/MeetingTitle'
@@ -124,7 +124,7 @@ class WorkflowAdd extends Component {
     let meetings = [...this.state.meetings]
     const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
     meetings[meetingIndex] = updatedMeeting;
-    this.props.allMeetings(meetings.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1));
+    this.props.futureMeetings(meetings.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1));
     this.props.setWorkflow('mainPage');
   }
   render() {
@@ -200,4 +200,4 @@ WorkflowAdd.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(connect(null, { setWorkflow, allMeetings })(WorkflowAdd));
+export default withStyles(styles)(connect(null, { setWorkflow, futureMeetings })(WorkflowAdd));

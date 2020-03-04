@@ -25,7 +25,7 @@ import store from './store'
 import watch from 'redux-watch';
 import { config } from './config'
 
-import { editMeeting, allMeetings } from './actions';
+import { editMeeting } from './actions';
 import { red } from "@material-ui/core/colors";
 
 const styles = theme => ({
@@ -86,9 +86,10 @@ class App extends React.Component {
     store.subscribe(editMeetingWatch((newVal, oldVal, objectPath) => {
         this.setEditMeeting(newVal);
     }));
-    const meetingsWatch = watch(store.getState, 'meetings.meetings')
-    store.subscribe(meetingsWatch((newVal, oldVal, objectPath) => {
-        this.setMeetings(newVal);
+    const futureMeetingsWatch = watch(store.getState, 'futureMeetings.meetings')
+    store.subscribe(futureMeetingsWatch((newVal, oldVal, objectPath) => {
+      console.log('FUTUREMEETINGS')  
+      this.setMeetings(newVal);
     }));
     const loginWatch = watch(store.getState, 'loginAction')
     store.subscribe(loginWatch((newVal, oldVal, objectPath) => {
@@ -232,5 +233,5 @@ console.log('CONFIG: ', config);
   }
 }
 
-export default withStyles(styles)(connect(null, { editMeeting, allMeetings })(App));
+export default withStyles(styles)(connect(null, { editMeeting })(App));
 

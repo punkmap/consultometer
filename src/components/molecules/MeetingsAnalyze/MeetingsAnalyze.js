@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import watch from 'redux-watch';
-import { withRouter } from "react-router-dom";
-
-import store from '../../../store'
-import { setWorkflow } from '../../../actions';
+import { setWorkflow, pastMeetings } from '../../../actions';
+import axios from 'axios';
+import store from '../../../store';
+import { config } from '../../../config'
 
 const styles = theme => ({
   button: {
@@ -19,24 +18,35 @@ class MeetingsAnalyze extends Component {
     this.state = {
       
     }
-   const analyzeMeetingsWatch = watch(store.getState, 'click.clickCount')
-    // store.subscribe(analyzeMeetingsWatch((newVal, oldVal, objectPath) => {
-    //     const clickCount = store.getState().click.clickCount;
-    //     this.setState({
-    //         clickCount
-    //     })
-    // }))
   }
 
-
-  // nextPath(path) {
-  //   this.props.history.push(path);
-  // }
+  getPastMeetings(token) {
+    return new Promise(async (resolve, reject) => {
+      const url = config.API_URL + '/api/meetings-past';
+      const params = { token };
+      const response = await axios.get(url, {
+        params
+      })
+      if( response.status === 200 ) {
+        resolve(response.data.body.rows);
+      } else {
+        reject(response);
+      }
+    });  
+  }
   analyzeMeetings() {
-    this.props.setWorkflow('analyzeMeetings');
-    // this.setState((state, props) => ({clickCount: state.clickCount + 1}), () => {
-    //   this.props.increment(this.state.clickCount);
-    // } )
+    //check to see if past meetings have been retrieved
+    if(store.getState().pastMeetings.meetings.length === 0){
+      //if not retrieve them send them out as san action
+      //flip to the analyzeMeetings page
+      this.getPastMeetings(store.getState().loginAction.loginAction.token).then((meetings) => {
+        this.props.pastMeetings(meetings);
+        this.props.setWorkflow('analyzeMeetings');
+      });
+    } else {
+      //flip to the analyzeMeetings page
+      this.props.setWorkflow('analyzeMeetings');
+    }
   }
   render() {
     return (
@@ -47,6 +57,4 @@ class MeetingsAnalyze extends Component {
   }
 }
 
-
-
-export default withStyles(styles)(connect(null, { setWorkflow })(MeetingsAnalyze));
+export default withStyles(styles)(connect(null, { setWorkflow, pastMeetings })(MeetingsAnalyze));
