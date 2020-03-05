@@ -125,7 +125,7 @@ class ButtonAppBar extends Component {
       'Content-Type': 'application/json',
     }
     const authToken = this.state.token;
-    axios.put(config.API_URL+'/api/meetings_bulk', { docs, authToken }, {
+    axios.put(config.API_URL+'/api/docs_bulk', { docs, authToken }, {
         headers: headers,
     })
     .then((response) => {
