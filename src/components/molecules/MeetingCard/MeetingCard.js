@@ -78,7 +78,7 @@ export default function MeetingCard(props) {
   const [timerPaused, setTimerPaused] = useState(false);
   const [time, setTime] = useState(meeting.value.durationMS ? meeting.value.durationMS : 0);
   const [timer, setTimer] = useState();
-  const [avTime, setAVTime] = useState(meeting.value.avDurationMS ? meeting.value.avDurationMS : 0);
+  const [avTime, setAVTime] = useState(meeting.value.durationAVMS ? meeting.value.durationAVMS : 0);
   const [avTimer, setAVTimer] = useState();
   const avTimerRef = useRef(avTimer);
   avTimerRef.current = avTimer;
@@ -156,9 +156,9 @@ export default function MeetingCard(props) {
         durationMS: time,
         durationHMS: msToHMS(time),
         cost: Number(msToCost(time)),
-        avDurationMS: avTime,
-        avDurationHMS: msToHMS(avTime),
-        avCost: Number(msToCost(avTime)),
+        durationAVMS: avTime,
+        durationAVHMS: msToHMS(avTime),
+        costAV: Number(msToCost(avTime)),
       }
     }));
   }

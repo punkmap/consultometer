@@ -45,6 +45,10 @@ class WorkflowEdit extends Component {
       dateTime: new Date(this.props.editMeeting.dateTime),
       durationMS: this.props.editMeeting.durationMS,
       durationHMS: this.props.editMeeting.durationHMS,
+      cost: this.props.editMeeting.cost,
+      durationAVMS: this.props.editMeeting.durationAVMS,
+      durationAVHMS: this.props.editMeeting.durationAVHMS,
+      costAV: this.props.editMeeting.costAV,
       project: this.props.editMeeting.project,
       attendees: this.props.editMeeting.attendees,
       meetings: this.props.meetings,
@@ -98,6 +102,9 @@ class WorkflowEdit extends Component {
       dateTime: this.state.dateTime,
       durationMS: this.state.durationMS,
       durationAVMS: this.state.durationAVMS,
+      durationAVHMS: this.state.durationAVHMS,
+      cost: this.state.cost,
+      costAV: this.state.costAV,
       durationHMS: this.state.durationHMS,
       project: this.state.project,
       attendees: this.state.attendees,
@@ -105,6 +112,7 @@ class WorkflowEdit extends Component {
         return sum + Number(elem.value.rate);
      },0),
     };
+    console.log('UPDATEMEETING: ', meeting);
     const response = await updateMeeting(meeting, this.state.authToken);
     const updatedMeeting = {
       id: response.data.body.id, 
