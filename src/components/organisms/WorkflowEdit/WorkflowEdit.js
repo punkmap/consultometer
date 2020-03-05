@@ -87,10 +87,8 @@ class WorkflowEdit extends Component {
     dateTime += 3600000
   }
   async update() {
-    // validate form
     // save meeting 
     //return to main
-    console.log('EDIT ATTENDEES: ', this.state.project.name);
     const meeting = {
       _id: this.state._id,
       _rev: this.state._rev,
@@ -128,7 +126,6 @@ class WorkflowEdit extends Component {
        },0),
       }
     }
-    console.log('UPDATEMEETING: ', updatedMeeting);
     let meetings = [...this.state.meetings]
     const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
     meetings[meetingIndex] = updatedMeeting;
@@ -136,7 +133,6 @@ class WorkflowEdit extends Component {
     this.props.setWorkflow('mainPage');
   }
   render() {
-    console.log('EDIT PROJECT: ', this.state.project);
     const { classes } = this.props;
     let editButton; 
     if (this.props.readOnly) {
