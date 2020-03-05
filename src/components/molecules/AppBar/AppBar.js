@@ -6,6 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import PublishIcon from '@material-ui/icons/Publish';
 import IconButton from '@material-ui/core/IconButton';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import axios from 'axios';
@@ -15,6 +16,7 @@ import Dialog from '../../atoms/Dialog'
 import { config } from '../../../config'
 
 import { loginAction } from '../../../actions';
+import { useScrollTrigger } from '@material-ui/core';
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -48,6 +50,7 @@ class ButtonAppBar extends Component {
   constructor(props){
     super(props)
     this.state = {
+        token: null,
         isLoggedIn: false,
         dialogOpen: true,
         username: 'api', 
@@ -81,6 +84,66 @@ class ButtonAppBar extends Component {
         console.error(error);
     })
   }
+  Max = (max) => Math.floor(Math.random() * max);
+  RandomBetween = (min, max) => Math.random() * (max - min) + min;
+  AddDaysToDate = (days) => {
+    var date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
+  }
+  RandomDate = () => {
+    const rndm = Math.random() < 0.5 ? -1 : 1;
+    const rndmDays = this.Max(10) * rndm;
+    return this.AddDaysToDate (rndmDays)
+  }
+  loadTestingData () {
+    let attendees = new Array(10).fill(null).map((e, i)=> ({
+      "type": "attendee",
+      "name": "user"+i,
+      "rate": this.Max(1000),
+    }))
+    console.log('ATTENDEES: ',attendees)
+    //TODO: 
+    //bulk load attendees
+    //bulk request attendees by returned id list of loaded attendees
+    //load attendees into meetings
+    let meetings = new Array(10).fill(null).map((e, i)=> ({
+      "type": "meeting",
+      "title": "test "+1,
+      "purpose": "purpose "+i,
+      "durationMS": this.Max(3600000),
+      "durationAVMS": this.Max(360000),
+      "durationHMS": "",
+      "dateTime": this.RandomDate(),
+      "project": "EAS",
+      "attendees": attendees.slice(this.RandomBetween(1,5),this.RandomBetween(6,10)),
+      "rate": this.Max(3000),
+    }))
+    const docs = [...attendees, ...meetings];
+    //load meetings array. them make bulk doc button conditional on development
+    const headers = {
+      'Content-Type': 'application/json',
+    }
+    const authToken = this.state.token;
+    axios.put(config.API_URL+'/api/meetings_bulk', { docs, authToken }, {
+        headers: headers,
+    })
+    .then((response) => {
+      if (response.status === 200) {
+          //bulk request meetings by returned id list of loaded meetings
+          //calculate durationHMS from durationMS + durationAVMS  
+          //calculate durationAVHMS from durationAVMS
+          //bulk update meetings with updated durationHMS values
+          const token = response.data.token
+          this.setState({token});
+          console.log('STATUS : ', response.data.status);
+          this.props.loginAction({loggedIn: true, token});
+      }
+    })
+    .catch((error) => {
+        console.error(error);
+    })
+  }
   closeDialog(event) {
     if (event.currentTarget.value === 'login'){
         const headers = {
@@ -95,6 +158,7 @@ class ButtonAppBar extends Component {
         .then((response) => {
             if (response.status === 200) {
                 const token = response.data.token
+                this.setState({token});
                 console.log('STATUS : ', response.data.status);
                 this.props.loginAction({loggedIn: true, token});
             }
@@ -152,6 +216,12 @@ class ButtonAppBar extends Component {
                 <Typography variant="h6" className={classes.title}>
                     {'consultometer'}
                 </Typography>
+                <IconButton 
+                  onClick={this.loadTestingData.bind(this)}
+                >
+                  <PublishIcon/>
+                </IconButton>
+                
                 {authButton}
             </Toolbar>
             </AppBar>
