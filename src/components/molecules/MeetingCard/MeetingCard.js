@@ -106,12 +106,6 @@ export default function MeetingCard(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  const saveText = (textInfo) => {
-    console.log('SAVETEXT TEXTINFO: ', textInfo);
-    console.log('meeting.value.purpose: ', meeting.value.purpose);
-    console.log('meeting.value._id: ', meeting.value._id);
-    
-  }
   const startMeeting = (meeting) => {
     //start the meeting timer
     
@@ -141,7 +135,6 @@ export default function MeetingCard(props) {
         clearInterval(timer);
         setTimerRunning(false);
         setTimerPaused(true);
-        console.log('setTimerPaused');
         clearInterval(avTimer);
         setAVTimerRunning(false);
     } 
@@ -300,7 +293,6 @@ export default function MeetingCard(props) {
         <Collapse key={'collapse'+props.keyIndex} in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
             <TextEditor 
-              saveText={saveText}
               meeting={meeting}
             ></TextEditor>
             </CardContent>

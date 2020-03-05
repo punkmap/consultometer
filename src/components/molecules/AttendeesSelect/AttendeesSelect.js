@@ -186,8 +186,9 @@ class AttendeesSelect extends Component {
               autoFocus
               margin="dense"
               label="rate"
+              type="number"
               fullWidth
-              onChange={(event) => {this.setState({newAttendeeRate: event.target.value})}}
+              onChange={(event) => {this.setState({newAttendeeRate: Number(event.target.value)})}}
               value={this.state.newAttendeeRate}
           />
           <div>
@@ -219,8 +220,9 @@ class AttendeesSelect extends Component {
               autoFocus
               margin="dense"
               label="rate"
+              type="number"
               fullWidth
-              onChange={(event) => {this.setState({editAttendeeRate: event.target.value})}}
+              onChange={(event) => {this.setState({editAttendeeRate: Number(event.target.value)})}}
               value={this.state.editAttendeeRate}
           />
       </form>

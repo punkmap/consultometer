@@ -36,7 +36,6 @@ class WorkflowAdd extends Component {
     this.props.setWorkflow('mainPage');
   }
   handleRadioChange (value) {
-    console.log('handleRadioChange value: ', value);
     this.setState({radioValue: value});
   }
   render() {

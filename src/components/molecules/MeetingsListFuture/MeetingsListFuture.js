@@ -46,7 +46,6 @@ class MeetingsListFuture extends Component {
     this._isMounted = false;
     const timerStopsWatch = watch(store.getState, 'timerStops')
     store.subscribe(timerStopsWatch((newVal, oldVal, objectPath) => {
-      console.log('TIMERSTOPS newVal: ', newVal);  
       this.timerStop(newVal, oldVal);
     }));
     const saveNoteWatch = watch(store.getState, 'saveNote')
@@ -66,7 +65,6 @@ class MeetingsListFuture extends Component {
   timerStop(newVal, oldVal){
     if (this._isMounted) {
       if (newVal !== oldVal){
-        console.log(newVal)
         const meeting = {...newVal.timerDetails.meeting};
         const updateVals = {...newVal.timerDetails.timer}; 
         this.saveMeeting(meeting, updateVals);
@@ -110,12 +108,10 @@ class MeetingsListFuture extends Component {
     }  
   }
   async saveMeeting (meeting, updateVals){
-    console.log(updateVals);
     Object.keys(updateVals).forEach((key, index) => {
       meeting.value[key] = updateVals[key];
     })
-    const response = await updateMeeting(meeting.value, this.state.authToken)
-    console.log()
+    const response = await updateMeeting(meeting.value, this.state.authToken);
     if (this._isMounted){
           const updatedMeeting = {
           id: response.data.body.id, 
@@ -134,7 +130,6 @@ class MeetingsListFuture extends Component {
             attendees: meeting.value.attendees,
           }
         }
-        console.log('updatedMeeting: ', updatedMeeting);
         let meetings = [...this.state.meetings]
         const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
         meetings[meetingIndex] = updatedMeeting;

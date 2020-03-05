@@ -23,10 +23,6 @@ const SuccessThemeProvider = props => {
 };
 export default function IconBtn(props) {
   
-  const toggleSwitchState = () => {
-    //change the state of the A/V? switch
-    console.log('togglebutton click')
-  };
   return (
     <MuiThemeProvider theme={theme}>
         <SuccessThemeProvider>

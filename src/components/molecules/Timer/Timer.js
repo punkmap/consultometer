@@ -39,7 +39,6 @@ class Timer extends Component {
     }))
     const timerWatch = watch(store.getState, 'timerAction')
     store.subscribe(timerWatch((newVal, oldVal, objectPath) => {
-        console.log('TIMERACTION ACTION: ', newVal.timerAction);
         this.parseTimerAction(newVal.timerAction);
     }))
   }
@@ -97,7 +96,6 @@ class Timer extends Component {
         time: this.state.time,
         start: Date.now() - this.state.time
       }, () => {
-        console.log('TIMER STATE ISON: ', this.state.isOn);
       })
       this.timer = setInterval(() => this.setState({
         time: Date.now() - this.state.start

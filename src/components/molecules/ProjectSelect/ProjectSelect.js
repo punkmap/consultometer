@@ -23,7 +23,6 @@ class ProjectSelect extends Component {
       options: projects.sort(),
       getOptionLabel: option => option.name,
     };
-    
     const { classes } = this.props;
     return (
       <div className={classes.root}>

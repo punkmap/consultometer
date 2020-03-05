@@ -34,7 +34,7 @@ const styles = theme => ({
     textAlign: 'center',
   },
 });
-class WorkflowAdd extends Component {
+class WorkflowEdit extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -70,7 +70,7 @@ class WorkflowAdd extends Component {
     this.setState({dateTime});
   }
   updateProject(project){
-    this.setState({project});
+    this.setState({project:project.name});
   }
   updateAttendees(attendees){
     this.setState({attendees});
@@ -90,6 +90,7 @@ class WorkflowAdd extends Component {
     // validate form
     // save meeting 
     //return to main
+    console.log('EDIT ATTENDEES: ', this.state.project.name);
     const meeting = {
       _id: this.state._id,
       _rev: this.state._rev,
@@ -102,6 +103,9 @@ class WorkflowAdd extends Component {
       durationHMS: this.state.durationHMS,
       project: this.state.project,
       attendees: this.state.attendees,
+      rate: this.state.attendees.reduce(function(sum,elem){
+        return sum + Number(elem.value.rate);
+     },0),
     };
     const response = await updateMeeting(meeting, this.state.authToken);
     const updatedMeeting = {
@@ -119,8 +123,12 @@ class WorkflowAdd extends Component {
         durationHMS: this.state.durationHMS,
         project: this.state.project,
         attendees: this.state.attendees,
+        rate: this.state.attendees.reduce(function(sum,elem){
+          return + Number(elem.value.rate);
+       },0),
       }
     }
+    console.log('UPDATEMEETING: ', updatedMeeting);
     let meetings = [...this.state.meetings]
     const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
     meetings[meetingIndex] = updatedMeeting;
@@ -128,6 +136,7 @@ class WorkflowAdd extends Component {
     this.props.setWorkflow('mainPage');
   }
   render() {
+    console.log('EDIT PROJECT: ', this.state.project);
     const { classes } = this.props;
     let editButton; 
     if (this.props.readOnly) {
@@ -196,8 +205,8 @@ class WorkflowAdd extends Component {
     )
   }
 }
-WorkflowAdd.propTypes = {
+WorkflowEdit.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(connect(null, { setWorkflow, futureMeetings })(WorkflowAdd));
+export default withStyles(styles)(connect(null, { setWorkflow, futureMeetings })(WorkflowEdit));

@@ -88,7 +88,6 @@ class App extends React.Component {
     }));
     const futureMeetingsWatch = watch(store.getState, 'futureMeetings.meetings')
     store.subscribe(futureMeetingsWatch((newVal, oldVal, objectPath) => {
-      console.log('FUTUREMEETINGS')  
       this.setMeetings(newVal);
     }));
     const loginWatch = watch(store.getState, 'loginAction')
@@ -104,17 +103,12 @@ class App extends React.Component {
     this._isMounted = true;
 
 
-console.log('CONFIG: ', config);
+    console.log('CONFIG: ', config);
     if (!this.state.isLoggedIn){
        
     } else {
 
     }
-    // if (!this.state.meetingsGotten){
-    //   this.setState({meetingsGotten: true}, () => {
-    //     this.getMeetings();
-    //   })
-    // }
   }
   componentWillUnmount() {
     this._isMounted = false;
@@ -128,7 +122,6 @@ console.log('CONFIG: ', config);
   }
   setMeetings(meetings) {
     if (this._isMounted) {
-      console.log('SET MEETINGS: ', meetings);
       this.setState({
           meetings,
           searchMeetings: meetings,
@@ -172,7 +165,6 @@ console.log('CONFIG: ', config);
 
   }
   render() {
-
     const { classes } = this.props;
     const appWorkflow = this.state.appWorkflow;
     
