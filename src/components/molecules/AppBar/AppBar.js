@@ -178,7 +178,14 @@ class ButtonAppBar extends Component {
     } else {
         authButton = <LogoutButton value="logout" classname={classes.authButton} onClick={(event) => this.handleAuthClick(event)} />;
     }
-    
+    let loadBulkDocs;
+    if (process.env.NODE_ENV === "development"){
+      loadBulkDocs = <IconButton 
+          onClick={this.loadTestingData.bind(this)}
+        >
+          <PublishIcon/>
+        </IconButton>
+    }
     const dialogTitle = 'login'
     const dialogContent = <form>
             <TextField
@@ -216,12 +223,7 @@ class ButtonAppBar extends Component {
                 <Typography variant="h6" className={classes.title}>
                     {'consultometer'}
                 </Typography>
-                <IconButton 
-                  onClick={this.loadTestingData.bind(this)}
-                >
-                  <PublishIcon/>
-                </IconButton>
-                
+                {loadBulkDocs}
                 {authButton}
             </Toolbar>
             </AppBar>
