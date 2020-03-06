@@ -112,7 +112,6 @@ class WorkflowEdit extends Component {
         return sum + Number(elem.value.rate);
      },0),
     };
-    console.log('UPDATEMEETING: ', meeting);
     const response = await updateMeeting(meeting, this.state.authToken);
     const updatedMeeting = {
       id: response.data.body.id, 

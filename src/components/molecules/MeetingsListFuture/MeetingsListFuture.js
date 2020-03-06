@@ -99,7 +99,8 @@ class MeetingsListFuture extends Component {
     this.props.stopMeeting();
   }
   saveNote (newVal, oldVal) {
-    if (newVal !== oldVal) {
+    
+    if (this._isMounted && newVal !== oldVal) {
       const meeting = this.state.meetings.filter((meeting) => {
         return meeting.value._id === newVal.contentBlock.meeting.value._id;
       })[0];

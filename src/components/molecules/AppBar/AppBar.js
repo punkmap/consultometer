@@ -102,7 +102,6 @@ class ButtonAppBar extends Component {
       "name": "user"+i,
       "rate": this.Max(1000),
     }))
-    console.log('ATTENDEES: ',attendees)
     //TODO: 
     //bulk load attendees
     //bulk request attendees by returned id list of loaded attendees
@@ -136,7 +135,6 @@ class ButtonAppBar extends Component {
           //bulk update meetings with updated durationHMS values
           const token = response.data.token
           this.setState({token});
-          console.log('STATUS : ', response.data.status);
           this.props.loginAction({loggedIn: true, token});
       }
     })
@@ -159,7 +157,6 @@ class ButtonAppBar extends Component {
             if (response.status === 200) {
                 const token = response.data.token
                 this.setState({token});
-                console.log('STATUS : ', response.data.status);
                 this.props.loginAction({loggedIn: true, token});
             }
         })
