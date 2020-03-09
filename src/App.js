@@ -1,10 +1,12 @@
 import React, { useEffect, Fragment }from "react";
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
+  Switch,
   Link
 } from "react-router-dom";
+import { instanceOf } from 'prop-types';
+import { useCookies, withCookies, Cookies } from 'react-cookie';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -25,8 +27,10 @@ import store from './store'
 import watch from 'redux-watch';
 import { config } from './config'
 
+import WorkflowDetail from './components/organisms/WorkFlowDetail'
 import { editMeeting } from './actions';
 import { red } from "@material-ui/core/colors";
+
 
 const styles = theme => ({
   button: {
@@ -52,7 +56,7 @@ function LoggedIn (props) {
       <Typography variant="h4" gutterBottom>
       </Typography>
       
-      <MeetingsListFuture meetings={props.meetings} filterMeetings={props.filterMeetings} authToken={props.authToken}></MeetingsListFuture>
+      <MeetingsListFuture meetings={props.meetings} filterMeetings={props.filterMeetings} ></MeetingsListFuture>
     </Grid>
     <Grid item xs={12} className={props.classes.buttonBar}>
       <Grid container  direction="row" justify="center">
@@ -69,9 +73,36 @@ function LoggedIn (props) {
 function NotLoggedIn (props) {
   return <h3>Log in to get started</h3>
 }
+function Home(props) {
+  return (
+    <div>
+      {props.workflowControls}
+    </div>
+  );
+}
+
+function Meeting() {
+  return (
+    <div>
+      <h2>Meeting</h2>
+    </div>
+  );
+}
+
+function Project() {
+  return (
+    <div>
+      <h2>Project</h2>
+    </div>
+  );
+}
 class App extends React.Component {
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
   constructor(props){
     super(props)
+    const { cookies } = props;
     this.state = {
       appWorkflow: 'mainPage',
       isLoggedIn: false,
@@ -79,9 +110,11 @@ class App extends React.Component {
       meetings: [],
       searchMeetings: [],
       editMeeting: null,
-      authToken: '',
+      authToken: cookies.get('authToken') || '',
+      
     }
     this._isMounted = false;
+
     const editMeetingWatch = watch(store.getState, 'editMeeting.meeting.value')
     store.subscribe(editMeetingWatch((newVal, oldVal, objectPath) => {
         this.setEditMeeting(newVal);
@@ -92,7 +125,7 @@ class App extends React.Component {
     }));
     const loginWatch = watch(store.getState, 'loginAction')
     store.subscribe(loginWatch((newVal, oldVal, objectPath) => {
-        this.loginStateHandler(newVal.loginAction);
+        this.loginStateHandler(newVal.loginAction, cookies);
     }));
     const appWorkflowWatch = watch(store.getState, 'appWorkflow.workflow')
       store.subscribe(appWorkflowWatch((newVal, oldVal, objectPath) => {
@@ -100,6 +133,10 @@ class App extends React.Component {
     }))
   }
   componentDidMount() {
+    console.log('LOCATION: ', this.props.location);
+    if (!this._isMounted){
+      console.log('LOCATION: ', this.props.location);
+    }
     this._isMounted = true;
 
 
@@ -131,9 +168,10 @@ class App extends React.Component {
   notLoggedIn() {
     return <Button>Login</Button>
   }
-  loginStateHandler(loginState) {
+  loginStateHandler(loginState, cookies) {
     if(loginState.loggedIn === true){
       this.getMeetings(loginState.token);
+      cookies.set('authToken', loginState.token);
       this.setState({authToken: loginState.token}, () => {
       });
     }
@@ -164,6 +202,7 @@ class App extends React.Component {
     
 
   }
+
   render() {
     const { classes } = this.props;
     const appWorkflow = this.state.appWorkflow;
@@ -175,7 +214,7 @@ class App extends React.Component {
       landing = <LoggedIn classes={classes}
                   meetings={this.state.searchMeetings} 
                   filterMeetings={this.filterMeetings.bind(this)}
-                  authToken={this.state.authToken}
+                  //authToken={this.state.authToken}
                 />
     }
     let workflowControls;
@@ -191,11 +230,18 @@ class App extends React.Component {
           {landing}  
         </Grid>
         break;
+        case 'detailPage':
+          workflowControls = 
+          <WorkflowDetail  
+            detialType={this.state.detailType}
+            detailId={this.state.detailId}
+          />
+          break;
       case 'addMeeting':
         workflowControls = 
         <WorkflowAdd  
           meetings={this.state.meetings}
-          authToken={this.state.authToken}
+          //authToken={this.state.authToken}
         />
         break;
       case 'editMeeting':
@@ -203,7 +249,7 @@ class App extends React.Component {
         <WorkflowEdit 
           editMeeting={this.state.editMeeting} 
           meetings={this.state.meetings}
-          authToken={this.state.authToken}
+          //authToken={this.state.authToken}
           test={'test'}
         />
         break;
@@ -217,13 +263,34 @@ class App extends React.Component {
     return (
         <div>
           <AppBar></AppBar>
-          <header className="App-header">
-          {workflowControls}
-        </header>
-        </div>
+          <Router>
+        
+
+            {/*
+              A <Switch> looks through all its children <Route>
+              elements and renders the first one whose path
+              matches the current URL. Use a <Switch> any time
+              you have multiple routes, but you want only one
+              of them to render at a time
+            */}
+            <Switch>
+              <Route exact path="/">
+                <Home workflowControls={workflowControls}/>
+              </Route>
+              <Route pathname="/meeting">
+                <Meeting />
+              </Route>
+              <Route pathname="/project">
+                <Project />
+              </Route>
+            </Switch>
+          </Router>
+    
+      </div>
     );
   }
 }
 
-export default withStyles(styles)(connect(null, { editMeeting })(App));
+export default withCookies(withStyles(styles)(connect(null, { editMeeting })(App)));
+
 

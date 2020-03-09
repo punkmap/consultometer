@@ -1,5 +1,7 @@
 /* eslint-disable no-use-before-define */
 import React, { Component, Fragment } from 'react';
+import { instanceOf } from 'prop-types';
+import { useCookies, withCookies, Cookies } from 'react-cookie';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,8 +29,9 @@ const styles = theme => ({
 class AttendeesSelect extends Component {
   constructor(props){
     super(props)
+    const { cookies } = props;
     this.state = {
-      authToken: this.props.authToken,
+      authToken: cookies.get('authToken'),
       possibleAttendees: [],
       attendees: this.props.attendees,
       dialogType: '',
@@ -363,5 +366,5 @@ class AttendeesSelect extends Component {
     );
   }  
 }
-export default withStyles(styles)(AttendeesSelect);
+export default withCookies(withStyles(styles)(AttendeesSelect));
 

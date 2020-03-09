@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import watch from 'redux-watch';
+import { instanceOf } from 'prop-types';
+import { useCookies, withCookies, Cookies } from 'react-cookie';
 
 import List from '@material-ui/core/List';
 import IconButton from '@material-ui/core/IconButton';
@@ -38,19 +40,20 @@ const styles = theme => ({
 class MeetingsListFuture extends Component {
   constructor(props){
     super(props)
+    const { cookies } = props;
     this.state = {
       meetings: this.props.meetings,
       meeting: {},
-      authToken: this.props.authToken,
+      //: this.props.authToken,
     }
     this._isMounted = false;
     const timerStopsWatch = watch(store.getState, 'timerStops')
     store.subscribe(timerStopsWatch((newVal, oldVal, objectPath) => {
-      this.timerStop(newVal, oldVal);
+      this.timerStop(newVal, oldVal, cookies);
     }));
     const saveNoteWatch = watch(store.getState, 'saveNote')
     store.subscribe(saveNoteWatch((newVal, oldVal, objectPath) => {
-      this.saveNote(newVal, oldVal);
+      this.saveNote(newVal, oldVal, cookies);
     }));
   }
   componentDidMount() {
@@ -62,12 +65,12 @@ class MeetingsListFuture extends Component {
   componentWillReceiveProps(nextProps){
     this.setState({meetings: nextProps.meetings});
   }
-  timerStop(newVal, oldVal){
+  timerStop(newVal, oldVal, cookies){
     if (this._isMounted) {
       if (newVal !== oldVal){
         const meeting = {...newVal.timerDetails.meeting};
         const updateVals = {...newVal.timerDetails.timer}; 
-        this.saveMeeting(meeting, updateVals);
+        this.saveMeeting(meeting, updateVals, cookies);
       }
     }
   }
@@ -98,21 +101,22 @@ class MeetingsListFuture extends Component {
     event.stopPropagation();
     this.props.stopMeeting();
   }
-  saveNote (newVal, oldVal) {
+  saveNote (newVal, oldVal, cookies) {
     
     if (this._isMounted && newVal !== oldVal) {
       const meeting = this.state.meetings.filter((meeting) => {
         return meeting.value._id === newVal.contentBlock.meeting.value._id;
       })[0];
       const updateVals = { meetingNotes: newVal.contentBlock.contentBlock};
-      this.saveMeeting(meeting, updateVals);
+      this.saveMeeting(meeting, updateVals, cookies);
     }  
   }
-  async saveMeeting (meeting, updateVals){
+  async saveMeeting (meeting, updateVals, cookies){
     Object.keys(updateVals).forEach((key, index) => {
       meeting.value[key] = updateVals[key];
     })
-    const response = await updateMeeting(meeting.value, this.state.authToken);
+
+    const response = await updateMeeting(meeting.value, cookies.get('authToken'));
     if (this._isMounted){
           const updatedMeeting = {
           id: response.data.body.id, 
@@ -197,5 +201,5 @@ class MeetingsListFuture extends Component {
   }
 }
 
-export default withStyles(styles)(connect(null, { setWorkflow, futureMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingsListFuture));
+export default withCookies(withStyles(styles)(connect(null, { setWorkflow, futureMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingsListFuture)));
 

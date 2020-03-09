@@ -10,6 +10,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
+import Typography from '@material-ui/core/Typography';
 
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
@@ -36,9 +37,9 @@ const styles = theme => ({
     textAlign: 'center',
   },
 });
-class WorkflowEdit extends Component {
+class WorkflowDetail extends Component {
   constructor(props){
-    super(props)
+    super(props);
     const { cookies } = props;
     this.state = {
       _id: this.props.editMeeting._id,
@@ -57,7 +58,7 @@ class WorkflowEdit extends Component {
       meetings: this.props.meetings,
       readOnly: this.props.readOnly,
       isEditing: this.props.isEditing,
-      authToken: cookies.get('authToken'),
+      authToken: this.props.authToken,
     }
     this._isMounted = false;
   }
@@ -144,16 +145,16 @@ class WorkflowEdit extends Component {
   }
   render() {
     const { classes } = this.props;
-    let editButton; 
-    if (this.props.readOnly) {
-      editButton = <IconButton 
-        aria-label="delete" 
-        className={classes.margin} 
-        onClick={this.edit.bind(this)}
-      >
-        <EditIcon fontSize="small" />
-      </IconButton>;
-    }
+    // let editButton; 
+    // if (this.props.readOnly) {
+    //   editButton = <IconButton 
+    //     aria-label="delete" 
+    //     className={classes.margin} 
+    //     onClick={this.edit.bind(this)}
+    //   >
+    //     <EditIcon fontSize="small" />
+    //   </IconButton>;
+    // }
     return (
       <div className={classes.root}>  
         <Grid 
@@ -162,46 +163,13 @@ class WorkflowEdit extends Component {
           justify="center"
           alignItems="center"
           style={{ minHeight: '100vh' }}>
-          {editButton}
           <Grid item xs={6} md={6} lg={6}>
-            <MeetingTitle 
-              title={this.state.title} 
-              updateTitle={this.updateTitle.bind(this)}
-              readOnly={this.state.readOnly}
-            />
-            <MeetingPurpose 
-              purpose={this.state.purpose} 
-              updatePurpose={this.updatePurpose.bind(this)}
-              readOnly={this.state.readOnly}
-            />
-            <MuiPickersUtilsProvider utils={MomentUtils.bind(this)}>
-              <MeetingDateTime 
-                dateTime={this.state.dateTime} 
-                updateDate={this.updateDate.bind(this)}
-                readOnly={this.state.readOnly}
-                isEdit={true}
-              />
-            </MuiPickersUtilsProvider>
-            <ProjectSelect 
-              project={{name: this.state.project}} 
-              updateProject={this.updateProject.bind(this)}
-              readOnly={this.state.readOnly}
-            />
-            <AttendeesSelect 
-              attendees={this.state.attendees} 
-              //authToken={this.state.authToken}
-              updateAttendees={this.updateAttendees.bind(this)}
-              readOnly={this.state.readOnly}
-            />
+          <Typography variant="h4" gutterBottom>{this.props.detailType}</Typography>
+          <Typography variant="body" gutterBottom>{this.props.detailId}</Typography>
             <Grid container className={classes.buttonBar}>
               <Grid item className={classes.actionGrid}>
                 <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
-                  cancel
-                </Button>
-              </Grid>
-              <Grid item className={classes.actionGrid}>
-                <Button variant="contained" color="primary" onClick={this.update.bind(this)}>
-                  update
+                  close
                 </Button>
               </Grid>
             </Grid>
@@ -211,8 +179,8 @@ class WorkflowEdit extends Component {
     )
   }
 }
-WorkflowEdit.propTypes = {
+WorkflowDetail.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withCookies(withStyles(styles)(connect(null, { setWorkflow, futureMeetings })(WorkflowEdit)));
+export default withCookies(withStyles(styles)(connect(null, { setWorkflow, futureMeetings })(WorkflowDetail)));

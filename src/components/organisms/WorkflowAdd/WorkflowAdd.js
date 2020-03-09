@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { instanceOf } from 'prop-types';
+import { useCookies, withCookies, Cookies } from 'react-cookie';
 //import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -35,7 +37,8 @@ const styles = theme => ({
 });
 class WorkflowAdd extends Component {
   constructor(props){
-    super(props)
+    super(props);
+    const { cookies } = props;
     this.state = {
       meetings: props.meetings,
       title: '',
@@ -45,7 +48,7 @@ class WorkflowAdd extends Component {
       attendees: [],
       timesDateTimeChanged: 0,
       formValidated: false,
-      authToken: this.props.authToken,
+      authToken: cookies.get('authToken'),
     }
   }
   handleChange = name => event => {
@@ -118,7 +121,7 @@ class WorkflowAdd extends Component {
     const headers = {
       'Content-Type': 'application/json',
     }
-    const authToken = this.state.authToken;
+    const authToken = this.cookies.get('authToken');
     axios.post(config.API_URL+'/api/meeting', { meeting, authToken }, {
         headers: headers,
     })
@@ -167,7 +170,7 @@ class WorkflowAdd extends Component {
             </MuiPickersUtilsProvider>
             <ProjectSelect project={this.state.project} updateProject={this.updateProject.bind(this)}></ProjectSelect>
             <AttendeesSelect 
-              authToken={this.state.authToken}
+              //authToken={this.state.authToken}
               updateAttendees={this.updateAttendees.bind(this)}
             />
             <Grid container className={classes.buttonBar}>
@@ -202,4 +205,4 @@ WorkflowAdd.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(connect(null, { setWorkflow, futureMeetings })(WorkflowAdd));
+export default withCookies(withStyles(styles)(connect(null, { setWorkflow, futureMeetings })(WorkflowAdd)));

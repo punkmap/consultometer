@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import { instanceOf } from 'prop-types';
+import { useCookies, withCookies, Cookies } from 'react-cookie';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -47,14 +49,19 @@ function LoginButton(props) {
     );
   }
 class ButtonAppBar extends Component {
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
   constructor(props){
     super(props)
+    const { cookies } = props;
     this.state = {
         token: null,
         isLoggedIn: false,
         dialogOpen: true,
         username: 'api', 
-        password: 'api'
+        password: 'api',
+        name: cookies.get('authToken') || ''
     }
     this._isMounted = false;
   }
@@ -123,7 +130,8 @@ class ButtonAppBar extends Component {
     const headers = {
       'Content-Type': 'application/json',
     }
-    const authToken = this.state.token;
+    const { cookies } = this.props;
+    const authToken = cookies.set('authToken');
     axios.put(config.API_URL+'/api/docs_bulk', { docs, authToken }, {
         headers: headers,
     })
@@ -134,7 +142,10 @@ class ButtonAppBar extends Component {
           //calculate durationAVHMS from durationAVMS
           //bulk update meetings with updated durationHMS values
           const token = response.data.token
-          this.setState({token});
+          //this.setState({token});
+
+          const { cookies } = this.props;
+          cookies.set('authToken', token);
           this.props.loginAction({loggedIn: true, token});
       }
     })
@@ -155,7 +166,9 @@ class ButtonAppBar extends Component {
         })
         .then((response) => {
             if (response.status === 200) {
-                const token = response.data.token
+                const token = response.data.token;
+                
+                const { cookies } = this.props;
                 this.setState({token});
                 this.props.loginAction({loggedIn: true, token});
             }
@@ -235,4 +248,4 @@ class ButtonAppBar extends Component {
     );
   }  
 }
-export default withStyles(styles)(connect(null, { loginAction })(ButtonAppBar));
+export default withCookies(withStyles(styles)(connect(null, { loginAction })(ButtonAppBar)));
