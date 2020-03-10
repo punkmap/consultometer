@@ -177,13 +177,11 @@ class App extends React.Component {
   async getMeetings (token) {
     const url = config.API_URL + '/api/meetings-future';
     const params = {token};
-    console.log('getMeetings')
     const response = await axios.get(url, {
       params
     })
 
     if (this._isMounted) {
-        console.log('meetings: ', response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1))
         this.setState({
           meetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
           searchMeetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
