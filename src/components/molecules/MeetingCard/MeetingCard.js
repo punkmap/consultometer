@@ -229,6 +229,7 @@ export default function MeetingCard(props) {
                           <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(avTime)}</Typography>
                           <Typography variant="body2" className={classes.cost}>${msTime.msToCost(meeting.value.rate, avTime)}</Typography>
                       </Grid>
+                      <Grid item></Grid>
                     </Grid>
                 </Grid>
                 <div>{props.infoOnly}</div>
