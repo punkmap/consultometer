@@ -115,7 +115,8 @@ class WorkflowAdd extends Component {
       dateTime: this.state.dateTime,
       project: this.state.project.name,
       attendees: this.state.attendees,
-      rate: this.state.attendees.reduce((a1, a2) => a1.value.rate + a2.value.rate),
+      rate: this.state.attendees.reduce((a1, a2) => { return a1.value ? a1.value.rate : a1 + a2.value.rate
+      }),
     };
     
     const headers = {
@@ -139,7 +140,7 @@ class WorkflowAdd extends Component {
               dateTime: this.state.dateTime,
               project: this.state.project.name,
               attendees: this.state.attendees,
-              rate: this.state.attendees.reduce((a1, a2) => a1.value.rate + a2.value.rate),
+              rate: this.state.attendees.reduce((a1, a2) => a1.value ? a1.value.rate : a1 + a2.value.rate),
             }
           }
           const newMeetings = [...this.state.meetings, newMeeting];
