@@ -218,7 +218,7 @@ export default function MeetingCard(props) {
                         <Typography variant="body2">{props.cardValue.title}</Typography>
                         <Typography variant="body2" color="textSecondary">{props.cardValue.purpose}</Typography>
                     </Grid>
-                    <Grid container direction="row" justify="space-evenly">
+                    <Grid container direction="row" justify="space-between">
                       <Grid item >
                           <Typography variant="body2">Total</Typography>
                           <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(time)}</Typography>
