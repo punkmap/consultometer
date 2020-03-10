@@ -2,7 +2,7 @@ import React, { Component} from 'react';
 import { DateTimePicker } from "@material-ui/pickers";
 import { withStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const styles = theme => ({        
   root: {
     width: '100%'
   },

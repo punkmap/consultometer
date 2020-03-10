@@ -168,7 +168,6 @@ class ButtonAppBar extends Component {
             if (response.status === 200) {
                 const token = response.data.token;
                 
-                const { cookies } = this.props;
                 this.setState({token});
                 this.props.loginAction({loggedIn: true, token});
             }

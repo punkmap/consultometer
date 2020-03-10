@@ -81,18 +81,20 @@ function Home(props) {
   );
 }
 
-function Meeting() {
+const Meeting = ({match}) => {
+  
   return (
-    <div>
-      <h2>Meeting</h2>
-    </div>
+      <WorkflowDetail  
+        detailType={'meeting'}
+        detailId={match.params.id}
+      />
   );
 }
 
-function Project() {
+const Project = ({match}) => {
   return (
     <div>
-      <h2>Project</h2>
+      <h1>Project: {match.params.id}</h1>
     </div>
   );
 }
@@ -133,14 +135,10 @@ class App extends React.Component {
     }))
   }
   componentDidMount() {
-    console.log('LOCATION: ', this.props.location);
     if (!this._isMounted){
-      console.log('LOCATION: ', this.props.location);
     }
     this._isMounted = true;
 
-
-    console.log('CONFIG: ', config);
     if (!this.state.isLoggedIn){
        
     } else {
@@ -172,24 +170,27 @@ class App extends React.Component {
     if(loginState.loggedIn === true){
       this.getMeetings(loginState.token);
       cookies.set('authToken', loginState.token);
-      this.setState({authToken: loginState.token}, () => {
-      });
+      // this.setState({authToken: loginState.token}, () => {
+      // });
     }
   }
   async getMeetings (token) {
     const url = config.API_URL + '/api/meetings-future';
     const params = {token};
+    console.log('getMeetings')
     const response = await axios.get(url, {
       params
     })
 
-    if (this._isMounted) this.setState({
-      meetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
-      searchMeetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
-    },() => {
-      this.setState({isLoggedIn: true});
-    });
-
+    if (this._isMounted) {
+        console.log('meetings: ', response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1))
+        this.setState({
+          meetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
+          searchMeetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
+        },() => {
+          this.setState({isLoggedIn: true});
+        });
+    }    
   }
   filterMeetings(event) {
     const searchString = event.target.value;
@@ -208,7 +209,7 @@ class App extends React.Component {
     const appWorkflow = this.state.appWorkflow;
     
     let landing;
-    if(!this.state.isLoggedIn) {
+    if(!this.state.authToken) {
       landing = <NotLoggedIn></NotLoggedIn>
     } else {
       landing = <LoggedIn classes={classes}
@@ -230,13 +231,6 @@ class App extends React.Component {
           {landing}  
         </Grid>
         break;
-        case 'detailPage':
-          workflowControls = 
-          <WorkflowDetail  
-            detialType={this.state.detailType}
-            detailId={this.state.detailId}
-          />
-          break;
       case 'addMeeting':
         workflowControls = 
         <WorkflowAdd  
@@ -250,7 +244,6 @@ class App extends React.Component {
           editMeeting={this.state.editMeeting} 
           meetings={this.state.meetings}
           //authToken={this.state.authToken}
-          test={'test'}
         />
         break;
       case 'analyzeMeetings':
@@ -277,11 +270,9 @@ class App extends React.Component {
               <Route exact path="/">
                 <Home workflowControls={workflowControls}/>
               </Route>
-              <Route pathname="/meeting">
-                <Meeting />
+              <Route path="/meeting/:id" component={Meeting}>
               </Route>
-              <Route pathname="/project">
-                <Project />
+              <Route path="/project/:id" component={Project}>
               </Route>
             </Switch>
           </Router>

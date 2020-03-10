@@ -121,7 +121,7 @@ class WorkflowAdd extends Component {
     const headers = {
       'Content-Type': 'application/json',
     }
-    const authToken = this.cookies.get('authToken');
+    const authToken = this.state.authToken;
     axios.post(config.API_URL+'/api/meeting', { meeting, authToken }, {
         headers: headers,
     })
