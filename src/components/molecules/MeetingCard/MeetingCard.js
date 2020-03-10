@@ -213,9 +213,11 @@ export default function MeetingCard(props) {
         />
         <CardContent key={'cardContent'+props.keyIndex}>
             <ListItem key={'li'+props.keyIndex} >
-                <Grid item >
-                    <Typography variant="body2">{props.cardValue.title}</Typography>
-                    <Typography variant="body2" color="textSecondary">{props.cardValue.purpose}</Typography>
+                <Grid container>
+                    <Grid item >
+                        <Typography variant="body2">{props.cardValue.title}</Typography>
+                        <Typography variant="body2" color="textSecondary">{props.cardValue.purpose}</Typography>
+                    </Grid>
                     <Grid container direction="row" justify="space-evenly">
                       <Grid item >
                           <Typography variant="body2">Total</Typography>
@@ -234,7 +236,7 @@ export default function MeetingCard(props) {
                   <ListItemSecondaryAction  >
                       <IconButton 
                           edge="end" 
-                          aria-label="delete" 
+                          aria-label="edit" 
                           onClick={() => props.editMeeting(meeting)}
                       >
                           <EditIcon fontSize="small"/>
