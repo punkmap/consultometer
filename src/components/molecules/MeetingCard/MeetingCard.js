@@ -191,16 +191,16 @@ export default function MeetingCard(props) {
                 <Grid item >
                     <Typography variant="body2">{props.cardValue.title}</Typography>
                     <Typography variant="body2" color="textSecondary">{props.cardValue.purpose}</Typography>
-                    <Grid container direction="row" justify="space-between">
+                    <Grid container direction="row" justify="space-evenly">
                       <Grid item >
                           <Typography variant="body2">Total</Typography>
                           <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(time)}</Typography>
-                          <Typography variant="body2" className={classes.cost}>${msTime.msToCost(time)}</Typography>
+                          <Typography variant="body2" className={classes.cost}>${msTime.msToCost(meeting.value.rate, time)}</Typography>
                       </Grid>
                       <Grid item >
                           <Typography variant="body2">A/V</Typography>
                           <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(avTime)}</Typography>
-                          <Typography variant="body2" className={classes.cost}>${msTime.msToCost(avTime)}</Typography>
+                          <Typography variant="body2" className={classes.cost}>${msTime.msToCost(meeting.value.rate, avTime)}</Typography>
                       </Grid>
                     </Grid>
                 </Grid>
