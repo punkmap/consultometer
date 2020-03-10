@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import clsx from 'clsx';
 import moment from 'moment';
+import copy from "clipboard-copy";
 
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
@@ -15,11 +16,15 @@ import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import SendIcon from '@material-ui/icons/Send';
 import StopIcon from '@material-ui/icons/Stop';
 import TodayIcon from '@material-ui/icons/Today';
 import Typography from '@material-ui/core/Typography';
@@ -37,6 +42,7 @@ import TextEditor from '../../atoms/TextEditor'
 import IconBtn from '../../atoms/IconBtn'
 import { timerStops } from '../../../actions';
 import { msTime } from '../../../util'
+import { config } from '../../../config'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,6 +77,9 @@ export default function MeetingCard(props) {
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
   const [meeting, setMeeting] = useState(props.meetings[props.keyIndex]);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [copyMeetingLinkTest, setCopyMeetingLinkTest] = React.useState('Copy Meeting Link');
+  const open = Boolean(anchorEl);
   const [rate, setRate] = useState(meeting.value.attendees.reduce(function(prev, cur) {
       return Number(prev) + Number(cur.value.rate);
   }, 0));
@@ -168,6 +177,22 @@ export default function MeetingCard(props) {
     //change the state of the A/V? switch
     setSwitchState(prev => !prev);
   };
+  const handleMoreClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMoreClose = () => {
+    setAnchorEl(null);
+  };
+  const meetingLinkClick = () => {
+    copy(config.APP_URL+'/meeting/'+meeting.id);
+    setCopyMeetingLinkTest('Copied')
+    setTimeout(()=>{
+      setAnchorEl(null);
+      setTimeout(()=>{
+        setCopyMeetingLinkTest('Copy Meeting Link')
+      }, 100)
+    }, 700)  
+  };
   return (
     <Card className={classes.root} key={'card'+props.keyIndex}>
       <Paper>
@@ -179,7 +204,7 @@ export default function MeetingCard(props) {
             </Avatar>
             }
             action={
-            <IconButton aria-label="settings">
+            <IconButton aria-label="settings" onClick={handleMoreClick}>
                 <MoreVertIcon />
             </IconButton>
             }
@@ -273,6 +298,30 @@ export default function MeetingCard(props) {
           </CardActions>
         </Box>
         
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={open}
+          onClose={handleMoreClose}
+          PaperProps={{
+            style: {
+              width: 300,
+            },
+          }}
+        >
+          {/* {options.map(option => (
+            <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleMoreClose}>
+              {option}
+            </MenuItem>
+          ))} */}
+          <MenuItem onClick={meetingLinkClick}>
+          <ListItemIcon>
+            <SendIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit">{copyMeetingLinkTest}</Typography>
+        </MenuItem>
+        </Menu>
         <Collapse key={'collapse'+props.keyIndex} in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
             <TextEditor 
