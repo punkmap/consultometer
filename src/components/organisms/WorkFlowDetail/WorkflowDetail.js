@@ -84,6 +84,8 @@ class WorkflowDetail extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>  
+
+        {/*TODO: create and implement Meeting Detail component and load it from App   */}
         <Grid 
           container
           direction="column"

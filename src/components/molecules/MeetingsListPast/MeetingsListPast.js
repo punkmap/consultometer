@@ -1,5 +1,7 @@
 import React, { PureComponent }from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { loadMeeting, setWorkflow } from '../../../actions';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';  
@@ -29,6 +31,14 @@ const useStyles = makeStyles(theme => ({
 
 
 class ItemRenderer extends PureComponent {
+  constructor(props){
+    super(props)
+    this.state = {
+      meetings: this.props.meetings,
+      meeting: {},
+    }
+    
+  }
   render() {
 
     return (
@@ -36,6 +46,7 @@ class ItemRenderer extends PureComponent {
         key={'meetingCard'+this.props.index} 
         keyIndex={this.props.index}
         cardValue={this.props.data[this.props.index].value}
+        loadMeeting={this.loadMeeting.bind(this)}
         meetings={this.props.data}
         infoOnly={true}
       />
@@ -44,15 +55,13 @@ class ItemRenderer extends PureComponent {
     );
   }
 }
-export default function MeetingListAll(props) {
+function MeetingListAll(props) {
   const classes = useStyles();
+  
   return (
     
     <Grid container className={classes.root}>
     <Grid item >
-        {/* <FixedSizeList height={400} width={345} itemSize={props.meetings.length} itemCount={props.meetings.length} itemData={props.meetings}>
-        {ItemRenderer}
-      </FixedSizeList> */}
       <div className={classes.scroll}>
       <List dense={true}>
         {props.meetings.map((value, index) => {
@@ -62,6 +71,10 @@ export default function MeetingListAll(props) {
                     cardValue={value.value}
                     meetings={props.meetings}
                     infoOnly={true}
+                    loadMeeting={() => {
+                      props.setWorkflow('loadMeeting');
+                      props.loadMeeting(value.value);
+                    }}
                   /> 
         })}
       </List>
@@ -71,3 +84,4 @@ export default function MeetingListAll(props) {
 
 );
 }
+export default connect(null, { setWorkflow, loadMeeting })(MeetingListAll)

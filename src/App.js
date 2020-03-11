@@ -121,6 +121,10 @@ class App extends React.Component {
     store.subscribe(editMeetingWatch((newVal, oldVal, objectPath) => {
         this.setEditMeeting(newVal);
     }));
+    const loadMeetingWatch = watch(store.getState, 'loadMeeting.meeting.value')
+    store.subscribe(loadMeetingWatch((newVal, oldVal, objectPath) => {
+        this.loadMeeting(newVal);
+    }));
     const futureMeetingsWatch = watch(store.getState, 'futureMeetings.meetings')
     store.subscribe(futureMeetingsWatch((newVal, oldVal, objectPath) => {
       this.setMeetings(newVal);
@@ -133,6 +137,9 @@ class App extends React.Component {
       store.subscribe(appWorkflowWatch((newVal, oldVal, objectPath) => {
       this.setState((state, props) => ({appWorkflow: newVal}))
     }))
+    window.onorientationchange = function() { 
+      console.log("the orientation of the device is now " + window.screen.orientation.angle);
+    };
   }
   componentDidMount() {
     if (!this._isMounted){
@@ -152,6 +159,13 @@ class App extends React.Component {
     if (this._isMounted) {
       this.setState({
           editMeeting,
+      })
+    }
+  }
+  loadMeeting(loadMeeting) {
+    if (this._isMounted) {
+      this.setState({
+          loadMeeting,
       })
     }
   }
@@ -243,6 +257,10 @@ class App extends React.Component {
           meetings={this.state.meetings}
           //authToken={this.state.authToken}
         />
+        break; 
+      case 'loadMeeting':
+        workflowControls = 
+        <div>Workflow goes here</div>
         break;
       case 'analyzeMeetings':
         workflowControls = 

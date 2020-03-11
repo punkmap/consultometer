@@ -4,6 +4,7 @@ import { combineReducers } from 'redux';
 import clickReducer from './click-reducer';
 import appWorkflowReducer from './app-workflow-reducer';
 import editMeetingReducer from './edit-meeting-reducer';
+import loadMeetingReducer from './load-meeting-reducer';
 import activeMeetingReducer from './active-meeting-reducer';
 import futureMeetingsReducer from './future-meetings-reducer';
 import pastMeetingsReducer from './past-meetings-reducer';
@@ -18,6 +19,7 @@ const rootReducers = combineReducers({
     appWorkflow: appWorkflowReducer,
     activeMeeting: activeMeetingReducer,
     editMeeting: editMeetingReducer,
+    loadMeeting: loadMeetingReducer,
     futureMeetings: futureMeetingsReducer,
     pastMeetings: pastMeetingsReducer,
     timerAction: timerActionReducer,

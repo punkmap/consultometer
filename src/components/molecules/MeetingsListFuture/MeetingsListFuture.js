@@ -19,7 +19,7 @@ import { updateMeeting } from '../../../util'
 
 import MeetingCard from '../MeetingCard'
 
-import { setWorkflow, futureMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops } from '../../../actions';
+import { setWorkflow, futureMeetings, activeMeeting, editMeeting, loadMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops } from '../../../actions';
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -78,6 +78,12 @@ class MeetingsListFuture extends Component {
     this.props.setWorkflow('editMeeting');
 
     this.props.editMeeting(meeting);
+  }
+
+  loadMeeting(meeting) {
+    this.props.setWorkflow('loadMeeting');
+    //TODO setworkflow to LoadMeeting and load a meeting. 
+    this.props.loadMeeting(meeting);
   }
   
   showTimeControls(meeting){
@@ -186,6 +192,7 @@ class MeetingsListFuture extends Component {
                           cardValue={value.value}
                           meetings={this.state.meetings}
                           editMeeting={this.editMeeting.bind(this)}
+                          loadMeeting={this.loadMeeting.bind(this)}
                           startMeeting={this.startMeeting.bind(this)}
                           pauseMeeting={this.pauseMeeting.bind(this)}
                           stopMeeting={this.stopMeeting.bind(this)}
@@ -201,5 +208,5 @@ class MeetingsListFuture extends Component {
   }
 }
 
-export default withCookies(withStyles(styles)(connect(null, { setWorkflow, futureMeetings, activeMeeting, editMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingsListFuture)));
+export default withCookies(withStyles(styles)(connect(null, { setWorkflow, futureMeetings, activeMeeting, editMeeting, loadMeeting, startMeeting, pauseMeeting, stopMeeting, refreshMeeting, timerStops })(MeetingsListFuture)));
 

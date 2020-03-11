@@ -193,6 +193,9 @@ export default function MeetingCard(props) {
       }, 100)
     }, 700)  
   };
+  const meetingClicked = (meetingId) => {
+    props.loadMeeting(meeting)
+  }
   return (
     <Card className={classes.root} key={'card'+props.keyIndex}>
       <Paper>
@@ -212,7 +215,7 @@ export default function MeetingCard(props) {
             subheader={moment(props.cardValue.dateTime).format("MM-DD-YY HH:mm")}
         />
         <CardContent key={'cardContent'+props.keyIndex}>
-            <ListItem key={'li'+props.keyIndex} >
+            <ListItem key={'li'+props.keyIndex} onClick={()=>{meetingClicked(props.cardValue._id)}}>
                 <Grid container>
                     <Grid item >
                         <Typography variant="body2">{props.cardValue.title}</Typography>

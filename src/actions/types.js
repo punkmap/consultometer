@@ -5,6 +5,7 @@ export const INCREMENT = 'INCREMENT';
 export const APP_WORKFLOW = 'APP_WORKFLOW';
 export const ACTIVE_MEETING = 'ACTIVE_MEETING';
 export const EDIT_MEETING = 'EDIT_MEETING';
+export const LOAD_MEETING = 'LOAD_MEETING';
 export const FUTURE_MEETINGS = 'FUTURE_MEETINGS';
 export const PAST_MEETINGS = 'PAST_MEETINGS';
 export const ADD_MEETINGS = 'ADD_MEETINGS';
