@@ -50,6 +50,7 @@ class WorkflowDetail extends Component {
     this.state = {
       detailType: props.detailType,
       detailId: props.detailId,
+      detailObject: props.detailObject,
       authToken: cookies.get('authToken'),
       detailItem: null
     }
@@ -65,8 +66,14 @@ class WorkflowDetail extends Component {
   
   componentDidMount() {
     this._isMounted = true;
-    if (this.state.detailType === 'meeting' && this.state.detailId ){
-      this.getMeeting(this.state.detailId, this.state.authToken)
+    if (this.state.detailType === 'meeting'){
+      if (this.state.detailId) {
+        this.getMeeting(this.state.detailId, this.state.authToken)
+      } 
+      else if (this.state.detailObject) {
+        const detailItem = this.state.detailObject;
+        this.setState({detailItem});
+      }
     }
   }
   async getMeeting (meetingId, token) {

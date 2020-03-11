@@ -262,7 +262,8 @@ class App extends React.Component {
       case 'loadMeeting':
         workflowControls = <WorkflowDetail  
         detailType={'meeting'}
-        detailId={this.state.loadedMeeting && this.state.loadedMeeting._id}
+        //detailId={this.state.loadedMeeting && this.state.loadedMeeting._id}
+        detailObject={this.state.loadedMeeting}
       />
         break;
       case 'analyzeMeetings':
