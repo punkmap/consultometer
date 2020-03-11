@@ -113,7 +113,7 @@ class App extends React.Component {
       searchMeetings: [],
       editMeeting: null,
       authToken: cookies.get('authToken') || '',
-      
+      loadedMeeting: null,
     }
     this._isMounted = false;
 
@@ -121,7 +121,7 @@ class App extends React.Component {
     store.subscribe(editMeetingWatch((newVal, oldVal, objectPath) => {
         this.setEditMeeting(newVal);
     }));
-    const loadMeetingWatch = watch(store.getState, 'loadMeeting.meeting.value')
+    const loadMeetingWatch = watch(store.getState, 'loadMeeting.meeting')
     store.subscribe(loadMeetingWatch((newVal, oldVal, objectPath) => {
         this.loadMeeting(newVal);
     }));
@@ -162,10 +162,11 @@ class App extends React.Component {
       })
     }
   }
-  loadMeeting(loadMeeting) {
+  loadMeeting(loadedMeeting) {
     if (this._isMounted) {
+      console.log('loadedMeeting: ', loadedMeeting);
       this.setState({
-          loadMeeting,
+          loadedMeeting,
       })
     }
   }
@@ -259,8 +260,10 @@ class App extends React.Component {
         />
         break; 
       case 'loadMeeting':
-        workflowControls = 
-        <div>Workflow goes here</div>
+        workflowControls = <WorkflowDetail  
+        detailType={'meeting'}
+        detailId={this.state.loadedMeeting && this.state.loadedMeeting._id}
+      />
         break;
       case 'analyzeMeetings':
         workflowControls = 
