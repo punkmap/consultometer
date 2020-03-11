@@ -164,7 +164,6 @@ class App extends React.Component {
   }
   loadMeeting(loadedMeeting) {
     if (this._isMounted) {
-      console.log('loadedMeeting: ', loadedMeeting);
       this.setState({
           loadedMeeting,
       })

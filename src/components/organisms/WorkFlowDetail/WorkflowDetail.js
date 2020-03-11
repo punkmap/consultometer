@@ -102,7 +102,7 @@ class WorkflowDetail extends Component {
           <Grid item xs={6} md={6} lg={6}>
           <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
           <Typography variant="h5" gutterBottom>{this.state.detailItem && this.state.detailItem.purpose}</Typography>
-          {this.state.detailItem && this.state.detailItem.attendees.map(data => {
+          {this.state.detailItem && this.state.detailItem.attendees && this.state.detailItem.attendees.map(data => {
             let icon;
 
             return (

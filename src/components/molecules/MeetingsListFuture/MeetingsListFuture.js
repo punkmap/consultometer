@@ -83,7 +83,7 @@ class MeetingsListFuture extends Component {
   loadMeeting(meeting) {
     this.props.setWorkflow('loadMeeting');
     //TODO setworkflow to LoadMeeting and load a meeting. 
-    this.props.loadMeeting(meeting);
+    this.props.loadMeeting(meeting.value);
   }
   
   showTimeControls(meeting){
