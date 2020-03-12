@@ -1,5 +1,5 @@
 ssh punkmap@64.225.125.231 <<EOF
- cd /var/www/html/sites/consultometer/
+ cd /var/www/html/sites/consultometer_test/
  tee >(logger) <<< "*****GIT PULL START*****"
  git pull
  tee >(logger) <<< "*****NPM INSTALL START*****"
