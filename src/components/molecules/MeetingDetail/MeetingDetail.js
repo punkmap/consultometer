@@ -12,6 +12,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import CloseIcon from '@material-ui/icons/Close';
 import SendIcon from '@material-ui/icons/Send';
 import StopIcon from '@material-ui/icons/Stop';
 import Grid from '@material-ui/core/Grid';
@@ -55,7 +56,9 @@ class MeetingDetail extends Component {
     super(props);
     const { cookies } = props;
     this.state = {
+      phoneAngle: window.screen.orientation.angle,
       meeting: props.detailObject,
+      meetings: props.meetings,
       detailType: props.detailType,
       detailId: props.detailId,
       detailObject: props.detailObject,
@@ -71,6 +74,16 @@ class MeetingDetail extends Component {
       switchState: false,
     }
     this._isMounted = false;
+    console.log('phoneAngle: ', this.state.phoneAngle);
+    console.log('screenAngle: ', window.screen.orientation.angle);
+    window.onorientationchange = () => { 
+      console.log('isMounted: ', this._isMounted);
+      if (this._isMounted){
+        console.log("the orientation of the device is now " + window.screen.orientation.angle);
+        const phoneAngle = window.screen.orientation.angle;
+        this.setState({phoneAngle});
+      }
+    };
   }
   cancel() {
     this.props.setWorkflow('mainPage');
@@ -103,6 +116,9 @@ class MeetingDetail extends Component {
       this.setState({detailItem});
     }
   }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   startAVTimer = () => {
     //start the timer for audio visual
     const avTimerRunning = true;
@@ -115,10 +131,6 @@ class MeetingDetail extends Component {
       avTimerRunning,
       avTimer,
     })
-    //setAVTimer(setInterval(()=>{setAVTime(Date.now()-timeNow)},1000));
-    // setAVTimerRunning(true);
-    // const timeNow=Date.now()-avTime;
-    // setAVTimer(setInterval(()=>{setAVTime(Date.now()-timeNow)},1000));
   };
   stopAVTimer = () => {
     //stop the timer for audio visual
@@ -146,8 +158,6 @@ class MeetingDetail extends Component {
           
           const time = Date.now()-timeNow;
           this.setState({time})
-          //setTime(Date.now()-timeNow);
-          //else if to synchronize timers
           if (this.state.switchState === true && this.state.avTimerRunning === false){
             this.startAVTimer();
           }
@@ -156,19 +166,6 @@ class MeetingDetail extends Component {
           }  
         },1000)
       this.setState({timer, timerRunning, timerPaused, timerWasStarted})
-        // setTimer(setInterval(()=>{
-        //   setTime(Date.now()-timeNow);
-        //   //else if to synchronize timers
-        //   if (switchStateRef.current === true && avTimerRunningRef.current === false){
-        //     startAVTimer();
-        //   }
-        //   else if (switchStateRef.current === false && avTimerRunningRef.current === true){
-        //     stopAVTimer();
-        //   }  
-        // },1000)); 
-        // setTimerRunning(true);
-        // setTimerPaused(false);
-        // setTimerWasStarted(true);
     }
   };
   pauseMeeting = (meeting) => {
@@ -177,16 +174,10 @@ class MeetingDetail extends Component {
         clearInterval(this.state.timer);
         clearInterval(this.state.avTimer);
         this.setState({timerRunning, timerPaused, avTimerRunning})
-        // clearInterval(timer);
-        // setTimerRunning(false);
-        // setTimerPaused(true);
-        // clearInterval(avTimer);
-        // setAVTimerRunning(false);
     } 
     else if (!this.state.timerRunning && this.state.timerWasStarted) {
         const timerPaused = false;
         this.setState({timerPaused});
-        //setTimerPaused(false);
         this.startMeeting(meeting);
     }
   }
@@ -196,109 +187,179 @@ class MeetingDetail extends Component {
     this.setState({timerRunning, avTimerRunning, timerWasStarted})
     clearInterval(this.state.timer);
     clearInterval(this.state.avTimer);
-    // this.props.timerStops({
-    //   durationMS: this.state.time,
-    //   durationHMS: this.msToHMS(this.state.time),
-    //   cost: Number(this.msToCost(this.state.time)),
-    // })
-    this.props.timerStops({
-      meeting,
-      timer: {
-        durationMS: this.state.time,
-        durationHMS: msTime.msToHMS(this.state.time),
-        cost: Number(msTime.msToCost(meeting.value.rate, this.state.time)),
-        durationAVMS: this.state.avTime,
-        durationAVHMS: msTime.msToHMS(this.state.avTime),
-        costAV: Number(msTime.msToCost(meeting.value.rate, this.state.avTime)),
-      }
-    });
-    // clearInterval(timer);
-    // setTimerRunning(false);
-    // clearInterval(avTimer);
-    // setAVTimerRunning(false);
-    // setTimerWasStarted(false);
-    // dispatch(timerStops({
-    //   meeting,
-    //   timer: {
-    //     durationMS: time,
-    //     durationHMS: msTime.msToHMS(time),
-    //     cost: Number(msTime.msToCost(meeting.value.rate, time)),
-    //     durationAVMS: avTime,
-    //     durationAVHMS: msTime.msToHMS(avTime),
-    //     costAV: Number(msTime.msToCost(meeting.value.rate, avTime)),
-    //   }
-    // }));
+    const timer ={
+          durationMS: this.state.time,
+          durationHMS: msTime.msToHMS(this.state.time),
+          cost: Number(msTime.msToCost(meeting.rate, this.state.time)),
+          durationAVMS: this.state.avTime,
+          durationAVHMS: msTime.msToHMS(this.state.avTime),
+          costAV: Number(msTime.msToCost(meeting.rate, this.state.avTime)),
+        }
+    this.saveMeeting(meeting, timer)
+  }
+  async saveMeeting (meeting, updateVals){
+    console.log('MEETING: ', meeting);
+    Object.keys(updateVals).forEach((key, index) => {
+      
+      meeting[key] = updateVals[key];
+    })
+
+    const response = await updateMeeting(meeting, this.state.authToken);
+    console.log('RESPONSE: ', response);
+    if (this._isMounted){
+        const updatedMeeting = {value:{...meeting}};
+        updatedMeeting.id = updatedMeeting.key = updatedMeeting.value.id = response.data.body.id;
+        updatedMeeting._rev = response.data.body.rev;
+        console.log('UPDATEDMEETING: ', updatedMeeting);
+        let meetings = [...this.state.meetings]
+        const meetingIndex = this.state.meetings.findIndex(meeting => meeting.id === response.data.body.id);
+        meetings[meetingIndex] = updatedMeeting;
+        this.props.futureMeetings(meetings);
+        this.setState({meetings, meeting});
+    }
   }
   toggleSwitchState () {
-    //change the state of the A/V? switch
-    //setSwitchState(prev => !prev);
     this.setState({switchState: !this.state.switchState});
   };
   render() {
     const { classes } = this.props;
-    return (
-      <div className={classes.root}>  
-        
-        {/*TODO: create and implement Meeting Detail component and load it from App   */}
-        <Grid 
-          container
-          direction="column"
-          justify="center"
-          alignItems="center"
-          style={{ minHeight: '100vh' }}>
-          <Grid item xs={6} md={6} lg={6}>
-          <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
-          <Typography variant="h5" gutterBottom>{this.state.detailItem && this.state.detailItem.purpose}</Typography>
-          {this.state.detailItem && this.state.detailItem.attendees && this.state.detailItem.attendees.map(data => {
-            let icon;
+    let pageLayout;
+    if(this.state.phoneAngle === 0 || this.state.phoneAngle === 180) {
+      pageLayout = <Grid 
+        container
+        direction="column"
+        justify="center"
+        alignItems="center"
+        style={{ minHeight: '80vh' }}>
+        <Grid item xs={10} md={6} lg={6}>
+        <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
+        <Typography variant="h5" gutterBottom>{this.state.detailItem && this.state.detailItem.purpose}</Typography>
+        {this.state.detailItem && this.state.detailItem.attendees && this.state.detailItem.attendees.map(data => {
+          let icon;
 
-            return (
-              <Chip
-                key={data.key}
-                icon={icon}
-                label={data.value.name}
-                className={classes.chip}
-              />
-            );
-          })}
+          return (
+            <Chip
+              key={data.key}
+              icon={icon}
+              label={data.value.name}
+              className={classes.chip}
+            />
+          );
+        })}
+        <Grid item >
+            <Grid container direction="row" justify="space-evenly">
+              <Grid item xs={3}>
+                  <Typography variant="body2">Total</Typography>
+                  <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(this.state.time)}</Typography>
+                  <Typography variant="body2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.time)}</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                  <Typography variant="body2">A/V</Typography>
+                  <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(this.state.avTime)}</Typography>
+                  <Typography variant="body2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.avTime)}</Typography>
+              </Grid>
+              
+            </Grid>
+            <Grid container direction="row" justify="space-between">
+              <Grid item>
+                <Box display={ this.state.meeting.infoOnly ? "none" : "block" }>
+                  <IconBtn 
+                    icon={<PlayArrowIcon fontSize="small"/>} 
+                    click={(event) => this.startMeeting(this.state.meeting)}
+                    active={this.state.timerRunning}
+                  />
+                  <IconBtn 
+                    icon={<PauseIcon fontSize="small"/>} 
+                    click={(event) => this.pauseMeeting(this.state.meeting)}
+                    active={this.state.timerPaused}
+                  />
+                  <IconBtn 
+                    icon={<StopIcon fontSize="small"/>} 
+                    click={(event) => this.stopMeeting(this.state.meeting)}
+                  />
+                  <IconBtn 
+                    icon={<RefreshIcon fontSize="small"/>} 
+                    click={(event) => this.props.refreshMeeting(event, this.state.meeting)}
+                  />
+                  <FormControlLabel 
+                    //className={classes.switchControl}
+                    control={
+                    <Switch size="small" 
+                            checked={this.state.switchState} 
+                            onChange={this.toggleSwitchState.bind(this)} 
+                    />} 
+                    label="A/V" 
+                  />
+                </Box>
+              </Grid>
+            </Grid>          
+        </Grid>
+          <Grid container className={classes.buttonBar}>
+            <Grid item className={classes.actionGrid}>
+              <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
+                close
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>;
+    } else {
+      pageLayout = <Grid 
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        style={{ minHeight: '80vh' }}>
+        <Grid item xs={11} md={11} lg={11}>
+          
+          <Grid container direction="row" justify="space-between">
+            <Grid item>
+              <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
+            </Grid>
+            <Grid item>
+              <IconBtn 
+                    icon={<CloseIcon fontSize="large"/>} 
+                    click={() => this.cancel()}
+                  />
+            </Grid>
+          </Grid>
           <Grid item >
-              <Typography variant="body2">{this.state.detailItem && this.state.detailItem.title}</Typography>
-              <Typography variant="body2" color="textSecondary">{this.state.detailItem && this.state.detailItem.purpose}</Typography>
-              <Grid container direction="row" justify="space-between">
-                <Grid item >
-                    <Typography variant="body2">Total</Typography>
-                    <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(this.state.time)}</Typography>
-                    <Typography variant="body2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.time)}</Typography>
+              <Grid container direction="row" justify="space-evenly">
+                <Grid item xs={3}>
+                    <Typography variant="h5">Total</Typography>
+                    <Typography variant="h2" className={classes.timer}> {msTime.msToHMS(this.state.time)}</Typography>
+                    <Typography variant="h2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.time)}</Typography>
                 </Grid>
-                <Grid item >
-                    <Typography variant="body2">A/V</Typography>
-                    <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(this.state.avTime)}</Typography>
-                    <Typography variant="body2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.avTime)}</Typography>
+                <Grid item xs={3}>
+                    <Typography variant="h5">A/V</Typography>
+                    <Typography variant="h2" className={classes.timer}> {msTime.msToHMS(this.state.avTime)}</Typography>
+                    <Typography variant="h2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.avTime)}</Typography>
                 </Grid>
+              </Grid>
+              <Grid container direction="row" justify="space-evenly">
                 <Grid item>
                   <Box display={ this.state.meeting.infoOnly ? "none" : "block" }>
                     <IconBtn 
-                      icon={<PlayArrowIcon fontSize="small"/>} 
+                      icon={<PlayArrowIcon fontSize="large"/>} 
                       click={(event) => this.startMeeting(this.state.meeting)}
                       active={this.state.timerRunning}
                     />
                     <IconBtn 
-                      icon={<PauseIcon fontSize="small"/>} 
+                      icon={<PauseIcon fontSize="large"/>} 
                       click={(event) => this.pauseMeeting(this.state.meeting)}
                       active={this.state.timerPaused}
                     />
                     <IconBtn 
-                      icon={<StopIcon fontSize="small"/>} 
+                      icon={<StopIcon fontSize="large"/>} 
                       click={(event) => this.stopMeeting(this.state.meeting)}
                     />
                     <IconBtn 
-                      icon={<RefreshIcon fontSize="small"/>} 
+                      icon={<RefreshIcon fontSize="large"/>} 
                       click={(event) => this.props.refreshMeeting(event, this.state.meeting)}
                     />
                     <FormControlLabel 
-                      //className={classes.switchControl}
                       control={
-                      <Switch size="small" 
+                      <Switch size="medium" 
                               checked={this.state.switchState} 
                               onChange={this.toggleSwitchState.bind(this)} 
                       />} 
@@ -306,17 +367,15 @@ class MeetingDetail extends Component {
                     />
                   </Box>
                 </Grid>
-              </Grid>
-          </Grid>
-            <Grid container className={classes.buttonBar}>
-              <Grid item className={classes.actionGrid}>
-                <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
-                  close
-                </Button>
-              </Grid>
-            </Grid>
+              </Grid>          
           </Grid>
         </Grid>
+      </Grid>;
+    }
+    return (
+      <div className={classes.root}>  
+        {pageLayout}
+        
       </div>
     )
   }

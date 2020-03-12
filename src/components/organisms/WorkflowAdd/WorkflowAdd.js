@@ -162,7 +162,7 @@ class WorkflowAdd extends Component {
           direction="column"
           justify="center"
           alignItems="center"
-          style={{ minHeight: '100vh' }}>
+          style={{ minHeight: '80vh' }}>
           <Grid item >
             <MeetingTitle title={this.state.title} updateTitle={this.updateTitle.bind(this)}></MeetingTitle>
             <MeetingPurpose purpose={this.state.purpose} updatePurpose={this.updatePurpose.bind(this)}/>

@@ -255,7 +255,7 @@ export default function MeetingCard(props) {
         <Box display={ props.infoOnly ? "none" : "block" }>
           <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
               
-              <IconBtn 
+              {/* <IconBtn 
                 icon={<PlayArrowIcon fontSize="small"/>} 
                 click={(event) => startMeeting(meeting)}
                 active={timerRunning}
@@ -282,7 +282,7 @@ export default function MeetingCard(props) {
                           onChange={toggleSwitchState} 
                   />} 
                   label="A/V" 
-              />
+              /> */}
               <IconButton
               className={clsx(classes.expand, {
                   [classes.expandOpen]: expanded,

@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment }from "react";
+import React, { Component, Fragment }from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -98,7 +98,7 @@ const Project = ({match}) => {
     </div>
   );
 }
-class App extends React.Component {
+class App extends Component {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
   };
@@ -137,9 +137,6 @@ class App extends React.Component {
       store.subscribe(appWorkflowWatch((newVal, oldVal, objectPath) => {
       this.setState((state, props) => ({appWorkflow: newVal}))
     }))
-    window.onorientationchange = function() { 
-      console.log("the orientation of the device is now " + window.screen.orientation.angle);
-    };
   }
   componentDidMount() {
     if (!this._isMounted){
@@ -238,7 +235,7 @@ class App extends React.Component {
           direction="column"
           justify="center"
           alignItems="center"
-          style={{ minHeight: '100vh' }}
+          style={{ minHeight: '80vh' }}
         >
           {landing}  
         </Grid>
@@ -247,7 +244,6 @@ class App extends React.Component {
         workflowControls = 
         <WorkflowAdd  
           meetings={this.state.meetings}
-          //authToken={this.state.authToken}
         />
         break;
       case 'editMeeting':
@@ -255,14 +251,13 @@ class App extends React.Component {
         <WorkflowEdit 
           editMeeting={this.state.editMeeting} 
           meetings={this.state.meetings}
-          //authToken={this.state.authToken}
         />
         break; 
       case 'loadMeeting':
         workflowControls = <WorkflowDetail  
         detailType={'meeting'}
-        //detailId={this.state.loadedMeeting && this.state.loadedMeeting._id}
         detailObject={this.state.loadedMeeting}
+        meetings={this.state.meetings}
       />
         break;
       case 'analyzeMeetings':

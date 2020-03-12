@@ -161,7 +161,7 @@ class WorkflowEdit extends Component {
           direction="column"
           justify="center"
           alignItems="center"
-          style={{ minHeight: '100vh' }}>
+          style={{ minHeight: '80vh' }}>
           {editButton}
           <Grid item xs={6} md={6} lg={6}>
             <MeetingTitle 

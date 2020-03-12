@@ -107,7 +107,7 @@ class WorkflowAdd extends Component {
           direction="column"
           justify="center"
           alignItems="center"
-          style={{ minHeight: '100vh' }}>
+          style={{ minHeight: '80vh' }}>
           <RadioButtons 
             radioOptions={this.state.radioOptions}
             handleChange={this.handleRadioChange.bind(this)}

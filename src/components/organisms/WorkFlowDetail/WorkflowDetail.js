@@ -96,6 +96,7 @@ class WorkflowDetail extends Component {
           detailType={this.props.detailType}
           detailItem={this.props.detailItem}
           detailObject={this.props.detailObject}
+          meetings={this.props.meetings}
         />
         {/* TODO: create and implement Meeting Detail component and load it from App  
         <Grid 
@@ -103,7 +104,7 @@ class WorkflowDetail extends Component {
           direction="column"
           justify="center"
           alignItems="center"
-          style={{ minHeight: '100vh' }}>
+          style={{ minHeight: '80vh' }}>
           <Grid item xs={6} md={6} lg={6}>
           <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
           <Typography variant="h5" gutterBottom>{this.state.detailItem && this.state.detailItem.purpose}</Typography>
