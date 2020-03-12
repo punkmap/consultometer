@@ -23,7 +23,8 @@ import green from '@material-ui/core/colors/green';
 
 
 import { setWorkflow, futureMeetings } from '../../../actions';
-import { config } from '../../../config'
+import { config } from '../../../config';
+import MeetingDetail from '../../molecules/MeetingDetail';
 //const history = useHistory();
 const styles = theme => ({
   root: {
@@ -91,8 +92,12 @@ class WorkflowDetail extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>  
-
-        {/*TODO: create and implement Meeting Detail component and load it from App   */}
+        <MeetingDetail
+          detailType={this.props.detailType}
+          detailItem={this.props.detailItem}
+          detailObject={this.props.detailObject}
+        />
+        {/* TODO: create and implement Meeting Detail component and load it from App  
         <Grid 
           container
           direction="column"
@@ -138,7 +143,7 @@ class WorkflowDetail extends Component {
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
       </div>
     )
   }

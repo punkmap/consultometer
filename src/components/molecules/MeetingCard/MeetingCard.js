@@ -193,8 +193,10 @@ export default function MeetingCard(props) {
       }, 100)
     }, 700)  
   };
-  const meetingClicked = (meetingId) => {
-    props.loadMeeting(meeting)
+  const meetingClicked = () => {
+    const loadMeeting = {...meeting};
+    loadMeeting.value.infoOnly = props.infoOnly;
+    props.loadMeeting(loadMeeting)
   }
   return (
     <Card className={classes.root} key={'card'+props.keyIndex}>
@@ -215,7 +217,7 @@ export default function MeetingCard(props) {
             subheader={moment(props.cardValue.dateTime).format("MM-DD-YY HH:mm")}
         />
         <CardContent key={'cardContent'+props.keyIndex}>
-            <ListItem key={'li'+props.keyIndex} onClick={()=>{meetingClicked(props.cardValue._id)}}>
+            <ListItem key={'li'+props.keyIndex} onClick={()=>{meetingClicked()}}>
                 <Grid container>
                     <Grid item >
                         <Typography variant="body2">{props.cardValue.title}</Typography>
@@ -252,36 +254,26 @@ export default function MeetingCard(props) {
         </CardContent>
         <Box display={ props.infoOnly ? "none" : "block" }>
           <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
+              
               <IconBtn 
                 icon={<PlayArrowIcon fontSize="small"/>} 
                 click={(event) => startMeeting(meeting)}
                 active={timerRunning}
               />
-              {/* <IconButton onClick={(event) => startMeeting(meeting)}>
-                  <PlayArrowIcon fontSize="small"/>
-              </IconButton> */}
               <IconBtn 
                 icon={<PauseIcon fontSize="small"/>} 
                 click={(event) => pauseMeeting(meeting)}
                 active={timerPaused}
               />
-              {/* <IconButton onClick={(event) => pauseMeeting(meeting)}>
-                  <PauseIcon fontSize="small"/>
-              </IconButton> */}
               <IconBtn 
                 icon={<StopIcon fontSize="small"/>} 
                 click={(event) => stopMeeting(meeting)}
               />
-              {/* <IconButton onClick={(event) => stopMeeting(meeting)}>
-                  <StopIcon fontSize="small"/>
-              </IconButton> */}
               <IconBtn 
                 icon={<RefreshIcon fontSize="small"/>} 
                 click={(event) => props.refreshMeeting(event, meeting)}
               />
-              {/* <IconButton onClick={(event) => props.refreshMeeting(event, meeting)}>
-                  <RefreshIcon fontSize="small"/>
-              </IconButton> */}
+
               <FormControlLabel 
                   className={classes.switchControl}
                   control={
