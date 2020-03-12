@@ -92,13 +92,12 @@ class WorkflowDetail extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>  
-        <div>meetingDetail</div>
-        {/* <MeetingDetail
+        <MeetingDetail
           detailType={this.props.detailType}
           detailItem={this.props.detailItem}
           detailObject={this.props.detailObject}
           meetings={this.props.meetings}
-        /> */}
+        />
         {/* TODO: create and implement Meeting Detail component and load it from App  
         <Grid 
           container
