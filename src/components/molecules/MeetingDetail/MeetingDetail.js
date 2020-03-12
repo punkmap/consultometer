@@ -221,7 +221,7 @@ class MeetingDetail extends Component {
     const { classes } = this.props;
     let pageLayout;
     if(this.state.phoneAngle === 0 || this.state.phoneAngle === 180) {
-      pageLayout = <div>MeetingDetail test</div>
+      pageLayout = <div>MeetingDetail test: {this.state.phoneAngle}</div>
       // pageLayout = <Grid 
       //   container
       //   direction="column"
@@ -309,6 +309,7 @@ class MeetingDetail extends Component {
         style={{ minHeight: '80vh' }}>
         <Grid item xs={9} md={9} lg={9}>
           
+      <div>MeetingDetail test: {this.state.phoneAngle}</div>
           <Grid container direction="row" justify="space-between">
             <Grid item>
               <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
