@@ -220,7 +220,7 @@ class MeetingDetail extends Component {
   render() {
     const { classes } = this.props;
     let pageLayout;
-    if(true) {
+    if(this.state.phoneAngle === 0 || this.state.phoneAngle === 180) {
       pageLayout = <Grid 
         container
         direction="column"
