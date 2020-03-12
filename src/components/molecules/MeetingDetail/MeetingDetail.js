@@ -74,12 +74,8 @@ class MeetingDetail extends Component {
       switchState: false,
     }
     this._isMounted = false;
-    console.log('phoneAngle: ', this.state.phoneAngle);
-    console.log('screenAngle: ', window.screen.orientation.angle);
     window.onorientationchange = () => { 
-      console.log('isMounted: ', this._isMounted);
       if (this._isMounted){
-        console.log("the orientation of the device is now " + window.screen.orientation.angle);
         const phoneAngle = window.screen.orientation.angle;
         this.setState({phoneAngle});
       }

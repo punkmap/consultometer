@@ -78,7 +78,7 @@ export default function MeetingCard(props) {
   const [expanded, setExpanded] = useState(false);
   const [meeting, setMeeting] = useState(props.meetings[props.keyIndex]);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [copyMeetingLinkTest, setCopyMeetingLinkTest] = React.useState('Copy Meeting Link');
+  const [copyMeetingLinkText, setCopyMeetingLinkText] = React.useState('Copy Meeting Link');
   const open = Boolean(anchorEl);
   const [rate, setRate] = useState(meeting.value.attendees.reduce(function(prev, cur) {
       return Number(prev) + Number(cur.value.rate);
@@ -116,67 +116,67 @@ export default function MeetingCard(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  const startMeeting = (meeting) => {
-    //start the meeting timer
+  // const startMeeting = (meeting) => {
+  //   //start the meeting timer
     
-    const timeNow=Date.now()-time;
-    if(timerRunning){
-        clearInterval(timer);
-        setTimerRunning(false);
-        setTimerWasStarted(false);
-    }else{
-        setTimer(setInterval(()=>{
-          setTime(Date.now()-timeNow);
-          //else if to synchronize timers
-          if (switchStateRef.current === true && avTimerRunningRef.current === false){
-            startAVTimer();
-          }
-          else if (switchStateRef.current === false && avTimerRunningRef.current === true){
-            stopAVTimer();
-          }  
-        },1000));
-        setTimerRunning(true);
-        setTimerPaused(false);
-        setTimerWasStarted(true);
-    }
-  };
-  const pauseMeeting = (meeting) => {
-    if (timerRunning) {
-        clearInterval(timer);
-        setTimerRunning(false);
-        setTimerPaused(true);
-        clearInterval(avTimer);
-        setAVTimerRunning(false);
-    } 
-    else if (!timerRunning && timerWasStarted) {
-        setTimerPaused(false);
-        startMeeting(meeting);
-    }
-  }
+  //   const timeNow=Date.now()-time;
+  //   if(timerRunning){
+  //       clearInterval(timer);
+  //       setTimerRunning(false);
+  //       setTimerWasStarted(false);
+  //   }else{
+  //       setTimer(setInterval(()=>{
+  //         setTime(Date.now()-timeNow);
+  //         //else if to synchronize timers
+  //         if (switchStateRef.current === true && avTimerRunningRef.current === false){
+  //           startAVTimer();
+  //         }
+  //         else if (switchStateRef.current === false && avTimerRunningRef.current === true){
+  //           stopAVTimer();
+  //         }  
+  //       },1000));
+  //       setTimerRunning(true);
+  //       setTimerPaused(false);
+  //       setTimerWasStarted(true);
+  //   }
+  // };
+  // const pauseMeeting = (meeting) => {
+  //   if (timerRunning) {
+  //       clearInterval(timer);
+  //       setTimerRunning(false);
+  //       setTimerPaused(true);
+  //       clearInterval(avTimer);
+  //       setAVTimerRunning(false);
+  //   } 
+  //   else if (!timerRunning && timerWasStarted) {
+  //       setTimerPaused(false);
+  //       startMeeting(meeting);
+  //   }
+  // }
   
-  const stopMeeting = (meeting) => {
-    clearInterval(timer);
-    setTimerRunning(false);
-    clearInterval(avTimer);
-    setAVTimerRunning(false);
-    setTimerWasStarted(false);
-    dispatch(timerStops({
-      meeting,
-      timer: {
-        durationMS: time,
-        durationHMS: msTime.msToHMS(time),
-        cost: Number(msTime.msToCost(meeting.value.rate, time)),
-        durationAVMS: avTime,
-        durationAVHMS: msTime.msToHMS(avTime),
-        costAV: Number(msTime.msToCost(meeting.value.rate, avTime)),
-      }
-    }));
-  }
+  // const stopMeeting = (meeting) => {
+  //   clearInterval(timer);
+  //   setTimerRunning(false);
+  //   clearInterval(avTimer);
+  //   setAVTimerRunning(false);
+  //   setTimerWasStarted(false);
+  //   dispatch(timerStops({
+  //     meeting,
+  //     timer: {
+  //       durationMS: time,
+  //       durationHMS: msTime.msToHMS(time),
+  //       cost: Number(msTime.msToCost(meeting.value.rate, time)),
+  //       durationAVMS: avTime,
+  //       durationAVHMS: msTime.msToHMS(avTime),
+  //       costAV: Number(msTime.msToCost(meeting.value.rate, avTime)),
+  //     }
+  //   }));
+  // }
   
-  const toggleSwitchState = () => {
-    //change the state of the A/V? switch
-    setSwitchState(prev => !prev);
-  };
+  // const toggleSwitchState = () => {
+  //   //change the state of the A/V? switch
+  //   setSwitchState(prev => !prev);
+  // };
   const handleMoreClick = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -185,14 +185,17 @@ export default function MeetingCard(props) {
   };
   const meetingLinkClick = () => {
     copy(config.APP_URL+'/meeting/'+meeting.id);
-    setCopyMeetingLinkTest('Copied')
+    setCopyMeetingLinkText('Copied')
     setTimeout(()=>{
       setAnchorEl(null);
       setTimeout(()=>{
-        setCopyMeetingLinkTest('Copy Meeting Link')
+        setCopyMeetingLinkText('Copy Meeting Link')
       }, 100)
     }, 700)  
   };
+  const editClick = () => {
+    console.log('editClicked')
+  }
   const meetingClicked = () => {
     const loadMeeting = {...meeting};
     loadMeeting.value.infoOnly = props.infoOnly;
@@ -218,71 +221,29 @@ export default function MeetingCard(props) {
         />
         <CardContent key={'cardContent'+props.keyIndex}>
             <ListItem key={'li'+props.keyIndex} onClick={()=>{meetingClicked()}}>
-                <Grid container>
+              <Grid container>
+                  <Grid item >
+                      <Typography variant="body2">{props.cardValue.title}</Typography>
+                      <Typography variant="body2" color="textSecondary">{props.cardValue.purpose}</Typography>
+                  </Grid>
+                  <Grid container direction="row" justify="space-between">
                     <Grid item >
-                        <Typography variant="body2">{props.cardValue.title}</Typography>
-                        <Typography variant="body2" color="textSecondary">{props.cardValue.purpose}</Typography>
+                        <Typography variant="body2">Total</Typography>
+                        <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(time)}</Typography>
+                        <Typography variant="body2" className={classes.cost}>${msTime.msToCost(meeting.value.rate, time)}</Typography>
                     </Grid>
-                    <Grid container direction="row" justify="space-between">
-                      <Grid item >
-                          <Typography variant="body2">Total</Typography>
-                          <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(time)}</Typography>
-                          <Typography variant="body2" className={classes.cost}>${msTime.msToCost(meeting.value.rate, time)}</Typography>
-                      </Grid>
-                      <Grid item >
-                          <Typography variant="body2">A/V</Typography>
-                          <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(avTime)}</Typography>
-                          <Typography variant="body2" className={classes.cost}>${msTime.msToCost(meeting.value.rate, avTime)}</Typography>
-                      </Grid>
-                      <Grid item></Grid>
+                    <Grid item >
+                        <Typography variant="body2">A/V</Typography>
+                        <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(avTime)}</Typography>
+                        <Typography variant="body2" className={classes.cost}>${msTime.msToCost(meeting.value.rate, avTime)}</Typography>
                     </Grid>
-                </Grid>
-                <div>{props.infoOnly}</div>
-                <Box display={ props.infoOnly ? "none" : "block" }>
-                  <ListItemSecondaryAction  >
-                      <IconButton 
-                          edge="end" 
-                          aria-label="edit" 
-                          onClick={() => props.editMeeting(meeting)}
-                      >
-                          <EditIcon fontSize="small"/>
-                      </IconButton>
-                  </ListItemSecondaryAction>
-                </Box>
-                
+                    <Grid item></Grid>
+                  </Grid>
+              </Grid>
             </ListItem>
         </CardContent>
         <Box display={ props.infoOnly ? "none" : "block" }>
           <CardActions disableSpacing key={'cardActions'+props.keyIndex}>
-              
-              {/* <IconBtn 
-                icon={<PlayArrowIcon fontSize="small"/>} 
-                click={(event) => startMeeting(meeting)}
-                active={timerRunning}
-              />
-              <IconBtn 
-                icon={<PauseIcon fontSize="small"/>} 
-                click={(event) => pauseMeeting(meeting)}
-                active={timerPaused}
-              />
-              <IconBtn 
-                icon={<StopIcon fontSize="small"/>} 
-                click={(event) => stopMeeting(meeting)}
-              />
-              <IconBtn 
-                icon={<RefreshIcon fontSize="small"/>} 
-                click={(event) => props.refreshMeeting(event, meeting)}
-              />
-
-              <FormControlLabel 
-                  className={classes.switchControl}
-                  control={
-                  <Switch size="small" 
-                          checked={switchState} 
-                          onChange={toggleSwitchState} 
-                  />} 
-                  label="A/V" 
-              /> */}
               <IconButton
               className={clsx(classes.expand, {
                   [classes.expandOpen]: expanded,
@@ -308,17 +269,20 @@ export default function MeetingCard(props) {
             },
           }}
         >
-          {/* {options.map(option => (
-            <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleMoreClose}>
-              {option}
-            </MenuItem>
-          ))} */}
           <MenuItem onClick={meetingLinkClick}>
-          <ListItemIcon>
-            <SendIcon fontSize="small" />
-          </ListItemIcon>
-          <Typography variant="inherit">{copyMeetingLinkTest}</Typography>
-        </MenuItem>
+            <ListItemIcon>
+              <SendIcon fontSize="small" />
+            </ListItemIcon>
+            <Typography variant="inherit">{copyMeetingLinkText}</Typography>
+          </MenuItem>
+          <Box display={ props.infoOnly ? "none" : "block" }>
+            <MenuItem onClick={() => props.editMeeting(meeting)}>
+              <ListItemIcon>
+                <EditIcon fontSize="small" />
+              </ListItemIcon>
+              <Typography variant="inherit">Edit</Typography>
+            </MenuItem>
+          </Box>
         </Menu>
         <Collapse key={'collapse'+props.keyIndex} in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
