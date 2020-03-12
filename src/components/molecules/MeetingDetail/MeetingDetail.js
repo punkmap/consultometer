@@ -306,7 +306,7 @@ class MeetingDetail extends Component {
         justify="center"
         alignItems="center"
         style={{ minHeight: '80vh' }}>
-        <Grid item xs={11} md={11} lg={11}>
+        <Grid item xs={9} md={9} lg={9}>
           
           <Grid container direction="row" justify="space-between">
             <Grid item>
