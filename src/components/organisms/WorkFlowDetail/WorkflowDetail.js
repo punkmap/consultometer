@@ -91,62 +91,13 @@ class WorkflowDetail extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.root}>  
-        
-        <div>WorkflowDetails</div>
+      <div className={classes.root}>
         <MeetingDetail
           detailType={this.props.detailType}
           detailItem={this.props.detailItem}
           detailObject={this.props.detailObject}
           meetings={this.props.meetings}
         />
-        {/* TODO: create and implement Meeting Detail component and load it from App  
-        <Grid 
-          container
-          direction="column"
-          justify="center"
-          alignItems="center"
-          style={{ minHeight: '80vh' }}>
-          <Grid item xs={6} md={6} lg={6}>
-          <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
-          <Typography variant="h5" gutterBottom>{this.state.detailItem && this.state.detailItem.purpose}</Typography>
-          {this.state.detailItem && this.state.detailItem.attendees && this.state.detailItem.attendees.map(data => {
-            let icon;
-
-            return (
-              <Chip
-                key={data.key}
-                icon={icon}
-                label={data.value.name}
-                className={classes.chip}
-              />
-            );
-          })}
-          <Grid item >
-              <Typography variant="body2">{this.state.detailItem && this.state.detailItem.title}</Typography>
-              <Typography variant="body2" color="textSecondary">{this.state.detailItem && this.state.detailItem.purpose}</Typography>
-              <Grid container direction="row" justify="space-between">
-                <Grid item >
-                    <Typography variant="body2">Total</Typography>
-                    <Typography variant="body2" className={classes.timer}> {this.state.detailItem && msTime.msToHMS(this.state.detailItem.durationMS)}</Typography>
-                    <Typography variant="body2" className={classes.cost}>${this.state.detailItem && msTime.msToCost(this.state.detailItem.rate, this.state.detailItem.durationMS)}</Typography>
-                </Grid>
-                <Grid item >
-                    <Typography variant="body2">A/V</Typography>
-                    <Typography variant="body2" className={classes.timer}> {this.state.detailItem && msTime.msToHMS(this.state.detailItem.durationAVMS)}</Typography>
-                    <Typography variant="body2" className={classes.cost}>${this.state.detailItem && msTime.msToCost(this.state.detailItem.rate, this.state.detailItem.durationAVMS)}</Typography>
-                </Grid>
-              </Grid>
-          </Grid>
-            <Grid container className={classes.buttonBar}>
-              <Grid item className={classes.actionGrid}>
-                <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
-                  close
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid> */}
       </div>
     )
   }
