@@ -221,7 +221,7 @@ class MeetingDetail extends Component {
     const { classes } = this.props;
     let pageLayout;
     if(this.state.phoneAngle === 0 || this.state.phoneAngle === 180) {
-      pageLayout = <div>MeetingDetail test: {this.state.phoneAngle}</div>
+      pageLayout = <div>MeetingDetail test: </div>
       // pageLayout = <Grid 
       //   container
       //   direction="column"
