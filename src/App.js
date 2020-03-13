@@ -9,6 +9,7 @@ import { instanceOf } from 'prop-types';
 import { useCookies, withCookies, Cookies } from 'react-cookie';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import DeviceOrientation, { Orientation } from 'react-screen-orientation';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -269,7 +270,14 @@ class App extends Component {
     }
     return (
         <div>
-          <AppBar></AppBar>
+          
+          
+          <DeviceOrientation lockOrientation={'landscape'}>
+            {/* Will only be in DOM in landscape */}
+            <Orientation orientation='portrait' alwaysRender={false}>
+              <AppBar></AppBar>
+            </Orientation>
+          </DeviceOrientation>
           <Router>
         
 
