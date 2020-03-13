@@ -55,10 +55,12 @@ class ButtonAppBar extends Component {
   constructor(props){
     super(props)
     const { cookies } = props;
+    console.log('COOKIES: ', cookies);
+
     this.state = {
         token: null,
         isLoggedIn: false,
-        dialogOpen: true,
+        dialogOpen: cookies.authToken,
         username: 'api', 
         password: 'api',
         name: cookies.get('authToken') || ''
