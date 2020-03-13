@@ -195,7 +195,7 @@ class ButtonAppBar extends Component {
           <PublishIcon/>
         </IconButton>
     }
-    const dialogTitle = 'login test'
+    const dialogTitle = 'login'
     const dialogContent = <form>
             <TextField
                 autoFocus
