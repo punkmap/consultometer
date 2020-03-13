@@ -1,5 +1,5 @@
 ssh punkmap@64.225.125.231 <<EOF
- cd /var/www/html/sites/consultometer_test/
+ cd /var/www/html/sites/consultometer/
  tee >(logger) <<< "*****GIT STATUS*****"
  git status
  tee >(logger) <<< "*****GIT PULL START*****"
