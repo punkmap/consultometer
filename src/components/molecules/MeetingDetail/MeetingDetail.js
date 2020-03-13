@@ -221,85 +221,84 @@ class MeetingDetail extends Component {
     const { classes } = this.props;
     let pageLayout;
     if(this.state.phoneAngle === 0 || this.state.phoneAngle === 180) {
-      pageLayout = <div>MeetingDetail test: </div>
-      // pageLayout = <Grid 
-      //   container
-      //   direction="column"
-      //   justify="center"
-      //   alignItems="center"
-      //   style={{ minHeight: '80vh' }}>
-      //   <Grid item xs={10} md={6} lg={6}>
-      //   <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
-      //   <Typography variant="h5" gutterBottom>{this.state.detailItem && this.state.detailItem.purpose}</Typography>
-      //   {this.state.detailItem && this.state.detailItem.attendees && this.state.detailItem.attendees.map(data => {
-      //     let icon;
+      pageLayout = <Grid 
+        container
+        direction="column"
+        justify="center"
+        alignItems="center"
+        style={{ minHeight: '80vh' }}>
+        <Grid item xs={10} md={6} lg={6}>
+        <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
+        <Typography variant="h5" gutterBottom>{this.state.detailItem && this.state.detailItem.purpose}</Typography>
+        {this.state.detailItem && this.state.detailItem.attendees && this.state.detailItem.attendees.map(data => {
+          let icon;
 
-      //     return (
-      //       <Chip
-      //         key={data.key}
-      //         icon={icon}
-      //         label={data.value.name}
-      //         className={classes.chip}
-      //       />
-      //     );
-      //   })}
-      //   <Grid item >
-      //       <Grid container direction="row" justify="space-evenly">
-      //         <Grid item xs={3}>
-      //             <Typography variant="body2">Total</Typography>
-      //             <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(this.state.time)}</Typography>
-      //             <Typography variant="body2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.time)}</Typography>
-      //         </Grid>
-      //         <Grid item xs={3}>
-      //             <Typography variant="body2">A/V</Typography>
-      //             <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(this.state.avTime)}</Typography>
-      //             <Typography variant="body2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.avTime)}</Typography>
-      //         </Grid>
+          return (
+            <Chip
+              key={data.key}
+              icon={icon}
+              label={data.value.name}
+              className={classes.chip}
+            />
+          );
+        })}
+        <Grid item >
+            <Grid container direction="row" justify="space-evenly">
+              <Grid item xs={3}>
+                  <Typography variant="body2">Total</Typography>
+                  <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(this.state.time)}</Typography>
+                  <Typography variant="body2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.time)}</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                  <Typography variant="body2">A/V</Typography>
+                  <Typography variant="body2" className={classes.timer}> {msTime.msToHMS(this.state.avTime)}</Typography>
+                  <Typography variant="body2" className={classes.cost}>${msTime.msToCost(this.state.meeting.rate, this.state.avTime)}</Typography>
+              </Grid>
               
-      //       </Grid>
-      //       <Grid container direction="row" justify="space-between">
-      //         <Grid item>
-      //           <Box display={ this.state.meeting.infoOnly ? "none" : "block" }>
-      //             <IconBtn 
-      //               icon={<PlayArrowIcon fontSize="small"/>} 
-      //               click={(event) => this.startMeeting(this.state.meeting)}
-      //               active={this.state.timerRunning}
-      //             />
-      //             <IconBtn 
-      //               icon={<PauseIcon fontSize="small"/>} 
-      //               click={(event) => this.pauseMeeting(this.state.meeting)}
-      //               active={this.state.timerPaused}
-      //             />
-      //             <IconBtn 
-      //               icon={<StopIcon fontSize="small"/>} 
-      //               click={(event) => this.stopMeeting(this.state.meeting)}
-      //             />
-      //             <IconBtn 
-      //               icon={<RefreshIcon fontSize="small"/>} 
-      //               click={(event) => this.props.refreshMeeting(event, this.state.meeting)}
-      //             />
-      //             <FormControlLabel 
-      //               //className={classes.switchControl}
-      //               control={
-      //               <Switch size="small" 
-      //                       checked={this.state.switchState} 
-      //                       onChange={this.toggleSwitchState.bind(this)} 
-      //               />} 
-      //               label="A/V" 
-      //             />
-      //           </Box>
-      //         </Grid>
-      //       </Grid>          
-      //   </Grid>
-      //     <Grid container className={classes.buttonBar}>
-      //       <Grid item className={classes.actionGrid}>
-      //         <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
-      //           close
-      //         </Button>
-      //       </Grid>
-      //     </Grid>
-      //   </Grid>
-      // </Grid>;
+            </Grid>
+            <Grid container direction="row" justify="space-between">
+              <Grid item>
+                <Box display={ this.state.meeting.infoOnly ? "none" : "block" }>
+                  <IconBtn 
+                    icon={<PlayArrowIcon fontSize="small"/>} 
+                    click={(event) => this.startMeeting(this.state.meeting)}
+                    active={this.state.timerRunning}
+                  />
+                  <IconBtn 
+                    icon={<PauseIcon fontSize="small"/>} 
+                    click={(event) => this.pauseMeeting(this.state.meeting)}
+                    active={this.state.timerPaused}
+                  />
+                  <IconBtn 
+                    icon={<StopIcon fontSize="small"/>} 
+                    click={(event) => this.stopMeeting(this.state.meeting)}
+                  />
+                  <IconBtn 
+                    icon={<RefreshIcon fontSize="small"/>} 
+                    click={(event) => this.props.refreshMeeting(event, this.state.meeting)}
+                  />
+                  <FormControlLabel 
+                    //className={classes.switchControl}
+                    control={
+                    <Switch size="small" 
+                            checked={this.state.switchState} 
+                            onChange={this.toggleSwitchState.bind(this)} 
+                    />} 
+                    label="A/V" 
+                  />
+                </Box>
+              </Grid>
+            </Grid>          
+        </Grid>
+          <Grid container className={classes.buttonBar}>
+            <Grid item className={classes.actionGrid}>
+              <Button variant="contained" color="primary" onClick={this.cancel.bind(this)}>
+                close
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>;
     } else {
       pageLayout = <Grid 
         container
@@ -309,7 +308,6 @@ class MeetingDetail extends Component {
         style={{ minHeight: '80vh' }}>
         <Grid item xs={9} md={9} lg={9}>
           
-      <div>MeetingDetail test: {this.state.phoneAngle}</div>
           <Grid container direction="row" justify="space-between">
             <Grid item>
               <Typography variant="h4" gutterBottom>{this.state.detailItem && this.state.detailItem.title}</Typography>
@@ -372,8 +370,8 @@ class MeetingDetail extends Component {
     }
     return (
       <div className={classes.root}>  
-        {/* {pageLayout} */}
-        test
+        {pageLayout}
+        
       </div>
     )
   }
