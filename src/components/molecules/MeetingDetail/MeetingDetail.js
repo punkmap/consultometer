@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import IconBtn from '../../atoms/IconBtn'
+import DeviceOrientation, { Orientation } from 'react-screen-orientation'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -218,7 +219,23 @@ class MeetingDetail extends Component {
     this.setState({switchState: !this.state.switchState});
   };
   render() {
-    const { classes } = this.props;
+    return (
+      <DeviceOrientation lockOrientation={'landscape'}>
+        {/* Will only be in DOM in landscape */}
+        <Orientation orientation='landscape' alwaysRender={false}>
+          <div>
+            <p>Only visible in landscape</p>
+          </div>
+        </Orientation>
+        {/* Will stay in DOM, but is only visible in portrait */}
+        <Orientation orientation='portrait'>
+          <div>
+            <p>Please rotate your device</p>
+          </div>
+        </Orientation>
+      </DeviceOrientation>
+    )
+    //const { classes } = this.props;
     // let pageLayout;
     // if(this.state.phoneAngle === 0 || this.state.phoneAngle === 180) {
     //   pageLayout = <Grid 
@@ -368,12 +385,12 @@ class MeetingDetail extends Component {
     //     </Grid>
     //   </Grid>;
     // }
-    return (
-      <div className={classes.root}>  
-        {/* {pageLayout} */}
-        MeetingDetails
-      </div>
-    )
+    // return (
+    //   <div className={classes.root}>  
+    //     {/* {pageLayout} */}
+    //     MeetingDetails
+    //   </div>
+    // )
   }
 }
 MeetingDetail.propTypes = {
