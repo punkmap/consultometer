@@ -1,4 +1,4 @@
-import React, { Component, Fragment }from "react";
+import React, { Component, Fragment, useState, useEffect }from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -6,7 +6,7 @@ import {
   Link
 } from "react-router-dom";
 import { instanceOf } from 'prop-types';
-import { useCookies, withCookies, Cookies } from 'react-cookie';
+import { useCookies, withCookies, Cookies } from 'react-cookie';import { BrowserView, MobileView } from "react-device-detect";
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import DeviceOrientation, { Orientation } from 'react-screen-orientation';
@@ -29,7 +29,7 @@ import watch from 'redux-watch';
 import { config } from './config'
 
 import WorkflowDetail from './components/organisms/WorkFlowDetail'
-import { editMeeting } from './actions';
+import { editMeeting, loginAction } from './actions';
 import { red } from "@material-ui/core/colors";
 
 
@@ -47,16 +47,20 @@ const styles = theme => ({
 });
 
 function LoggedIn (props) {
+  
+  const [token] = useState(props.token);
+  useEffect(() => {
+    if (token && !props.isLoggedIn){
+      props.loginAction({loggedIn: true, token});
+    }
+  });
   return <Fragment>
-    
-    
     <Grid item xs={12}>
       {/* <Timer/>   */}
     </Grid>
     <Grid item xs={12}>
       <Typography variant="h4" gutterBottom>
       </Typography>
-      
       <MeetingsListFuture meetings={props.meetings} filterMeetings={props.filterMeetings} ></MeetingsListFuture>
     </Grid>
     <Grid item xs={12} className={props.classes.buttonBar}>
@@ -182,9 +186,10 @@ class App extends Component {
     if(loginState.loggedIn === true){
       this.getMeetings(loginState.token);
       cookies.set('authToken', loginState.token);
-      // this.setState({authToken: loginState.token}, () => {
-      // });
+      this.setState({authToken: loginState.token, isLoggedIn: true}, () => {
+      });
     }
+    
   }
   async getMeetings (token) {
     const url = config.API_URL + '/api/meetings-future';
@@ -192,7 +197,7 @@ class App extends Component {
     const response = await axios.get(url, {
       params
     })
-
+    
     if (this._isMounted) {
         this.setState({
           meetings: response.data.body.rows.sort((a, b) => (new Date(a.value.dateTime) > new Date(b.value.dateTime)) ? 1 : -1),
@@ -219,12 +224,17 @@ class App extends Component {
     const appWorkflow = this.state.appWorkflow;
     
     let landing;
-    if(!this.state.authToken) {
+    const token = this.state.authToken;
+    if(!token) {
       landing = <NotLoggedIn></NotLoggedIn>
     } else {
+
       landing = <LoggedIn classes={classes}
                   meetings={this.state.searchMeetings} 
                   filterMeetings={this.filterMeetings.bind(this)}
+                  token={this.state.authToken}
+                  isLoggedIn={this.state.isLoggedIn}
+                  loginAction = {this.props.loginAction}
                   //authToken={this.state.authToken}
                 />
     }
@@ -271,13 +281,19 @@ class App extends Component {
     return (
         <div>
           
-          
-          <DeviceOrientation lockOrientation={'landscape'}>
-            {/* Will only be in DOM in landscape */}
-            <Orientation orientation='portrait' alwaysRender={false}>
-              <AppBar></AppBar>
-            </Orientation>
-          </DeviceOrientation>
+          <BrowserView>
+                <AppBar></AppBar>
+          </BrowserView>
+          <MobileView>
+            <DeviceOrientation lockOrientation={'landscape'}>
+              {/* Will only be in DOM in landscape */}
+              <Orientation orientation='portrait' alwaysRender={false}>
+                <AppBar
+                  isLoggedIn={this.state.isLoggedIn}  
+                />
+              </Orientation>
+            </DeviceOrientation>
+          </MobileView>
           <Router>
         
 
@@ -304,6 +320,6 @@ class App extends Component {
   }
 }
 
-export default withCookies(withStyles(styles)(connect(null, { editMeeting })(App)));
+export default withCookies(withStyles(styles)(connect(null, { editMeeting, loginAction })(App)));
 
 
