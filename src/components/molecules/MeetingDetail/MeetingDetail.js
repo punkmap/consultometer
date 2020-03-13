@@ -56,7 +56,7 @@ class MeetingDetail extends Component {
     super(props);
     const { cookies } = props;
     this.state = {
-      phoneAngle: window.screen.orientation.angle,
+      //phoneAngle: window.screen.orientation.angle,
       meeting: props.detailObject,
       meetings: props.meetings,
       detailType: props.detailType,
@@ -74,12 +74,12 @@ class MeetingDetail extends Component {
       switchState: false,
     }
     this._isMounted = false;
-    window.onorientationchange = () => { 
-      if (this._isMounted){
-        const phoneAngle = window.screen.orientation.angle;
-        this.setState({phoneAngle});
-      }
-    };
+    // window.onorientationchange = () => { 
+    //   if (this._isMounted){
+    //     const phoneAngle = window.screen.orientation.angle;
+    //     this.setState({phoneAngle});
+    //   }
+    // };
   }
   cancel() {
     this.props.setWorkflow('mainPage');
