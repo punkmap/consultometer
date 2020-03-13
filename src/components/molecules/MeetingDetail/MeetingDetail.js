@@ -372,8 +372,8 @@ class MeetingDetail extends Component {
     }
     return (
       <div className={classes.root}>  
-        {pageLayout}
-        
+        {/* {pageLayout} */}
+        test
       </div>
     )
   }
