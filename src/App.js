@@ -215,8 +215,6 @@ class App extends Component {
         meeting.value.project.indexOf(searchString) > -1
       )
     });
-    
-
   }
 
   render() {
