@@ -17,7 +17,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
-
+./package.lock.json
 pm2_readme.txt
 
 npm-debug.log*

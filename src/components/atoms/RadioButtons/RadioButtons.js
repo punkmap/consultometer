@@ -27,9 +27,6 @@ export default function RadioButtonsGroup(props) {
       <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">Cost Type</FormLabel>
         <RadioGroup row aria-label="gender" name="gender1" value={value} onChange={handleChange}>
-          {/* <FormControlLabel value="meetings" control={<Radio />} label="Meeting" />
-          <FormControlLabel value="projects" control={<Radio />} label="Projects" />
-          <FormControlLabel value="people" control={<Radio />} label="People" /> */}
           {props.radioOptions.map((option) =>
             <FormControlLabel key={option.value} value={option.value} control={<Radio />} label={option.label} />
           )}

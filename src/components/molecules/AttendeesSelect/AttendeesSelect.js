@@ -33,6 +33,7 @@ class AttendeesSelect extends Component {
     this.state = {
       authToken: cookies.get('authToken'),
       possibleAttendees: [],
+      filterAttendees: this.props.attendees,
       attendees: this.props.attendees,
       dialogType: '',
       dialogOpen: false,
@@ -66,7 +67,7 @@ class AttendeesSelect extends Component {
       let possibleAttendees
       possibleAttendees=response.data.body.rows;
       if (possibleAttendees.findIndex((attendee) => attendee.value.name === 'Add User') === -1) possibleAttendees.unshift({ value: { name: "Add User", rate: 0 }});
-      this.setState({possibleAttendees})
+      this.setState({possibleAttendees, filterAttendees: possibleAttendees})
     }
   }
   // showAddAttendeeDialog(){
@@ -94,7 +95,7 @@ class AttendeesSelect extends Component {
     const newAttendee = {id: response.data.body.id, key: response.data.body.id, value: {...attendee, _id: response.data.body.id, _rev: response.data.body.rev}};
     newAttendees.push(newAttendee);
     possibleAttendees.push(newAttendee);
-    this.setState({possibleAttendees, newAttendees});
+    this.setState({possibleAttendees, newAttendees, filterAttendees: possibleAttendees});
   }
   loadEditAttendeeDialog(option){
     this.setState({
@@ -124,7 +125,7 @@ class AttendeesSelect extends Component {
       possibleAttendees[possibleAttendees.findIndex((pa) => pa.value._id === attendee.value._id)].value = attendee.value;
       let attendees = this.state.attendees;
       attendees[attendees.findIndex((aa) => aa.value._id === attendee.value._id)].value = attendee.value;
-      this.setState({attendees, possibleAttendees, editAttendeeOption: attendee});
+      this.setState({attendees, possibleAttendees, editAttendeeOption: attendee, filterAttendees: possibleAttendees});
     }
   }
   confirmDeleteAttendee(event, option){
@@ -151,7 +152,7 @@ class AttendeesSelect extends Component {
     if (response.status === 200){
       this.setState({dialogOpen: false});
       possibleAttendees = possibleAttendees.filter((attendee) => attendee.id !== response.data.body.id);
-      this.setState({possibleAttendees});
+      this.setState({possibleAttendees, filterAttendees: possibleAttendees});
     }
   }
   removeAddedAttendee(index){
@@ -172,6 +173,22 @@ class AttendeesSelect extends Component {
       title = 'edit attendee';
     }
     return title;
+  }
+  filterTheAttendees(event) {
+    const searchString = event.target.value;
+    console.log('SEARCHSTRING: ', searchString);
+    console.log('Attendees: ', this.state.attendees);
+    this.setState({filterAttendees: this.state.possibleAttendees.filter(attendee => {
+        console.log('ATTENDEE: ', attendee.value);
+        return attendee.value.name.indexOf(searchString) > -1
+      })
+    })
+    // this.setState({
+    //   searchMeetings: this.state.meetings.filter(meeting => 
+    //     meeting.value.title.indexOf(searchString) > -1 || 
+    //     meeting.value.project.indexOf(searchString) > -1
+    //   )
+    // });
   }
   getDialogContent(){
     let content;
@@ -301,16 +318,22 @@ class AttendeesSelect extends Component {
   }
   render(){
     const { classes } = this.props;
+    console.log('filterAttendees: ', this.state.filterAttendees);
+    console.log('possibleAttendees: ', this.state.possibleAttendees);
     return (
       <div className={classes.root}>
         <Autocomplete
           multiple
-          options={this.state.possibleAttendees}
-          getOptionLabel={option => option.value.name}
+          options={this.state.filterAttendees}
+          // getOptionLabel={option => {
+          //   console.log('OPTION: ', option);
+          //   return option.value.name}}
           value={this.props.attendees}
           disabled={this.props.readOnly}
           onChange={(event, attendees) => {
-            const addAttendeeIndex = attendees.findIndex((attendee) => attendee.value.name === 'Add User');
+            const addAttendeeIndex = attendees.findIndex((attendee) => {
+              return attendee.value.name === 'Add User'
+            });
             if (addAttendeeIndex > -1) {
               //if Add User was selected then remove the option and popup the dialog;
               attendees.splice(addAttendeeIndex, 1);
@@ -350,9 +373,9 @@ class AttendeesSelect extends Component {
                 {...params}
                 variant="standard"
                 label="Attendees"
-                placeholder="Favorites"
                 margin="dense" 
                 fullWidth
+                onChange={(event)=>{this.filterTheAttendees(event)}}
               />
           )}
         />

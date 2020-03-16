@@ -55,15 +55,24 @@ class ButtonAppBar extends Component {
   constructor(props){
     super(props)
     const { cookies } = props;
+    cookies.set('authToken', '');
+    console.log('props.isLoggedIn: ', props.isLoggedIn);
     this.state = {
         token: null,
-        isLoggedIn: false,
-        dialogOpen: true,
+        isLoggedIn: props.isLoggedIn,
+        dialogOpen: false,
         username: 'api', 
         password: 'api',
         name: cookies.get('authToken') || ''
     }
     this._isMounted = false;
+  }
+  componentWillMount() {
+    const { cookies } = this.props;
+    if (cookies.cookies.authToken){
+      const token = cookies.cookies.authToken;
+      this.props.loginAction({loggedIn: true, token});
+    }
   }
   handleAuthClick (event) {
     const direction = event.currentTarget.value;
@@ -180,6 +189,7 @@ class ButtonAppBar extends Component {
   }
   render() {
     const { classes } = this.props;
+    
     let authButton;
 
     if (!this.state.isLoggedIn) {
@@ -232,6 +242,7 @@ class ButtonAppBar extends Component {
                 <Typography variant="h6" className={classes.title}>
                     {'consultometer'}
                 </Typography>
+                
                 {loadBulkDocs}
                 {authButton}
             </Toolbar>
